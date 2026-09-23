@@ -117,9 +117,14 @@ Erklärung darunter bleibt, wo sie war — „ZEITPUNKT IST VORBEI" über „Der
 war der 26.08.2026."
 
 **Genau einer je Seite.** Er sitzt nur an der Leitkarte, und davon gibt es genau eine
-(`NowPage`: „Es gibt genau **einen** prominenten Abschnitt"). Nur deshalb darf er auch schief
-stehen: Eine Drehung ist einmal ein Aufdruck und zehnmal Unruhe. Bei `prefers-reduced-motion`
-steht er gerade — wer Bewegung reduziert, will auch keine schiefen Flächen.
+(`NowPage`: „Es gibt genau **einen** prominenten Abschnitt").
+
+> **Nachtrag (September 2026): Er steht jetzt gerade.** Ursprünglich war er um 1,4° gedreht –
+> die Idee war ein Aufdruck auf Papier, und bei `prefers-reduced-motion` stand er schon damals
+> gerade. Die Drehung blieb die **einzige** schiefe Fläche der ganzen Anwendung, und eine
+> einzelne Ausnahme liest sich nicht als Absicht, sondern als Fehler. Den Aufdruck tragen die
+> übrigen Mittel ohnehin: Rahmen, Versalien, Sperrung, Farbfläche. Damit entfällt auch die
+> Sonderregel für reduzierte Bewegung – sie hatte nichts mehr zu regeln.
 
 ## Abweichungen vom Musterbuch, mit Grund
 

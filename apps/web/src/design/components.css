@@ -1761,8 +1761,12 @@ li:has(> .row .owner-badge.vacant) .row,
   sondern **darüber**, und es liest sich als Marke, nicht als Satz.
 
   **Genau einer je Seite.** Er sitzt nur an der Leitkarte, und es gibt nur eine davon
-  (NowPage: „Es gibt genau einen prominenten Abschnitt"). Deshalb darf er auch schief stehen –
-  eine Drehung ist einmal ein Aufdruck und zehnmal Unruhe.
+  (NowPage: „Es gibt genau einen prominenten Abschnitt").
+
+  Er stand um 1,4° gedreht – die Idee war ein Aufdruck auf Papier (docs/69). Steht jetzt
+  gerade: Die Drehung war die einzige schiefe Fläche der ganzen Anwendung, und eine einzelne
+  Ausnahme liest sich nicht als Absicht, sondern als Fehler. Was bleibt, trägt den Aufdruck
+  schon: Rahmen, Versalien, Sperrung, Farbfläche.
 */
 .stempel {
   display: inline-block;
@@ -1777,11 +1781,6 @@ li:has(> .row .owner-badge.vacant) .row,
   font-weight: var(--t-count-weight);
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  transform: rotate(-1.4deg);
-}
-/* Wer Bewegung reduziert, will auch keine schiefen Flächen. */
-@media (prefers-reduced-motion: reduce) {
-  .stempel { transform: none; }
 }
 
 .reasons { display: flex; flex-direction: column; gap: var(--s-2); margin-top: var(--s-3); }
