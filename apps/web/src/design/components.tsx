@@ -387,6 +387,48 @@ export function Toggle({
  * gestrichelt = Ausführung.
  */
 /** Farbiger Punkt mit Initialen. Steht nie allein – der Name folgt daneben. */
+/**
+ * Eine Auswahl aus mehreren – genau eine gilt.
+ *
+ * Bis hierher wurde dafür `Toggle` mit `role="radio"` benutzt, an acht Stellen: Kapazität,
+ * Dauer einer Auszeit, Eingangsfilter, Dichte, Farbschema, Thema, Voreinstellung, Zeitraum
+ * der Planung. `Toggle` trägt aber ein „＋" vor dem Wort, solange es nicht gewählt ist –
+ * „＋ Pause" liest sich als „Pause hinzufügen", nicht als „Pause wählen". Und die Knöpfe
+ * standen in einem `Chips`-Behälter ohne `radiogroup`, waren für Hilfsmittel also nicht
+ * einmal als zusammengehörige Auswahl erkennbar.
+ *
+ * Ein zusammenhängender Streifen sagt schon durch seine Form, dass genau eines davon gilt.
+ */
+export function Auswahl<T extends string>({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  /** Wonach wird gewählt? Wird vorgelesen, steht nicht sichtbar da. */
+  label: string
+  value: T | null
+  options: readonly { value: T; label: string }[]
+  onChange: (value: T) => void
+}) {
+  return (
+    <div className="auswahl" role="radiogroup" aria-label={label}>
+      {options.map((o) => (
+        <button
+          key={o.value}
+          type="button"
+          role="radio"
+          aria-checked={value === o.value}
+          className={value === o.value ? 'ist-gewaehlt' : ''}
+          onClick={() => onChange(o.value)}
+        >
+          {o.label}
+        </button>
+      ))}
+    </div>
+  )
+}
+
 export function PersonDot({
   name,
   membershipId,

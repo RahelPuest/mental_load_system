@@ -688,9 +688,53 @@ p.t-body-sm {
 .card-grid > .card + .card,
 .card-grid > * > .card { margin-top: 0; }
 button.card:hover, a.card:hover { border-color: var(--border-strong); background: var(--surface-hover); }
+/*
+  Getönte Flächen tragen ihre eigene Textskala.
+
+  Bis hierher tauschte eine getönte Karte nur den Hintergrund. Die Schrift behielt die Farben
+  der normalen Fläche – und die sind für die normale Fläche gerechnet, nicht für Gelb.
+  Gemessen auf der Aufmerksamkeitskarte:
+
+    hell     Bereichszeile 3,70:1 · Primärknopf 1,68:1          (verlangt 4,5:1)
+    dunkel   Überschrift 1,81:1 · Fließtext 1,01:1 · Knöpfe 1,01:1
+
+  Im dunklen Schema war die Karte damit ein gelbes Rechteck mit praktisch unsichtbarem Text:
+  Die dunklen Textfarben sind hell, der Aufmerksamkeitshintergrund bleibt hell.
+
+  `--attention-fg` gab es schon – es wurde nur nie benutzt. Statt einzelne Regeln zu flicken,
+  werden die Tokens **innerhalb** der Fläche neu belegt: Dann stimmen `c-muted`, `c-secondary`
+  und jeder Knopf automatisch, auch die, die es hier noch gar nicht gibt.
+*/
 .card.tinted-attention { background: var(--attention-bg); border-color: var(--attention-line); box-shadow: none; }
 .card.tinted-critical  { background: var(--critical-bg);  border-color: var(--critical-line);  box-shadow: none; }
 .card.tinted-info      { background: var(--info-bg);      border-color: var(--info-line);      box-shadow: none; }
+
+.card.tinted-attention { --ton-vg: var(--attention-fg); --ton-hg: var(--attention-bg); --ton-linie: var(--attention-line); }
+.card.tinted-critical  { --ton-vg: var(--critical-fg);  --ton-hg: var(--critical-bg);  --ton-linie: var(--critical-line); }
+.card.tinted-info      { --ton-vg: var(--info-fg);      --ton-hg: var(--info-bg);      --ton-linie: var(--info-line); }
+
+.card.tinted-attention,
+.card.tinted-critical,
+.card.tinted-info {
+  color: var(--ton-vg);
+  --text: var(--ton-vg);
+  /* Abstufung zum Hintergrund hin, nicht in die Durchsichtigkeit: Sonst sinkt der Kontrast
+     genau dort, wo er gebraucht wird. */
+  --text-secondary: color-mix(in srgb, var(--ton-vg) 88%, var(--ton-hg));
+  --text-muted: color-mix(in srgb, var(--ton-vg) 76%, var(--ton-hg));
+  --surface: var(--ton-hg);
+  --surface-hover: color-mix(in srgb, var(--ton-hg) 92%, var(--ton-vg));
+  --border: var(--ton-linie);
+  --border-subtle: color-mix(in srgb, var(--ton-linie) 45%, var(--ton-hg));
+  /* Der Primärknopf nimmt die Tönung auf, statt die Akzentfarbe des Produkts gegen sie zu
+     stellen – auf Gelb stand sie bei 1,68:1. */
+  --accent: var(--ton-vg);
+  --accent-solid: var(--ton-vg);
+  --accent-solid-hover: color-mix(in srgb, var(--ton-vg) 86%, var(--ton-hg));
+  --accent-text: var(--ton-hg);
+  --accent-soft: color-mix(in srgb, var(--ton-hg) 88%, var(--ton-vg));
+  --accent-line: var(--ton-linie);
+}
 
 /*
   Zugehörigkeit an der Kante.
@@ -797,6 +841,46 @@ button.card:hover, a.card:hover { border-color: var(--border-strong); background
 [data-rang='critical'] .row-sub { color: var(--tomate); font-weight: var(--t-tag-weight); }
 [data-rang='high'] .row-sub { color: var(--text-secondary); }
 .row .row-end { display: flex; align-items: center; gap: var(--s-2); flex: 0 1 auto; min-width: 0; }
+
+/*
+  Der Name hat Vorrang vor dem Beiwerk.
+
+  `.row-main` steht auf `flex: 1` – also `flex-basis: 0`. Es bekommt damit nur den *Rest*,
+  nachdem `.row-end` seine volle Inhaltsbreite genommen hat. Gemessen im Bereichsbaum auf
+  390 px: Zeile 319 px, davon 218 px für „alle: Ben, Anna" und 59 px für den Namen. Bei
+  59 px griff `overflow-wrap: anywhere` und zerlegte „Urlaube" in „Urlaub" und „e" –
+  vier von dreizehn Titeln brachen mitten im Wort.
+
+  Das Umbrechen ist richtig (deutsche Komposita), die Rangfolge war falsch. Auf schmalen
+  Bildschirmen bekommt der Name deshalb eine Untergrenze, und das Beiwerk weicht: Wer eine
+  Zeile liest, sucht zuerst den Namen.
+*/
+@media (max-width: 640px) {
+  /*
+    Der Name bekommt eine Untergrenze, das Beiwerk weicht.
+
+    Drei Varianten auf 390 px gegeneinander gemessen (13 Bereiche):
+
+      ohne Eingriff        4 gebrochene Titel ·  5 gekürzte Zuständigkeiten · 1571 px
+      Untergrenze          0                  ·  5                          · 1528 px
+      Zeile umbrechen      0                  ·  5                          · 1984 px
+
+    Die fünf gekürzten Zuständigkeiten stehen in **allen** Varianten – auch im unveränderten
+    Zustand. Das Kürzen kommt aus der Plakette selbst und ist keine Folge dieser Regel.
+    Umbrechen hätte 456 px Höhe gekostet, ohne dafür etwas zu retten.
+  */
+  .row > .row-main { min-width: 48%; }
+  /*
+    Das Beiwerk muss wirklich schrumpfen, nicht nur beschnitten werden.
+
+    Der erste Versuch setzte hier `overflow: hidden`. Das kaschierte nur: Der Layoutkasten der
+    Erbe-Plakette ragte weiter bis 402 px hinaus, und der Überlauftest fiel darüber (er misst
+    Kästen, nicht Sichtbarkeit). Jetzt geben die Kinder nach und kürzen ihre Aufschrift.
+  */
+  .row > .row-end > * { min-width: 0; }
+  .row > .row-end .erbe-chip { min-width: 0; overflow: hidden; }
+  .row > .row-end .erbe-chip .erbe-text > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+}
 .row .row-end .btn { pointer-events: auto; }
 .row .chevron { color: var(--text-muted); }
 
@@ -2896,8 +2980,8 @@ kbd {
  */
 /* `align-self`, sonst zieht die Spalte den Streifen auf volle Breite und „Monat" bekommt
    den ganzen Rest – drei Felder, von denen eines dreimal so breit ist. */
-.plan-reiter { display: inline-flex; align-self: flex-start; border: 1px solid var(--border); border-radius: var(--r-md); overflow: hidden; }
-.plan-reiter > button {
+.auswahl, .plan-reiter { display: inline-flex; flex-wrap: wrap; align-self: flex-start; border: 1px solid var(--border); border-radius: var(--r-md); overflow: hidden; }
+.auswahl > button, .plan-reiter > button {
   appearance: none;
   border: none;
   background: var(--surface);
@@ -2909,12 +2993,12 @@ kbd {
   padding: 0 var(--s-4);
   cursor: pointer;
 }
-.plan-reiter > button + button { border-left: 1px solid var(--border); }
-.plan-reiter > button:hover { background: var(--surface-hover); }
-.plan-reiter > button.ist-gewaehlt { background: var(--accent-soft); color: var(--accent); }
+.auswahl > button + button, .plan-reiter > button + button { border-left: 1px solid var(--border); }
+.auswahl > button:hover, .plan-reiter > button:hover { background: var(--surface-hover); }
+.auswahl > button.ist-gewaehlt, .plan-reiter > button.ist-gewaehlt { background: var(--accent-soft); color: var(--accent); }
 /* Am Finger die volle Bedienhöhe – dieselbe Regel wie für Kopfleiste und Aufklapper. */
 @media (pointer: coarse) {
-  .plan-reiter > button { min-height: var(--control-h); }
+  .auswahl > button, .plan-reiter > button { min-height: var(--control-h); }
 }
 .plan-reiter { margin: var(--s-3) 0 var(--s-4); }
 

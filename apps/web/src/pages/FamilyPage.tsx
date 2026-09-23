@@ -23,11 +23,11 @@ import {
   Panel,
   Row,
   RowList,
+  Auswahl,
   Section,
   Select,
   Sheet,
   SkeletonList,
-  Toggle,
   useToast,
 } from '../design/index.js'
 
@@ -174,18 +174,12 @@ export function FamilyPage() {
           Eine Selbstauskunft, keine Bewertung. Sie verändert nur, was dir angezeigt wird – nicht,
           wofür du verantwortlich bist. Ein Grund wird nicht gespeichert.
         </Notice>
-        <Chips>
-          {LEVELS.map((level) => (
-            <Toggle
-              key={level.value}
-              role="radio"
-              pressed={capacity.data!.level === level.value}
-              onToggle={() => void setLevel(level.value)}
-            >
-              {CAPACITY[level.value]}
-            </Toggle>
-          ))}
-        </Chips>
+        <Auswahl
+          label="Kapazität heute"
+          value={capacity.data!.level}
+          options={LEVELS.map((l) => ({ value: l.value, label: CAPACITY[l.value] ?? l.value }))}
+          onChange={(v) => void setLevel(v)}
+        />
         <p className="t-body-sm c-muted" style={{ marginTop: 'var(--s-2)' }}>
           {LEVELS.find((l) => l.value === capacity.data!.level)?.hint}
         </p>
@@ -201,21 +195,15 @@ export function FamilyPage() {
                 ? `Gilt bis ${formatDateTime(capacity.data!.endsAt!)}, danach wieder normal.`
                 : 'Gilt ohne Ende – bis du sie selbst zurücknimmst.'}
             </p>
-            <Chips>
-              {DAUERN.map((d) => (
-                <Toggle
-                  key={d.value}
-                  role="radio"
-                  pressed={dauerWahl === d.value}
-                  onToggle={() => {
-                    setDauerWahl(d.value)
-                    void setLevel(capacity.data!.level, d.value)
-                  }}
-                >
-                  {d.label}
-                </Toggle>
-              ))}
-            </Chips>
+            <Auswahl
+              label="Wie lange gilt das?"
+              value={dauerWahl}
+              options={DAUERN.map((d) => ({ value: d.value, label: d.label }))}
+              onChange={(v) => {
+                setDauerWahl(v)
+                void setLevel(capacity.data!.level, v)
+              }}
+            />
           </div>
         )}
       </Section>

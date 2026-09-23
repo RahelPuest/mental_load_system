@@ -165,8 +165,19 @@ export function WatchPage() {
                 </p>
                 <Consequence>{item.ifItWaits}</Consequence>
                 <Actions>
+                  {/*
+                    Sekundär, nicht primär (§13, §30).
+
+                    Diese Karten entstehen aus `open.map(...)` – es sind beliebig viele. Ein
+                    Primärknopf, der dreimal untereinander steht, ist nicht dominant, sondern
+                    Tapete; gezählt wurden auf dieser Seite zwei verschiedene Primäraktionen
+                    („Regel einrichten" und diese), und der Layouttest fällt seitdem darüber.
+
+                    Die Dringlichkeit trägt die Karte schon: getönte Fläche, eigener Rahmen,
+                    die Frage als Überschrift. Der Knopf muss sie nicht wiederholen.
+                  */}
                   <Button
-                    variant="primary"
+                    variant="secondary"
                     size="sm"
                     disabled={busy === item.id}
                     onClick={async () => {

@@ -4,10 +4,10 @@ import { endpoints } from '../lib/api.js'
 import { useSession } from '../lib/session.js'
 import { useAsync } from '../lib/ui.js'
 import {
+  Auswahl,
   Actions,
   Button,
   Card,
-  Chips,
   EmptyState,
   Heading,
   Disclosure,
@@ -15,7 +15,6 @@ import {
   Page,
   Section,
   SkeletonList,
-  Toggle,
   useToast,
 } from '../design/index.js'
 
@@ -138,18 +137,12 @@ export function InboxPage() {
                   einem Klick, verborgen ist sie nicht (§40, §64).
                 */}
                 <Disclosure summary={changed ? `Wird ${TARGET[selected]?.label}` : 'Anders einsortieren'}>
-                  <Chips>
-                    {Object.entries(TARGET).map(([value, meta]) => (
-                      <Toggle
-                        key={value}
-                        role="radio"
-                        pressed={selected === value}
-                        onToggle={() => setChoice((c) => ({ ...c, [item.id]: value }))}
-                      >
-                        {meta.label}
-                      </Toggle>
-                    ))}
-                  </Chips>
+                  <Auswahl
+                    label="Wohin einsortieren?"
+                    value={selected}
+                    options={Object.entries(TARGET).map(([value, meta]) => ({ value, label: meta.label }))}
+                    onChange={(value) => setChoice((c) => ({ ...c, [item.id]: value }))}
+                  />
                   <p className="t-body-sm c-muted" style={{ marginTop: 'var(--s-2)' }}>
                     {TARGET[selected]?.hint}
                   </p>

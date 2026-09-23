@@ -80,6 +80,7 @@ Das System heißt **Thealotta** (Arbeitstitel) – *Mental Load Infrastructure f
 | 79 | [Umbenennung zu Ende gebracht](79-umbenennung-zu-ende.md) | Rollen, SQL-Funktionen, Datenbank und Projektname – und der Kollisionsfall, den erst die zweite Datenbank im Cluster zeigt |
 | 80 | [Planung für Tag, Woche und Monat](80-planung-tag-woche-monat.md) | Sechs Reihenfolgen aus Ablaufplanung und Klinik – mit ehrlicher Angabe, wie gut jede belegt ist |
 | 81 | [Bestehende Einträge ändern](81-eintraege-aendern.md) | Anlegen ging überall, Berichtigen nirgends – fünf fehlende Routen und ein Knopf, der seinen Eintrag nennt |
+| 82 | [UX-Audit, vierter Durchgang](82-ux-audit-4.md) | Getönte Karten ohne eigene Textfarbe, zwei Primäraktionen, ein Bauteil für zwei Aufgaben – und ein Name, der zuletzt kam |
 
 ## Architecture Decision Records
 Siehe [adr/](adr/) – ADR-0001 ff.

@@ -8,6 +8,7 @@ import { ROLE, ROLE_HINT, formatDateTime, relativeDays, useAsync, useWideScreen 
 import { toneClass, toneLabel, useColors } from '../lib/colors.js'
 import { ColorPicker } from '../components/ColorPicker.js'
 import {
+  Auswahl,
   Actions,
   Button,
   Consequence,
@@ -769,13 +770,12 @@ function GrantSheet({
 
       <Field label="Wie viel Zugriff?">
         {() => (
-          <Chips>
-            {ACCESS_PRESETS.map((p) => (
-              <Toggle key={p.key} role="radio" pressed={preset === p.key} onToggle={() => setPreset(p.key)}>
-                {p.label}
-              </Toggle>
-            ))}
-          </Chips>
+          <Auswahl
+            label="Wie viel Zugriff?"
+            value={preset}
+            options={ACCESS_PRESETS.map((p) => ({ value: p.key, label: p.label }))}
+            onChange={(v) => setPreset(v)}
+          />
         )}
       </Field>
       <p className="t-body-sm c-secondary">{chosen.description}</p>
@@ -1651,13 +1651,12 @@ function DisplaySection() {
 
       <Section title="Informationsdichte">
         <Panel>
-          <Chips>
-            {DENSITIES.map((d) => (
-              <Toggle key={d.key} role="radio" pressed={density === d.key} onToggle={() => apply(d.key)}>
-                {d.label}
-              </Toggle>
-            ))}
-          </Chips>
+          <Auswahl
+            label="Informationsdichte"
+            value={density}
+            options={DENSITIES.map((d) => ({ value: d.key, label: d.label }))}
+            onChange={(v) => apply(v)}
+          />
           <p className="t-body-sm c-muted" style={{ marginTop: 'var(--s-3)' }}>
             {DENSITIES.find((d) => d.key === density)?.hint}
           </p>
@@ -1666,13 +1665,12 @@ function DisplaySection() {
 
       <Section title="Palette">
         <Panel>
-          <Chips>
-            {SCHEMES.map((c) => (
-              <Toggle key={c.key} role="radio" pressed={scheme === c.key} onToggle={() => applyScheme(c.key)}>
-                {c.label}
-              </Toggle>
-            ))}
-          </Chips>
+          <Auswahl
+            label="Farbschema"
+            value={scheme}
+            options={SCHEMES.map((x) => ({ value: x.key, label: x.label }))}
+            onChange={(v) => applyScheme(v)}
+          />
           <p className="t-body-sm c-muted" style={{ marginTop: 'var(--s-3)' }}>
             {SCHEMES.find((c) => c.key === scheme)?.hint} Jede Palette ist in beiden Modi auf
             Lesbarkeit geprüft.
@@ -1682,13 +1680,12 @@ function DisplaySection() {
 
       <Section title="Hell oder dunkel">
         <Panel>
-          <Chips>
-            {THEMES.map((t) => (
-              <Toggle key={t.key} role="radio" pressed={theme === t.key} onToggle={() => applyTheme(t.key)}>
-                {t.label}
-              </Toggle>
-            ))}
-          </Chips>
+          <Auswahl
+            label="Thema"
+            value={theme}
+            options={THEMES.map((x) => ({ value: x.key, label: x.label }))}
+            onChange={(v) => applyTheme(v)}
+          />
           <p className="t-body-sm c-muted" style={{ marginTop: 'var(--s-3)' }}>
             {theme === 'system'
               ? 'Thealotta folgt der Einstellung deines Geräts.'
