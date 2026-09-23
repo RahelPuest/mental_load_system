@@ -1,0 +1,356 @@
+#!/usr/bin/env bash
+# Betriebswerkzeug für den Produktivstack auf dem Raspberry Pi.
+#
+#   thealotta preflight        prüft alles, ohne etwas zu starten
+#   thealotta secrets          erzeugt fehlende Geheimnisse in ops/docker/.env.prod
+#   thealotta build            baut die Images, rollt aber nichts aus
+#   thealotta up               startet den Stack
+#   thealotta update           baut, migriert, tauscht aus, prüft – bei Fehlern automatisch zurück
+#   thealotta rollback         zurück auf das vorige Image-Tag
+#   thealotta status           Zustand aller Dienste, Backup-Alter, Restore-Prüfung
+#   thealotta logs [dienst]    Protokolle folgen
+#   thealotta backup-now       Sicherung sofort
+#   thealotta verify-restore   jüngste Sicherung testweise zurückspielen und prüfen
+#   thealotta psql             psql als Superuser
+#   thealotta down             Stack anhalten (Daten bleiben)
+#
+# Warum ein Skript und nicht Watchtower o. ä.: Die Images entstehen hier auf dem Gerät,
+# nicht in einer Registry. Und ein Austausch ohne vorherige Sicherung, ohne Migration und
+# ohne anschließende Gesundheitsprüfung ist kein Update, sondern ein Sprung ins Dunkle.
+set -euo pipefail
+
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+ENV_FILE="$REPO_ROOT/ops/docker/.env.prod"
+COMPOSE_FILE="$REPO_ROOT/ops/docker/docker-compose.prod.yml"
+PROFILE=cloudflare
+
+c_red=$'\033[31m'; c_green=$'\033[32m'; c_yellow=$'\033[33m'; c_dim=$'\033[2m'; c_off=$'\033[0m'
+info()  { echo "${c_dim}·${c_off} $*"; }
+ok()    { echo "${c_green}✓${c_off} $*"; }
+warn()  { echo "${c_yellow}!${c_off} $*"; }
+fail()  { echo "${c_red}✗${c_off} $*" >&2; }
+die()   { fail "$*"; exit 1; }
+
+dc() { docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" --profile "$PROFILE" "$@"; }
+
+env_get() {
+  [ -f "$ENV_FILE" ] || return 0
+  grep -E "^$1=" "$ENV_FILE" | tail -1 | cut -d= -f2- || true
+}
+
+env_set() {
+  local key="$1" value="$2" tmp
+  tmp=$(mktemp)
+  if [ -f "$ENV_FILE" ] && grep -qE "^$key=" "$ENV_FILE"; then
+    while IFS= read -r line; do
+      case "$line" in
+        "$key="*) echo "$key=$value" ;;
+        *)        echo "$line" ;;
+      esac
+    done <"$ENV_FILE" >"$tmp"
+  else
+    cat "$ENV_FILE" >"$tmp" 2>/dev/null || true
+    echo "$key=$value" >>"$tmp"
+  fi
+  cat "$tmp" >"$ENV_FILE"
+  rm -f "$tmp"
+}
+
+# ── Prüfungen vor jedem Eingriff ─────────────────────────────────────
+cmd_preflight() {
+  local problems=0
+
+  command -v docker >/dev/null || { fail "docker fehlt"; problems=$((problems+1)); }
+  docker compose version >/dev/null 2>&1 || { fail "docker compose (v2) fehlt"; problems=$((problems+1)); }
+  [ -f "$ENV_FILE" ] || { fail "$ENV_FILE fehlt – aus ops/docker/env.prod.example kopieren"; return 1; }
+
+  local perms
+  perms=$(stat -c '%a' "$ENV_FILE" 2>/dev/null || stat -f '%A' "$ENV_FILE")
+  [ "$perms" = "600" ] || { warn ".env.prod hat Rechte $perms – besser: chmod 600"; }
+
+  # Leere Pflichtwerte finden, bevor Compose mit einer unverständlichen Meldung abbricht.
+  local required=(PUBLIC_BASE_URL CF_TUNNEL_TOKEN POSTGRES_SUPERUSER_PASSWORD APP_DB_PASSWORD
+                  MONITOR_DB_PASSWORD NOTIFIER_DB_PASSWORD SYNC_DB_PASSWORD REDIS_PASSWORD
+                  SESSION_SECRETS ENCRYPTION_KEYS ENCRYPTION_ACTIVE_KEY_ID BACKUP_PASSPHRASE
+                  DATA_DIR BACKUP_DIR)
+  for key in "${required[@]}"; do
+    if [ -z "$(env_get "$key")" ]; then
+      fail "$key ist leer"
+      problems=$((problems+1))
+    fi
+  done
+
+  local base_url; base_url=$(env_get PUBLIC_BASE_URL)
+  case "$base_url" in
+    https://*) ok "PUBLIC_BASE_URL ist https" ;;
+    *) fail "PUBLIC_BASE_URL muss https sein – das Sitzungscookie wird mit Secure gesetzt und über http vom Browser verworfen"
+       problems=$((problems+1)) ;;
+  esac
+
+  local secrets; secrets=$(env_get SESSION_SECRETS)
+  [ "${#secrets}" -ge 32 ] || { fail "SESSION_SECRETS ist kürzer als 32 Zeichen"; problems=$((problems+1)); }
+
+  # Der Schlüssel muss 32 Byte base64 sein, sonst bricht das Zod-Schema beim Start ab.
+  local keys; keys=$(env_get ENCRYPTION_KEYS)
+  if [ -n "$keys" ]; then
+    if echo "$keys" | grep -qE '^\{".+":".+"\}$'; then ok "ENCRYPTION_KEYS sieht wie JSON aus"
+    else fail "ENCRYPTION_KEYS muss JSON der Form {\"k1\":\"<32 Byte base64>\"} sein"; problems=$((problems+1)); fi
+  fi
+
+  local data_dir backup_dir
+  data_dir=$(env_get DATA_DIR); backup_dir=$(env_get BACKUP_DIR)
+  [ -d "$data_dir" ] || { fail "DATA_DIR $data_dir existiert nicht"; problems=$((problems+1)); }
+  [ -d "$backup_dir" ] || { fail "BACKUP_DIR $backup_dir existiert nicht – hängt der NFS-Mount der Synology?"; problems=$((problems+1)); }
+
+  # Liegt das Datenverzeichnis auf einem Netzlaufwerk? Dann ist Datenverlust nur eine
+  # Frage der Zeit: Postgres verlässt sich auf fsync- und Locking-Semantik, die NFS und
+  # SMB nicht in der nötigen Form garantieren.
+  if [ -d "$data_dir" ]; then
+    local fstype=''
+    if command -v findmnt >/dev/null 2>&1; then
+      # pipefail würde den Fehlschlag von findmnt sonst zum Skriptabbruch machen.
+      fstype=$(findmnt -no FSTYPE --target "$data_dir" 2>/dev/null | head -1 || true)
+    fi
+    case "$fstype" in
+      '')
+        warn "Dateisystemtyp von DATA_DIR nicht feststellbar – von Hand prüfen, dass es kein Netzlaufwerk ist" ;;
+      nfs*|smb*|cifs*|fuseblk)
+        fail "DATA_DIR liegt auf $fstype – Postgres gehört auf lokale SSD/NVMe, nicht auf ein Netzlaufwerk"
+        problems=$((problems+1)) ;;
+      *) ok "DATA_DIR liegt auf $fstype" ;;
+    esac
+  fi
+  if [ -d "$backup_dir" ]; then
+    touch "$backup_dir/.thealotta-write-test" 2>/dev/null \
+      && { rm -f "$backup_dir/.thealotta-write-test"; ok "BACKUP_DIR ist beschreibbar"; } \
+      || { fail "BACKUP_DIR ist nicht beschreibbar"; problems=$((problems+1)); }
+  fi
+
+  local free_gb
+  free_gb=$(df -BG --output=avail "$data_dir" 2>/dev/null | tail -1 | tr -dc '0-9' || true)
+  if [ -z "$free_gb" ]; then
+    warn "Freien Platz unter $data_dir nicht feststellbar"
+  elif [ "$free_gb" -lt 10 ]; then
+    warn "nur ${free_gb} GB frei unter $data_dir – Sicherungen und die Wegwerf-Datenbank der Restore-Prüfung brauchen Luft"
+  else
+    ok "${free_gb} GB frei unter $data_dir"
+  fi
+
+  dc config >/dev/null && ok "Compose-Datei ist gültig"
+
+  if [ "$problems" -eq 0 ]; then ok "Preflight bestanden"; return 0; fi
+  die "$problems Problem(e) – nicht ausrollen, bevor die behoben sind"
+}
+
+# ── Geheimnisse ──────────────────────────────────────────────────────
+cmd_secrets() {
+  [ -f "$ENV_FILE" ] || die "$ENV_FILE fehlt – erst aus ops/docker/env.prod.example kopieren"
+  local filled=0
+  # Passwörter landen in Verbindungs-URLs: nur Buchstaben und Ziffern, damit nichts
+  # prozentkodiert werden muss.
+  for key in POSTGRES_SUPERUSER_PASSWORD APP_DB_PASSWORD MONITOR_DB_PASSWORD \
+             NOTIFIER_DB_PASSWORD SYNC_DB_PASSWORD REDIS_PASSWORD BACKUP_PASSPHRASE; do
+    if [ -z "$(env_get "$key")" ]; then
+      env_set "$key" "$(openssl rand -hex 24)"; filled=$((filled+1)); info "$key erzeugt"
+    fi
+  done
+  if [ -z "$(env_get SESSION_SECRETS)" ]; then
+    env_set SESSION_SECRETS "$(openssl rand -hex 32)"; filled=$((filled+1)); info "SESSION_SECRETS erzeugt"
+  fi
+  if [ -z "$(env_get ENCRYPTION_KEYS)" ]; then
+    env_set ENCRYPTION_KEYS "{\"k1\":\"$(openssl rand -base64 32)\"}"
+    env_set ENCRYPTION_ACTIVE_KEY_ID k1
+    filled=$((filled+1))
+    echo
+    warn "ENCRYPTION_KEYS wurde erzeugt. Diesen Wert JETZT in den Passwortmanager übertragen:"
+    echo "    $(env_get ENCRYPTION_KEYS)"
+    warn "Geht er verloren, sind alle verschlüsselten Felder unwiederbringlich weg."
+    warn "Keine Sicherung hilft – die enthält die Chiffrate, nicht den Schlüssel."
+    echo
+  fi
+  chmod 600 "$ENV_FILE"
+  [ "$filled" -gt 0 ] && ok "$filled Geheimnis(se) erzeugt, vorhandene unverändert" || ok "Alle Geheimnisse waren schon gesetzt"
+  warn "Noch von Hand einzutragen: CF_TUNNEL_TOKEN, PUBLIC_BASE_URL, VAPID_* (npx web-push generate-vapid-keys)"
+}
+
+# ── Gesundheitsprüfung ───────────────────────────────────────────────
+health_wait() {
+  local tries="${1:-30}" i
+  for i in $(seq 1 "$tries"); do
+    if dc exec -T api node -e \
+        'fetch("http://127.0.0.1:"+(process.env.PORT||3000)+"/health/ready").then(r=>r.json().then(j=>process.exit(r.ok&&j.database==="ok"?0:1))).catch(()=>process.exit(1))' \
+        >/dev/null 2>&1; then
+      ok "API antwortet auf /health/ready (Datenbank erreichbar)"
+      return 0
+    fi
+    sleep 3
+  done
+  fail "API wurde in $((tries * 3)) s nicht gesund"
+  return 1
+}
+
+new_tag() {
+  if git -C "$REPO_ROOT" rev-parse --short HEAD >/dev/null 2>&1; then
+    echo "$(date +%Y%m%d)-$(git -C "$REPO_ROOT" rev-parse --short HEAD)"
+  else
+    echo "$(date +%Y%m%d-%H%M%S)"
+  fi
+}
+
+# ── Update ───────────────────────────────────────────────────────────
+cmd_update() {
+  cmd_preflight
+
+  if [ -d "$REPO_ROOT/.git" ]; then
+    info "Quellstand aktualisieren"
+    git -C "$REPO_ROOT" pull --ff-only
+  else
+    warn "Kein Git-Repository – der Quellstand muss vorher per rsync auf den Pi gebracht werden"
+  fi
+
+  local old new
+  old=$(env_get IMAGE_TAG); new=$(new_tag)
+  [ -n "$old" ] || old=local
+  if [ "$old" = "$new" ]; then
+    new="$new-$(date +%H%M%S)"
+  fi
+  info "Aktuelles Tag: $old → neues Tag: $new"
+
+  # Sicherung VOR dem Eingriff. Ein Update ohne frisches Backup ist der Moment, in dem
+  # man das fehlende Backup bemerkt.
+  info "Sicherung vor dem Update"
+  cmd_backup_now || die "Sicherung fehlgeschlagen – Update abgebrochen"
+
+  info "Images bauen (dauert auf dem Pi einige Minuten)"
+  IMAGE_TAG="$new" dc build || die "Build fehlgeschlagen – nichts wurde ausgetauscht"
+
+  # Migrationen sind additiv (ADR-0014): der alte Code läuft mit dem neuen Schema weiter.
+  # Genau deshalb ist der Rückweg unten ohne Datenbankeingriff möglich.
+  info "Migrationen anwenden"
+  if ! IMAGE_TAG="$new" dc run --rm migrate; then
+    fail "Migration fehlgeschlagen – der laufende Stand bleibt unberührt"
+    exit 1
+  fi
+
+  info "Dienste austauschen"
+  if ! IMAGE_TAG="$new" dc up -d --no-build; then
+    fail "Austausch fehlgeschlagen – zurück auf $old"
+    IMAGE_TAG="$old" dc up -d --no-build || true
+    exit 1
+  fi
+
+  if health_wait 30; then
+    env_set PREVIOUS_IMAGE_TAG "$old"
+    env_set IMAGE_TAG "$new"
+    ok "Update auf $new abgeschlossen (Rückweg: thealotta rollback → $old)"
+    cmd_prune_images
+  else
+    fail "Neuer Stand ist nicht gesund – automatischer Rückweg auf $old"
+    IMAGE_TAG="$old" dc up -d --no-build
+    if health_wait 20; then
+      warn "Zurück auf $old, dieser Stand ist gesund. Protokolle: thealotta logs api"
+    else
+      fail "Auch $old ist nicht gesund. Jetzt zählt die Datenbank: thealotta status, thealotta logs"
+    fi
+    exit 1
+  fi
+}
+
+cmd_rollback() {
+  local prev cur
+  prev=$(env_get PREVIOUS_IMAGE_TAG); cur=$(env_get IMAGE_TAG)
+  [ -n "$prev" ] || die "Kein PREVIOUS_IMAGE_TAG hinterlegt – vorhandene Tags: $(docker images --format '{{.Tag}}' thealotta-api | tr '\n' ' ')"
+  docker image inspect "thealotta-api:$prev" >/dev/null 2>&1 || die "Image thealotta-api:$prev existiert nicht mehr"
+
+  info "Zurück auf $prev (von $cur)"
+  IMAGE_TAG="$prev" dc up -d --no-build
+  if health_wait 30; then
+    env_set IMAGE_TAG "$prev"
+    env_set PREVIOUS_IMAGE_TAG "$cur"
+    ok "Rollback auf $prev abgeschlossen"
+  else
+    die "Rollback-Stand ist nicht gesund – thealotta logs api"
+  fi
+}
+
+# Alte Images aufräumen, aber immer mindestens drei Stände behalten: der Rückweg soll
+# nicht daran scheitern, dass das Image weggeräumt wurde.
+cmd_prune_images() {
+  for repo in thealotta-api thealotta-worker thealotta-web; do
+    docker images --format '{{.Tag}}\t{{.CreatedAt}}' "$repo" 2>/dev/null \
+      | sort -k2 -r | tail -n +4 | cut -f1 \
+      | while read -r tag; do
+          [ -n "$tag" ] && [ "$tag" != "<none>" ] || continue
+          docker rmi "$repo:$tag" >/dev/null 2>&1 && info "entfernt: $repo:$tag" || true
+        done
+  done
+}
+
+# ── Sicherung ────────────────────────────────────────────────────────
+cmd_backup_now() {
+  # Der Sidecar schläft bis zum nächsten Fenster. Für eine Sicherung sofort werden die
+  # Funktionen im laufenden Container nachgeladen (die Hauptschleife startet dabei nicht)
+  # und nur dump_and_encrypt ausgeführt.
+  dc exec -T backup bash -c 'source /opt/thealotta/backup-loop.sh && dump_and_encrypt' \
+    && ok "Sicherung geschrieben" || { fail "Sicherung fehlgeschlagen"; return 1; }
+}
+
+cmd_verify_restore() {
+  warn "Das legt eine Wegwerf-Datenbank an und braucht entsprechend Platz."
+  dc exec -T backup bash -c 'source /opt/thealotta/backup-loop.sh && verify_restore' \
+    || die "Restore-Prüfung fehlgeschlagen – die Sicherung ist derzeit nichts wert"
+  ok "Wiederherstellung geprüft"
+}
+
+# ── Zustand ──────────────────────────────────────────────────────────
+cmd_status() {
+  dc ps
+  echo
+  local backup_dir; backup_dir=$(env_get BACKUP_DIR)
+  echo "Image-Tag:        $(env_get IMAGE_TAG)   (Rückweg: $(env_get PREVIOUS_IMAGE_TAG))"
+  echo "Öffentliche URL:  $(env_get PUBLIC_BASE_URL)"
+  if [ -f "$backup_dir/state/last-backup-at.txt" ]; then
+    echo "Letzte Sicherung: $(cat "$backup_dir/state/last-backup-at.txt")"
+  else
+    warn "Noch keine Sicherung vermerkt"
+  fi
+  if [ -f "$backup_dir/state/restore-verified-at" ]; then
+    local age_days
+    age_days=$(( ( $(date -u +%s) - $(cat "$backup_dir/state/restore-verified-at") ) / 86400 ))
+    if [ "$age_days" -gt 10 ]; then
+      warn "Letzte geprüfte Wiederherstellung vor $age_days Tagen – docs/29 §5 verlangt höchstens 10"
+    else
+      ok "Wiederherstellung vor $age_days Tag(en) geprüft"
+    fi
+  else
+    warn "Wiederherstellung noch nie geprüft – bis dahin ist die Sicherung eine Annahme"
+  fi
+  echo
+  du -sh "$backup_dir/daily" "$backup_dir/monthly" 2>/dev/null || true
+}
+
+cmd_logs()    { dc logs -f --tail 100 "$@"; }
+cmd_up()      { cmd_preflight; dc up -d --build; health_wait 40; }
+cmd_down()    { dc down; ok "Stack angehalten – Daten in $(env_get DATA_DIR) bleiben"; }
+cmd_build()   { local t; t=$(new_tag); info "Baue Images mit Tag $t (ohne Ausrollen)"; IMAGE_TAG="$t" dc build && ok "Gebaut: $t"; }
+cmd_psql()    { dc exec -e PGPASSWORD="$(env_get POSTGRES_SUPERUSER_PASSWORD)" postgres psql -U thealotta -d thealotta; }
+
+case "${1:-}" in
+  preflight)      shift; cmd_preflight "$@" ;;
+  secrets)        shift; cmd_secrets "$@" ;;
+  build)          shift; cmd_build "$@" ;;
+  up)             shift; cmd_up "$@" ;;
+  update)         shift; cmd_update "$@" ;;
+  rollback)       shift; cmd_rollback "$@" ;;
+  status)         shift; cmd_status "$@" ;;
+  logs)           shift; cmd_logs "$@" ;;
+  backup-now)     shift; cmd_backup_now "$@" ;;
+  verify-restore) shift; cmd_verify_restore "$@" ;;
+  prune-images)   shift; cmd_prune_images "$@" ;;
+  psql)           shift; cmd_psql "$@" ;;
+  down)           shift; cmd_down "$@" ;;
+  ''|-h|--help|help)
+    awk 'NR>1 && /^#/ { sub(/^# ?/, ""); print; next } NR>1 { exit }' "${BASH_SOURCE[0]}"
+    ;;
+  *) die "Unbekannter Befehl: $1 (thealotta help)" ;;
+esac

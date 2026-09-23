@@ -1,0 +1,31 @@
+{
+  "name": "@thealotta/worker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/main.ts",
+    "start": "node --enable-source-maps dist/main.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@thealotta/contracts": "workspace:*",
+    "@thealotta/crypto": "workspace:*",
+    "@thealotta/db": "workspace:*",
+    "@thealotta/domain": "workspace:*",
+    "@thealotta/observability": "workspace:*",
+    "bullmq": "^5.34.2",
+    "drizzle-orm": "^0.36.4",
+    "ioredis": "^5.4.2",
+    "luxon": "^3.5.0",
+    "nodemailer": "^6.9.16",
+    "rrule": "^2.8.1",
+    "web-push": "^3.6.7",
+    "@thealotta/services": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/nodemailer": "^6.4.17",
+    "@types/web-push": "^3.6.4",
+    "@types/luxon": "^3.4.2"
+  }
+}

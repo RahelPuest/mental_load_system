@@ -1,0 +1,43 @@
+{
+  "compilerOptions": {
+    "target": "ES2023",
+    "lib": [
+      "ES2023"
+    ],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": false,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "verbatimModuleSyntax": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "declaration": true,
+    "sourceMap": true,
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "@thealotta/contracts": [
+        "./packages/contracts/src/index.ts"
+      ],
+      "@thealotta/domain": [
+        "./packages/domain/src/index.ts"
+      ],
+      "@thealotta/db": [
+        "./packages/db/src/index.ts"
+      ],
+      "@thealotta/observability": [
+        "./packages/observability/src/index.ts"
+      ],
+      "@thealotta/crypto": [
+        "./packages/crypto/src/index.ts"
+      ],
+      "@thealotta/services": [
+        "./packages/services/src/index.ts"
+      ]
+    },
+    "baseUrl": "."
+  }
+}

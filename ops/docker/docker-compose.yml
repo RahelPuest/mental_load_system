@@ -1,0 +1,100 @@
+# Lokaler Entwicklungs- und Teststack.
+name: thealotta
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: thealotta
+      POSTGRES_PASSWORD: thealotta_dev_only
+      POSTGRES_DB: thealotta
+    command: ["postgres", "-c", "log_statement=none", "-c", "max_connections=100"]
+    ports: ["55432:5432"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U thealotta -d thealotta"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./initdb:/docker-entrypoint-initdb.d:ro
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    ports: ["56379:6379"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+    volumes:
+      - redisdata:/data
+
+  mailpit:
+    image: axllent/mailpit:latest
+    ports: ["58025:8025", "51025:1025"]
+
+  # ── Anwendung ────────────────────────────────────────────────────────
+  # Wird nur mit `--profile app` gestartet; für die Entwicklung laufen API und Worker
+  # meist direkt über `pnpm dev:api` / `pnpm dev:worker`.
+  migrate:
+    profiles: ['app']
+    build: { context: ../.., dockerfile: ops/docker/Dockerfile.api }
+    command: ['node', '--experimental-strip-types', 'packages/db/src/migrate.ts']
+    environment:
+      # Migrationen laufen als Superuser – die Anwendung niemals (ADR-0003).
+      DATABASE_URL: postgres://thealotta:thealotta_dev_only@postgres:5432/thealotta
+      ENCRYPTION_KEYS: '{"k1":"ZGV2ZWxvcG1lbnRfb25seV9rZXlfMzJfYnl0ZXNfISE="}'
+      ENCRYPTION_ACTIVE_KEY_ID: k1
+    depends_on:
+      postgres: { condition: service_healthy }
+
+  api:
+    profiles: ['app']
+    build: { context: ../.., dockerfile: ops/docker/Dockerfile.api }
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgres://thealotta_app_user:thealotta_dev_only@postgres:5432/thealotta
+      REDIS_URL: redis://redis:6379
+      SESSION_SECRETS: entwicklung_nur_lokal_mindestens_32_zeichen_lang
+      ENCRYPTION_KEYS: '{"k1":"ZGV2ZWxvcG1lbnRfb25seV9rZXlfMzJfYnl0ZXNfISE="}'
+      ENCRYPTION_ACTIVE_KEY_ID: k1
+      COOKIE_SECURE: 'false'
+      CORS_ORIGINS: http://localhost:8080
+    ports: ['3000:3000']
+    read_only: true
+    tmpfs: ['/tmp']
+    security_opt: ['no-new-privileges:true']
+    depends_on:
+      postgres: { condition: service_healthy }
+      migrate: { condition: service_completed_successfully }
+
+  worker:
+    profiles: ['app']
+    build: { context: ../.., dockerfile: ops/docker/Dockerfile.worker }
+    environment:
+      NODE_ENV: production
+      # In Produktion bekommt jeder Worker-Typ eine EIGENE Rolle
+      # (thealotta_monitor / thealotta_notifier / thealotta_sync) – siehe docs/20 §5.
+      DATABASE_URL: postgres://thealotta_app_user:thealotta_dev_only@postgres:5432/thealotta
+      REDIS_URL: redis://redis:6379
+      ENCRYPTION_KEYS: '{"k1":"ZGV2ZWxvcG1lbnRfb25seV9rZXlfMzJfYnl0ZXNfISE="}'
+      ENCRYPTION_ACTIVE_KEY_ID: k1
+      SMTP_URL: smtp://mailpit:1025
+    read_only: true
+    tmpfs: ['/tmp']
+    security_opt: ['no-new-privileges:true']
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+      migrate: { condition: service_completed_successfully }
+
+  web:
+    profiles: ['app']
+    build: { context: ../.., dockerfile: ops/docker/Dockerfile.web }
+    ports: ['8080:8080']
+    depends_on: [api]
+
+volumes:
+  pgdata:
+  redisdata:

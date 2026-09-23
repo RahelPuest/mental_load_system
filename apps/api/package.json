@@ -1,0 +1,27 @@
+{
+  "name": "@thealotta/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "start": "node --enable-source-maps dist/server.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@fastify/cookie": "^11.0.1",
+    "@fastify/cors": "^10.0.1",
+    "@fastify/helmet": "^13.0.0",
+    "@fastify/rate-limit": "^10.2.1",
+    "@thealotta/contracts": "workspace:*",
+    "@thealotta/crypto": "workspace:*",
+    "@thealotta/db": "workspace:*",
+    "@thealotta/domain": "workspace:*",
+    "@thealotta/observability": "workspace:*",
+    "drizzle-orm": "^0.36.4",
+    "fastify": "^5.2.0",
+    "zod": "^3.24.1",
+    "fastify-plugin": "^5.0.1",
+    "@thealotta/services": "workspace:*"
+  }
+}

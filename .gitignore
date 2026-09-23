@@ -1,0 +1,61 @@
+# ── Abhängigkeiten und Bauergebnisse ─────────────────────────────────
+node_modules/
+dist/
+build/
+coverage/
+.pnpm-store/
+apps/web/dev-dist/
+
+# ── Geheimnisse ──────────────────────────────────────────────────────
+# `.env.*` deckt auch ops/docker/.env.prod ab. Deshalb heißt die Vorlage dazu
+# `ops/docker/env.prod.example` ohne führenden Punkt – mit Punkt wäre sie mitignoriert,
+# und eine Vorlage, die niemand bekommt, ist keine.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Datenbankauszüge und Sicherungen. `*.sql` steht hier bewusst NICHT:
+# packages/db/migrations/*.sql sind Quelltext.
+*.dump
+*.dump.enc
+*.sql.gz
+
+# ── Browserprüfung ───────────────────────────────────────────────────
+# Aufnahmen, Spuren und die Sitzung sind Ergebnisse, keine Quellen.
+apps/web/e2e/.shots/
+apps/web/e2e/.artifacts/
+apps/web/e2e/.auth/
+# Playwright schreibt laut playwright.config.ts nach e2e/.artifacts, legt bei abweichendem
+# Aufruf (--reporter=html, --ui) aber seine Standardordner im Wurzelverzeichnis an.
+playwright-report/
+blob-report/
+test-results/
+
+# ── Nutzerinhalt ─────────────────────────────────────────────────────
+# Exportierte Haushaltssicherungen enthalten Personennamen, Bereiche, Aufgaben,
+# Zuständigkeiten. Sie gehören nicht in die Historie – dort bekommt man sie nur durch
+# Umschreiben wieder heraus, und nach einem Push liegen sie beim Empfänger.
+# Der Import liest beide Kennungen, alte Dateien bleiben also einlesbar (docs/64, docs/79).
+mira-p-st-*.json
+thealotta-*.json
+
+# ── Zwischenstände ───────────────────────────────────────────────────
+*.log
+ops/tmp/
+*.tmp
+*.bak
+# Überreste von Merge und Rebase – vorher gab es keine Versionsverwaltung, jetzt schon.
+*.orig
+*.rej
+
+# ── Betriebssystem und Werkzeuge ─────────────────────────────────────
+.DS_Store
+._*
+*.swp
+.idea/
+# Persönliche Werkzeugkonfiguration. Die geteilte gehört ins Repository, die persönliche nicht.
+settings.local.json

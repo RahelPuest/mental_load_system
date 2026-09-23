@@ -1,0 +1,705 @@
+{
+  "format": "thealotta.household",
+  "version": 1,
+  "exportedAt": "2026-09-10T00:00:00.000Z",
+  "household": {
+    "name": "Mental Load",
+    "timezone": "Europe/Berlin"
+  },
+  "personen": [],
+  "mitglieder": [],
+  "bereiche": [
+    {
+      "id": "kinder",
+      "name": "Kinder",
+      "slug": "kinder",
+      "criticality": "high",
+      "sensitivity": "normal",
+      "ownershipInheritance": "inherit",
+      "position": 0
+    },
+    {
+      "id": "gesundheit",
+      "name": "Gesundheit",
+      "slug": "gesundheit",
+      "criticality": "critical",
+      "sensitivity": "health",
+      "ownershipInheritance": "inherit",
+      "position": 0,
+      "parentId": "kinder",
+      "description": "Arzt, Zahnarzt, Impfungen, U-Untersuchungen."
+    },
+    {
+      "id": "kita",
+      "name": "Kita",
+      "slug": "kita",
+      "criticality": "high",
+      "sensitivity": "normal",
+      "ownershipInheritance": "inherit",
+      "position": 0,
+      "parentId": "kinder"
+    },
+    {
+      "id": "kita-essen",
+      "name": "Essen vorbereiten",
+      "slug": "essen",
+      "criticality": "high",
+      "sensitivity": "normal",
+      "ownershipInheritance": "inherit",
+      "position": 0,
+      "parentId": "kita"
+    },
+    {
+      "id": "kita-zeug",
+      "name": "Schlaf-, Sport- und Bettzeug",
+      "slug": "zeug",
+      "criticality": "normal",
+      "sensitivity": "normal",
+      "ownershipInheritance": "inherit",
+      "position": 0,
+      "parentId": "kita"
+    },
+    {
+      "id": "windeln",
+      "name": "Windeln",
+      "slug": "windeln",
+      "criticality": "high",
+      "sensitivity": "normal",
+      "ownershipInheritance": "inherit",
+      "position": 0,
+      "parentId": "kinder"
+    },
+    {
+      "id": "nachmittag",
+      "name": "Nachmittagsprogramm",
+      "slug": "nachmittag",
+      "criticality": "normal",
+      "sensitivity": "normal",
+      "ownershipInheritance": "inherit",
+      "position": 0,
+      "parentId": "kinder",
+      "description": "3–4 Tage die Woche etwas mit den Kindern bis zum Abendessen."
+    },
+    {
+      "id": "thea",
+      "name": "Thea",
+      "slug": "thea",
+      "criticality": "normal",
+      "sensitivity": "normal",
+      "ownershipInheritance": "inherit",
+      "position": 0,
+      "parentId": "kinder"
+    },
+    {
+      "id": "thea-yoga",
+      "name": "Yoga",
+      "slug": "yoga",
+      "criticality": "normal",
+      "sensitivity": "normal",
+      "ownershipInheritance": "inherit",
+      "position": 0,
+      "parentId": "thea"
+    },
+    {
+      "id": "spielzeug",
+      "name": "Spielzeug",
+      "slug": "spielzeug",
+      "criticality": "normal",
+      "sensitivity": "normal",
+      "ownershipInheritance": "inherit",
+      "position": 0,
+      "parentId": "kinder",
+      "description": "Was noch passt, was weg kann, was fehlt."
+    },
+    {
+      "id": "wickelrucksack",
+      "name": "Wickelrucksack",
+      "slug": "wickelrucksack",
+      "criticality": "normal",
+      "sensitivity": "normal",
+      "ownershipInheritance": "inherit",
+      "position": 0,
+      "parentId": "kinder"
+    },
+    {
+      "id": "kleidung",
+      "name": "Jacken und Schuhe",
+      "slug": "kleidung",
+      "criticality": "normal",
+      "sensitivity": "normal",
+      "ownershipInheritance": "inherit",
+      "position": 0,
+      "parentId": "kinder",
+      "description": "Jahreszeitgerecht – zweimal im Jahr durchsehen."
+    },
+    {
+      "id": "haushalt",
+      "name": "Haushalt",
+      "slug": "haushalt",
+      "criticality": "normal",
+      "sensitivity": "normal",
+      "ownershipInheritance": "inherit",
+      "position": 0
+    },
+    {
+      "id": "einkauf",
+      "name": "Wochenendeinkauf",
+      "slug": "einkauf",
+      "criticality": "high",
+      "sensitivity": "normal",
+      "ownershipInheritance": "inherit",
+      "position": 0,
+      "parentId": "haushalt"
+    },
+    {
+      "id": "waesche",
+      "name": "Wäsche",
+      "slug": "waesche",
+      "criticality": "normal",
+      "sensitivity": "normal",
+      "ownershipInheritance": "inherit",
+      "position": 0,
+      "parentId": "haushalt",
+      "description": "Zusammenlegen und einsortieren."
+    },
+    {
+      "id": "kleinigkeiten",
+      "name": "Kleinigkeiten",
+      "slug": "kleinigkeiten",
+      "criticality": "normal",
+      "sensitivity": "normal",
+      "ownershipInheritance": "inherit",
+      "position": 0,
+      "parentId": "haushalt",
+      "description": "Die Handgriffe, die niemand plant und trotzdem jemand macht."
+    },
+    {
+      "id": "familie",
+      "name": "Familie",
+      "slug": "familie",
+      "criticality": "normal",
+      "sensitivity": "normal",
+      "ownershipInheritance": "inherit",
+      "position": 0
+    },
+    {
+      "id": "geburtstage",
+      "name": "Geburtstage",
+      "slug": "geburtstage",
+      "criticality": "normal",
+      "sensitivity": "normal",
+      "ownershipInheritance": "inherit",
+      "position": 0,
+      "parentId": "familie",
+      "description": "Mitarbeit statt Zuarbeit."
+    },
+    {
+      "id": "feiertage",
+      "name": "Feiertage",
+      "slug": "feiertage",
+      "criticality": "normal",
+      "sensitivity": "normal",
+      "ownershipInheritance": "inherit",
+      "position": 0,
+      "parentId": "familie",
+      "description": "Aktiv mitgestalten, nicht nur dabei sein."
+    },
+    {
+      "id": "urlaub",
+      "name": "Urlaubsplanung",
+      "slug": "urlaub",
+      "criticality": "normal",
+      "sensitivity": "normal",
+      "ownershipInheritance": "inherit",
+      "position": 0,
+      "parentId": "familie"
+    },
+    {
+      "id": "metime",
+      "name": "Me Time für Ines",
+      "slug": "me_time",
+      "criticality": "high",
+      "sensitivity": "normal",
+      "ownershipInheritance": "inherit",
+      "position": 0,
+      "parentId": "familie",
+      "description": "Aktiv anbieten – nicht warten, bis danach gefragt wird."
+    }
+  ],
+  "angaben": [
+    {
+      "id": "a-u",
+      "domainId": "gesundheit",
+      "key": "letzte_u",
+      "label": "Letzte U-Untersuchung",
+      "dataType": "date",
+      "isCritical": true,
+      "sensitivity": "health",
+      "freshnessInterval": "180 days"
+    },
+    {
+      "id": "a-zahn",
+      "domainId": "gesundheit",
+      "key": "letzter_zahnarzt",
+      "label": "Letzter Zahnarztbesuch",
+      "dataType": "date",
+      "isCritical": false,
+      "sensitivity": "health",
+      "freshnessInterval": "180 days"
+    },
+    {
+      "id": "a-impf",
+      "domainId": "gesundheit",
+      "key": "impfstatus",
+      "label": "Impfungen vollständig bis",
+      "dataType": "text",
+      "isCritical": true,
+      "sensitivity": "health",
+      "freshnessInterval": "365 days"
+    },
+    {
+      "id": "a-arzt",
+      "domainId": "gesundheit",
+      "key": "letzter_arzt",
+      "label": "Letzter Arztbesuch",
+      "dataType": "date",
+      "isCritical": false,
+      "sensitivity": "health"
+    },
+    {
+      "id": "a-bett",
+      "domainId": "kita-zeug",
+      "key": "bettzeug_gewechselt",
+      "label": "Bettzeug zuletzt gewechselt",
+      "dataType": "date",
+      "isCritical": false,
+      "sensitivity": "normal",
+      "freshnessInterval": "14 days"
+    },
+    {
+      "id": "a-sport",
+      "domainId": "kita-zeug",
+      "key": "sportzeug",
+      "label": "Sportzeug vollständig",
+      "dataType": "boolean",
+      "isCritical": false,
+      "sensitivity": "normal",
+      "freshnessInterval": "30 days"
+    },
+    {
+      "id": "a-schlaf",
+      "domainId": "kita-zeug",
+      "key": "schlafzeug",
+      "label": "Schlafzeug vollständig",
+      "dataType": "boolean",
+      "isCritical": false,
+      "sensitivity": "normal",
+      "freshnessInterval": "30 days"
+    },
+    {
+      "id": "a-windeln",
+      "domainId": "windeln",
+      "key": "vorrat",
+      "label": "Windelvorrat reicht bis",
+      "dataType": "date",
+      "isCritical": true,
+      "sensitivity": "normal",
+      "freshnessInterval": "7 days"
+    },
+    {
+      "id": "a-spielzeug",
+      "domainId": "spielzeug",
+      "key": "zuletzt_aussortiert",
+      "label": "Zuletzt aussortiert",
+      "dataType": "date",
+      "isCritical": false,
+      "sensitivity": "normal",
+      "freshnessInterval": "90 days"
+    },
+    {
+      "id": "a-rucksack",
+      "domainId": "wickelrucksack",
+      "key": "zuletzt_geprueft",
+      "label": "Zuletzt geprüft",
+      "dataType": "date",
+      "isCritical": true,
+      "sensitivity": "normal",
+      "freshnessInterval": "7 days"
+    }
+  ],
+  "werte": [],
+  "wissen": [
+    {
+      "id": "w-essen",
+      "domainId": "kita-essen",
+      "title": "Was ins Kita-Essen gehört",
+      "body": "Brot · Belag · Obst · Snacks. Die Liste steht hier, damit sie nicht jedes Mal neu zusammengesucht wird.",
+      "kind": "how_to",
+      "scope": "domain",
+      "sensitivity": "normal",
+      "origin": "human"
+    },
+    {
+      "id": "w-nachmittag",
+      "domainId": "nachmittag",
+      "title": "Woran sich der Nachmittag orientiert",
+      "body": "Drei bis vier Tage die Woche, bis zum Abendessen. Der Rhythmus ist auf Montag, Dienstag und Donnerstag gestellt – gemeint sind drei bis vier Tage, nicht genau diese drei.",
+      "kind": "how_to",
+      "scope": "domain",
+      "sensitivity": "normal",
+      "origin": "human"
+    },
+    {
+      "id": "w-klein",
+      "domainId": "kleinigkeiten",
+      "title": "Was hier sonst noch dazugehört",
+      "body": "Geschirrspüler nachfüllen, Kinderwagen einpacken – und alles, was euch später noch auffällt. Diese Notiz ist der Platz dafür.",
+      "kind": "note",
+      "scope": "domain",
+      "sensitivity": "normal",
+      "origin": "human"
+    }
+  ],
+  "fragen": [],
+  "entscheidungen": [],
+  "regeln": [
+    {
+      "id": "r-u",
+      "domainId": "gesundheit",
+      "name": "U-Untersuchung nachprüfen",
+      "ruleKind": "state_freshness",
+      "defaultResponse": "attention_item",
+      "enabled": true,
+      "origin": "human",
+      "config": {},
+      "stateDefinitionId": "a-u"
+    },
+    {
+      "id": "r-zahn",
+      "domainId": "gesundheit",
+      "name": "Zahnarzt nachprüfen",
+      "ruleKind": "state_freshness",
+      "defaultResponse": "attention_item",
+      "enabled": true,
+      "origin": "human",
+      "config": {},
+      "stateDefinitionId": "a-zahn"
+    },
+    {
+      "id": "r-impf",
+      "domainId": "gesundheit",
+      "name": "Impfungen nachprüfen",
+      "ruleKind": "state_freshness",
+      "defaultResponse": "attention_item",
+      "enabled": true,
+      "origin": "human",
+      "config": {},
+      "stateDefinitionId": "a-impf"
+    },
+    {
+      "id": "r-essen",
+      "domainId": "kita-essen",
+      "name": "Kita-Essen vorbereiten",
+      "ruleKind": "schedule",
+      "defaultResponse": "create_task",
+      "enabled": true,
+      "origin": "human",
+      "config": {
+        "weekdays": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      }
+    },
+    {
+      "id": "r-bett",
+      "domainId": "kita-zeug",
+      "name": "Bettzeug nachprüfen",
+      "ruleKind": "state_freshness",
+      "defaultResponse": "attention_item",
+      "enabled": true,
+      "origin": "human",
+      "config": {},
+      "stateDefinitionId": "a-bett"
+    },
+    {
+      "id": "r-sport",
+      "domainId": "kita-zeug",
+      "name": "Sport- und Schlafzeug nachprüfen",
+      "ruleKind": "state_freshness",
+      "defaultResponse": "attention_item",
+      "enabled": true,
+      "origin": "human",
+      "config": {},
+      "stateDefinitionId": "a-sport"
+    },
+    {
+      "id": "r-windeln",
+      "domainId": "windeln",
+      "name": "Windelvorrat nachprüfen",
+      "ruleKind": "state_freshness",
+      "defaultResponse": "attention_item",
+      "enabled": true,
+      "origin": "human",
+      "config": {},
+      "stateDefinitionId": "a-windeln"
+    },
+    {
+      "id": "r-nachmittag",
+      "domainId": "nachmittag",
+      "name": "Nachmittag mit den Kindern",
+      "ruleKind": "schedule",
+      "defaultResponse": "create_task",
+      "enabled": true,
+      "origin": "human",
+      "config": {
+        "weekdays": [
+          1,
+          2,
+          4
+        ]
+      }
+    },
+    {
+      "id": "r-yoga",
+      "domainId": "thea-yoga",
+      "name": "Thea zum Yoga",
+      "ruleKind": "schedule",
+      "defaultResponse": "create_task",
+      "enabled": true,
+      "origin": "human",
+      "config": {
+        "weekdays": [
+          3
+        ]
+      }
+    },
+    {
+      "id": "r-spielzeug",
+      "domainId": "spielzeug",
+      "name": "Spielzeug durchsehen",
+      "ruleKind": "state_freshness",
+      "defaultResponse": "attention_item",
+      "enabled": true,
+      "origin": "human",
+      "config": {},
+      "stateDefinitionId": "a-spielzeug"
+    },
+    {
+      "id": "r-rucksack",
+      "domainId": "wickelrucksack",
+      "name": "Wickelrucksack prüfen",
+      "ruleKind": "state_freshness",
+      "defaultResponse": "attention_item",
+      "enabled": true,
+      "origin": "human",
+      "config": {},
+      "stateDefinitionId": "a-rucksack"
+    },
+    {
+      "id": "r-kleidung",
+      "domainId": "kleidung",
+      "name": "Jahreszeitgerechte Jacken und Schuhe raussuchen",
+      "ruleKind": "schedule",
+      "defaultResponse": "create_task",
+      "enabled": true,
+      "origin": "human",
+      "config": {
+        "every": "P6M",
+        "startsOn": "2026-03-01"
+      }
+    },
+    {
+      "id": "r-einkauf",
+      "domainId": "einkauf",
+      "name": "Wochenendeinkauf",
+      "ruleKind": "schedule",
+      "defaultResponse": "create_task",
+      "enabled": true,
+      "origin": "human",
+      "config": {
+        "weekdays": [
+          6
+        ]
+      }
+    },
+    {
+      "id": "r-waesche",
+      "domainId": "waesche",
+      "name": "Wäsche zusammenlegen und einsortieren",
+      "ruleKind": "schedule",
+      "defaultResponse": "create_task",
+      "enabled": true,
+      "origin": "human",
+      "config": {
+        "weekdays": [
+          0,
+          3
+        ]
+      }
+    },
+    {
+      "id": "r-metime",
+      "domainId": "metime",
+      "name": "Me Time aktiv anbieten",
+      "ruleKind": "schedule",
+      "defaultResponse": "create_task",
+      "enabled": true,
+      "origin": "human",
+      "config": {
+        "weekdays": [
+          0
+        ]
+      }
+    }
+  ],
+  "vorgaenge": [],
+  "aufgaben": [
+    {
+      "id": "t-essen-0",
+      "domainId": "kita-essen",
+      "title": "Brot kaufen",
+      "state": "ready",
+      "position": 0,
+      "mentalEnergy": "low",
+      "origin": "human",
+      "estimatedMinutes": 10
+    },
+    {
+      "id": "t-essen-1",
+      "domainId": "kita-essen",
+      "title": "Belag besorgen",
+      "state": "ready",
+      "position": 0,
+      "mentalEnergy": "low",
+      "origin": "human",
+      "estimatedMinutes": 10
+    },
+    {
+      "id": "t-essen-2",
+      "domainId": "kita-essen",
+      "title": "Obst besorgen",
+      "state": "ready",
+      "position": 0,
+      "mentalEnergy": "low",
+      "origin": "human",
+      "estimatedMinutes": 10
+    },
+    {
+      "id": "t-essen-3",
+      "domainId": "kita-essen",
+      "title": "Snacks besorgen",
+      "state": "ready",
+      "position": 0,
+      "mentalEnergy": "low",
+      "origin": "human",
+      "estimatedMinutes": 10
+    },
+    {
+      "id": "t-windeln",
+      "domainId": "windeln",
+      "title": "Windeln nachkaufen",
+      "state": "ready",
+      "position": 0,
+      "mentalEnergy": "low",
+      "origin": "human",
+      "estimatedMinutes": 20
+    },
+    {
+      "id": "t-spuel",
+      "domainId": "kleinigkeiten",
+      "title": "Geschirrspüler nachfüllen",
+      "state": "ready",
+      "position": 0,
+      "mentalEnergy": "low",
+      "origin": "human",
+      "estimatedMinutes": 5
+    },
+    {
+      "id": "t-wagen",
+      "domainId": "kleinigkeiten",
+      "title": "Kinderwagen einpacken",
+      "state": "ready",
+      "position": 0,
+      "mentalEnergy": "low",
+      "origin": "human",
+      "estimatedMinutes": 5
+    },
+    {
+      "id": "t-geb-1",
+      "domainId": "geburtstage",
+      "title": "Geschenke kaufen",
+      "state": "ready",
+      "position": 0,
+      "mentalEnergy": "medium",
+      "origin": "human",
+      "estimatedMinutes": 60
+    },
+    {
+      "id": "t-geb-2",
+      "domainId": "geburtstage",
+      "title": "Deko besorgen",
+      "state": "ready",
+      "position": 0,
+      "mentalEnergy": "low",
+      "origin": "human",
+      "estimatedMinutes": 30
+    },
+    {
+      "id": "t-fei-1",
+      "domainId": "feiertage",
+      "title": "Geschenke kaufen",
+      "state": "ready",
+      "position": 0,
+      "mentalEnergy": "medium",
+      "origin": "human",
+      "estimatedMinutes": 60
+    },
+    {
+      "id": "t-fei-2",
+      "domainId": "feiertage",
+      "title": "Deko besorgen",
+      "state": "ready",
+      "position": 0,
+      "mentalEnergy": "low",
+      "origin": "human",
+      "estimatedMinutes": 30
+    },
+    {
+      "id": "t-url-1",
+      "domainId": "urlaub",
+      "title": "Reiseziel gemeinsam raussuchen",
+      "state": "ready",
+      "position": 0,
+      "mentalEnergy": "high",
+      "origin": "human",
+      "estimatedMinutes": 60
+    },
+    {
+      "id": "t-url-2",
+      "domainId": "urlaub",
+      "title": "Gemeinsam packen",
+      "state": "ready",
+      "position": 0,
+      "mentalEnergy": "medium",
+      "origin": "human",
+      "estimatedMinutes": 90
+    },
+    {
+      "id": "t-metime",
+      "domainId": "metime",
+      "title": "Übernachtausflug ermöglichen",
+      "state": "ready",
+      "position": 0,
+      "mentalEnergy": "high",
+      "origin": "human",
+      "estimatedMinutes": 120,
+      "description": "Betreuung, Termin und Übergabe so vorbereiten, dass nichts davon noch geklärt werden muss."
+    }
+  ],
+  "abhaengigkeiten": [],
+  "zustaendigkeiten": []
+}

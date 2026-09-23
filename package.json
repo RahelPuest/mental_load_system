@@ -1,0 +1,64 @@
+{
+  "name": "thealotta",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@10.15.1",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "pnpm -r build",
+    "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p apps/web/tsconfig.json",
+    "lint": "eslint packages apps ops --ext .ts,.tsx",
+    "test": "vitest run",
+    "test:unit": "vitest run packages",
+    "test:api": "vitest run apps/api",
+    "test:worker": "vitest run apps/worker",
+    "db:migrate": "tsx packages/db/src/migrate.ts",
+    "db:seed": "tsx ops/scripts/seed-demo.ts",
+    "dev:api": "tsx watch apps/api/src/server.ts",
+    "dev:worker": "tsx watch apps/worker/src/main.ts",
+    "dev:web": "pnpm --filter @thealotta/web dev",
+    "stack:up": "docker compose -f ops/docker/docker-compose.yml up -d",
+    "stack:down": "docker compose -f ops/docker/docker-compose.yml down -v",
+    "test:web": "vitest run --config vitest.web.config.ts --project web",
+    "fixtures": "tsx ops/scripts/dump-fixtures.mts",
+    "test:e2e": "pnpm --filter @thealotta/web exec vite build && playwright test",
+    "test:e2e:ui": "pnpm --filter @thealotta/web exec vite build && playwright test --ui",
+    "test:all": "pnpm test && pnpm test:e2e"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@eslint/js": "^9.17.0",
+    "@thealotta/crypto": "workspace:*",
+    "@thealotta/db": "workspace:*",
+    "@playwright/test": "^1.63.0",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.7",
+    "@types/node": "^22.10.2",
+    "@typescript-eslint/eslint-plugin": "^8.18.0",
+    "@typescript-eslint/parser": "^8.18.0",
+    "@vitejs/plugin-react": "^4.7.0",
+    "@vitest/coverage-v8": "^2.1.8",
+    "axe-core": "^4.13.0",
+    "drizzle-orm": "^0.36.4",
+    "eslint": "^9.17.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "jsdom": "^30.0.1",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-router-dom": "^7.18.3",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.18.0",
+    "vitest": "^2.1.8"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "@node-rs/argon2"
+    ]
+  },
+  "type": "module"
+}

@@ -1,0 +1,2806 @@
+{
+  "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+  "domainId": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+  "responses": {
+    "auth/me": {
+      "user": {
+        "id": "01a07d11-af2b-7aa5-8278-00b999f0ac91",
+        "displayName": "Anna",
+        "email": "anna+1788804706193@example.invalid"
+      },
+      "memberships": [
+        {
+          "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+          "membershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+          "role": "admin",
+          "displayName": "Anna"
+        }
+      ]
+    },
+    "households": {
+      "items": [
+        {
+          "id": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+          "name": "Familie Beispiel",
+          "timezone": "Europe/Berlin",
+          "role": "admin",
+          "membershipId": "01a07d11-af2b-763b-964e-a39b84258615"
+        }
+      ]
+    },
+    "domains": {
+      "items": [
+        {
+          "id": "01a07d11-afaa-747a-b9f1-72582bc426fd",
+          "parentId": null,
+          "path": "familie",
+          "name": "Familie",
+          "criticality": "normal",
+          "sensitivity": "normal",
+          "ownershipInheritance": "own",
+          "position": 0,
+          "archivedAt": null,
+          "version": 1,
+          "effectiveOwner": {
+            "membershipId": "01a07d11-af2b-710a-afa5-ab628f3cf977",
+            "assignmentKind": "shared_owner",
+            "inheritedFrom": null,
+            "viaCoverage": false,
+            "permanentMembershipId": "01a07d11-af2b-710a-afa5-ab628f3cf977",
+            "sharedWith": [
+              "01a07d11-af2b-710a-afa5-ab628f3cf977",
+              "01a07d11-af2b-763b-964e-a39b84258615"
+            ],
+            "reason": "2 Menschen tragen diesen Bereich gemeinsam.",
+            "displayName": "Ben",
+            "sharedNames": [
+              "Ben",
+              "Anna"
+            ]
+          }
+        },
+        {
+          "id": "01a07d11-afaa-74c1-911e-2d5403729b55",
+          "parentId": "01a07d11-afaa-747a-b9f1-72582bc426fd",
+          "path": "familie.urlaube",
+          "name": "Urlaube",
+          "criticality": "low",
+          "sensitivity": "normal",
+          "ownershipInheritance": "own",
+          "position": 0,
+          "archivedAt": null,
+          "version": 1,
+          "effectiveOwner": {
+            "membershipId": "01a07d11-af2b-710a-afa5-ab628f3cf977",
+            "assignmentKind": "shared_owner",
+            "inheritedFrom": null,
+            "viaCoverage": false,
+            "permanentMembershipId": "01a07d11-af2b-710a-afa5-ab628f3cf977",
+            "sharedWith": [
+              "01a07d11-af2b-710a-afa5-ab628f3cf977",
+              "01a07d11-af2b-763b-964e-a39b84258615"
+            ],
+            "reason": "2 Menschen tragen diesen Bereich gemeinsam.",
+            "displayName": "Ben",
+            "sharedNames": [
+              "Ben",
+              "Anna"
+            ]
+          }
+        },
+        {
+          "id": "01a07d11-afab-7eb9-8294-f1315fffec21",
+          "parentId": "01a07d11-afaa-747a-b9f1-72582bc426fd",
+          "path": "familie.versicherungen",
+          "name": "Versicherungen",
+          "criticality": "high",
+          "sensitivity": "normal",
+          "ownershipInheritance": "inherit",
+          "position": 0,
+          "archivedAt": null,
+          "version": 1,
+          "effectiveOwner": {
+            "membershipId": "01a07d11-af2b-710a-afa5-ab628f3cf977",
+            "assignmentKind": "shared_owner",
+            "inheritedFrom": "familie",
+            "viaCoverage": false,
+            "permanentMembershipId": "01a07d11-af2b-710a-afa5-ab628f3cf977",
+            "sharedWith": [
+              "01a07d11-af2b-710a-afa5-ab628f3cf977",
+              "01a07d11-af2b-763b-964e-a39b84258615"
+            ],
+            "reason": "2 Menschen tragen diesen Bereich gemeinsam.",
+            "displayName": "Ben",
+            "sharedNames": [
+              "Ben",
+              "Anna"
+            ]
+          }
+        },
+        {
+          "id": "01a07d11-afa7-7e9a-90c0-b4a20cd4b03c",
+          "parentId": null,
+          "path": "haushalt",
+          "name": "Haushalt",
+          "criticality": "normal",
+          "sensitivity": "normal",
+          "ownershipInheritance": "own",
+          "position": 0,
+          "archivedAt": null,
+          "version": 1,
+          "effectiveOwner": null
+        },
+        {
+          "id": "01a07d11-afa8-7712-ab06-fcf31dd309e0",
+          "parentId": "01a07d11-afa7-7e9a-90c0-b4a20cd4b03c",
+          "path": "haushalt.lebensmittel",
+          "name": "Lebensmittel",
+          "criticality": "high",
+          "sensitivity": "normal",
+          "ownershipInheritance": "own",
+          "position": 0,
+          "archivedAt": null,
+          "version": 1,
+          "effectiveOwner": {
+            "membershipId": "01a07d11-af2b-710a-afa5-ab628f3cf977",
+            "assignmentKind": "primary_owner",
+            "inheritedFrom": null,
+            "viaCoverage": false,
+            "permanentMembershipId": "01a07d11-af2b-710a-afa5-ab628f3cf977",
+            "sharedWith": [],
+            "reason": "Direkte Verantwortung für diesen Bereich.",
+            "displayName": "Ben",
+            "sharedNames": []
+          }
+        },
+        {
+          "id": "01a07d11-afa9-7262-bf12-91c8fa811686",
+          "parentId": "01a07d11-afa7-7e9a-90c0-b4a20cd4b03c",
+          "path": "haushalt.reparaturen",
+          "name": "Reparaturen",
+          "criticality": "low",
+          "sensitivity": "normal",
+          "ownershipInheritance": "inherit",
+          "position": 0,
+          "archivedAt": null,
+          "version": 1,
+          "effectiveOwner": null
+        },
+        {
+          "id": "01a07d11-afa8-76df-82ee-b8a099d4579e",
+          "parentId": "01a07d11-afa7-7e9a-90c0-b4a20cd4b03c",
+          "path": "haushalt.waesche",
+          "name": "Wäsche",
+          "criticality": "normal",
+          "sensitivity": "normal",
+          "ownershipInheritance": "own",
+          "position": 0,
+          "archivedAt": null,
+          "version": 1,
+          "effectiveOwner": {
+            "membershipId": "01a07d11-af2b-710a-afa5-ab628f3cf977",
+            "assignmentKind": "primary_owner",
+            "inheritedFrom": null,
+            "viaCoverage": false,
+            "permanentMembershipId": "01a07d11-af2b-710a-afa5-ab628f3cf977",
+            "sharedWith": [],
+            "reason": "Direkte Verantwortung für diesen Bereich.",
+            "displayName": "Ben",
+            "sharedNames": []
+          }
+        },
+        {
+          "id": "01a07d11-af9f-7c43-a853-e5781ee2430c",
+          "parentId": null,
+          "path": "kinder",
+          "name": "Kinder",
+          "criticality": "normal",
+          "sensitivity": "normal",
+          "ownershipInheritance": "own",
+          "position": 0,
+          "archivedAt": null,
+          "version": 1,
+          "effectiveOwner": null
+        },
+        {
+          "id": "01a07d11-afa2-70f4-913e-00cdcc974e54",
+          "parentId": "01a07d11-af9f-7c43-a853-e5781ee2430c",
+          "path": "kinder.kind_a",
+          "name": "Kind A",
+          "criticality": "normal",
+          "sensitivity": "normal",
+          "ownershipInheritance": "inherit",
+          "position": 0,
+          "archivedAt": null,
+          "version": 1,
+          "effectiveOwner": null
+        },
+        {
+          "id": "01a07d11-afa6-72ce-8b50-bb291b6b88f0",
+          "parentId": "01a07d11-afa2-70f4-913e-00cdcc974e54",
+          "path": "kinder.kind_a.gesundheit",
+          "name": "Gesundheit",
+          "criticality": "critical",
+          "sensitivity": "health",
+          "ownershipInheritance": "own",
+          "position": 0,
+          "archivedAt": null,
+          "version": 1,
+          "effectiveOwner": {
+            "membershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+            "assignmentKind": "primary_owner",
+            "inheritedFrom": null,
+            "viaCoverage": false,
+            "permanentMembershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+            "sharedWith": [],
+            "reason": "Direkte Verantwortung für diesen Bereich.",
+            "displayName": "Anna",
+            "sharedNames": []
+          }
+        },
+        {
+          "id": "01a07d11-afa6-7a40-9524-23374744b995",
+          "parentId": "01a07d11-afa2-70f4-913e-00cdcc974e54",
+          "path": "kinder.kind_a.kita",
+          "name": "Kita",
+          "criticality": "high",
+          "sensitivity": "normal",
+          "ownershipInheritance": "inherit",
+          "position": 0,
+          "archivedAt": null,
+          "version": 1,
+          "effectiveOwner": null
+        },
+        {
+          "id": "01a07d11-afa4-78f4-8268-75bc6e3acce4",
+          "parentId": "01a07d11-afa2-70f4-913e-00cdcc974e54",
+          "path": "kinder.kind_a.kleidung",
+          "name": "Kleidung",
+          "criticality": "normal",
+          "sensitivity": "normal",
+          "ownershipInheritance": "own",
+          "position": 0,
+          "archivedAt": null,
+          "version": 1,
+          "effectiveOwner": {
+            "membershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+            "assignmentKind": "primary_owner",
+            "inheritedFrom": null,
+            "viaCoverage": false,
+            "permanentMembershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+            "sharedWith": [],
+            "reason": "Direkte Verantwortung für diesen Bereich.",
+            "displayName": "Anna",
+            "sharedNames": []
+          }
+        },
+        {
+          "id": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+          "parentId": "01a07d11-afa4-78f4-8268-75bc6e3acce4",
+          "path": "kinder.kind_a.kleidung.schuhe",
+          "name": "Schuhe",
+          "criticality": "normal",
+          "sensitivity": "normal",
+          "ownershipInheritance": "inherit",
+          "position": 0,
+          "archivedAt": null,
+          "version": 1,
+          "effectiveOwner": {
+            "membershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+            "assignmentKind": "primary_owner",
+            "inheritedFrom": "kinder.kind_a.kleidung",
+            "viaCoverage": false,
+            "permanentMembershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+            "sharedWith": [],
+            "reason": "Verantwortung geerbt von „kinder.kind_a.kleidung“.",
+            "displayName": "Anna",
+            "sharedNames": []
+          }
+        }
+      ]
+    },
+    "now": {
+      "generatedAt": "2026-09-08T06:11:32.020Z",
+      "capacity": {
+        "level": "normal",
+        "source": "default"
+      },
+      "sections": [
+        {
+          "key": "now",
+          "label": "Jetzt relevant",
+          "limit": 3,
+          "items": [
+            {
+              "subjectType": "task",
+              "subjectId": "9c5893c9-abc0-4233-99ce-b2b8fda3668d",
+              "title": "Tropfenden Wasserhahn reparieren",
+              "domain": {
+                "id": "01a07d11-afa9-7262-bf12-91c8fa811686",
+                "path": "Haushalt / Reparaturen"
+              },
+              "owner": null,
+              "assignee": null,
+              "why": [
+                {
+                  "code": "due_passed",
+                  "label": "Zeitpunkt ist vorbei",
+                  "explanation": "Der vorgesehene Zeitpunkt war der 26.08.2026. Die Sache ist weiterhin offen.",
+                  "contribution": 30
+                },
+                {
+                  "code": "waiting_long",
+                  "label": "Wartet schon länger",
+                  "explanation": "Wartet seit 12 Tagen auf einen passenden Moment.",
+                  "contribution": 15
+                }
+              ],
+              "ifItWaits": "Der vorgesehene Zeitpunkt ist vorbei. Die Sache bleibt sichtbar, bis sie erledigt oder bewusst verworfen ist.",
+              "nextStep": "Tropfenden Wasserhahn reparieren",
+              "estimatedMinutes": 45,
+              "mentalEnergy": "high",
+              "state": "ready"
+            },
+            {
+              "subjectType": "task",
+              "subjectId": "01a07d12-3538-7288-8bbd-8c9dab5f6ec8",
+              "title": "Schuhart bestimmen",
+              "domain": {
+                "id": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+                "path": "Kinder / Kind A / Kleidung / Schuhe"
+              },
+              "owner": {
+                "membershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+                "displayName": "Anna",
+                "isYou": true
+              },
+              "assignee": null,
+              "why": [
+                {
+                  "code": "process_origin",
+                  "label": "Schritt in „Neue Schuhe\"",
+                  "explanation": "Schuhe zu klein, kaputt oder fehlen",
+                  "contribution": 8
+                },
+                {
+                  "code": "low_cost",
+                  "label": "Schnell erledigt",
+                  "explanation": "Geschätzt 5 Minuten, Energiebedarf „mittel“.",
+                  "contribution": 12
+                },
+                {
+                  "code": "your_domain",
+                  "label": "Dein Verantwortungsbereich",
+                  "explanation": "Du trägst für diesen Bereich die Verantwortung.",
+                  "contribution": 7
+                }
+              ],
+              "ifItWaits": "Keine akute Folge. Es bleibt vorgemerkt und taucht wieder auf, wenn der Moment passt.",
+              "nextStep": "Schuhart bestimmen",
+              "estimatedMinutes": 5,
+              "mentalEnergy": "medium",
+              "state": "blocked"
+            },
+            {
+              "subjectType": "task",
+              "subjectId": "01a07d12-353a-7518-82ae-c8629019072c",
+              "title": "Größe bestimmen",
+              "domain": {
+                "id": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+                "path": "Kinder / Kind A / Kleidung / Schuhe"
+              },
+              "owner": {
+                "membershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+                "displayName": "Anna",
+                "isYou": true
+              },
+              "assignee": null,
+              "why": [
+                {
+                  "code": "process_origin",
+                  "label": "Schritt in „Neue Schuhe\"",
+                  "explanation": "Schuhe zu klein, kaputt oder fehlen",
+                  "contribution": 8
+                },
+                {
+                  "code": "low_cost",
+                  "label": "Schnell erledigt",
+                  "explanation": "Geschätzt 5 Minuten, Energiebedarf „niedrig“.",
+                  "contribution": 12
+                },
+                {
+                  "code": "your_domain",
+                  "label": "Dein Verantwortungsbereich",
+                  "explanation": "Du trägst für diesen Bereich die Verantwortung.",
+                  "contribution": 7
+                }
+              ],
+              "ifItWaits": "Keine akute Folge. Es bleibt vorgemerkt und taucht wieder auf, wenn der Moment passt.",
+              "nextStep": "Größe bestimmen",
+              "estimatedMinutes": 5,
+              "mentalEnergy": "low",
+              "state": "blocked"
+            }
+          ]
+        },
+        {
+          "key": "can_do_now",
+          "label": "Kann ich jetzt erledigen",
+          "limit": null,
+          "items": [
+            {
+              "subjectType": "task",
+              "subjectId": "01a07d12-353e-72bb-be4c-2f06a3b2715b",
+              "title": "Passform beurteilen",
+              "domain": {
+                "id": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+                "path": "Kinder / Kind A / Kleidung / Schuhe"
+              },
+              "owner": {
+                "membershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+                "displayName": "Anna",
+                "isYou": true
+              },
+              "assignee": null,
+              "why": [
+                {
+                  "code": "process_origin",
+                  "label": "Schritt in „Neue Schuhe\"",
+                  "explanation": "Schuhe zu klein, kaputt oder fehlen",
+                  "contribution": 8
+                },
+                {
+                  "code": "low_cost",
+                  "label": "Schnell erledigt",
+                  "explanation": "Geschätzt 5 Minuten, Energiebedarf „niedrig“.",
+                  "contribution": 12
+                },
+                {
+                  "code": "your_domain",
+                  "label": "Dein Verantwortungsbereich",
+                  "explanation": "Du trägst für diesen Bereich die Verantwortung.",
+                  "contribution": 7
+                }
+              ],
+              "ifItWaits": "Keine akute Folge. Es bleibt vorgemerkt und taucht wieder auf, wenn der Moment passt.",
+              "nextStep": "Passform beurteilen",
+              "estimatedMinutes": 5,
+              "mentalEnergy": "low",
+              "state": "blocked"
+            },
+            {
+              "subjectType": "task",
+              "subjectId": "01a07d12-3541-75cf-9bdd-6f0a5c6e0e22",
+              "title": "Schuhgröße aktualisieren",
+              "domain": {
+                "id": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+                "path": "Kinder / Kind A / Kleidung / Schuhe"
+              },
+              "owner": {
+                "membershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+                "displayName": "Anna",
+                "isYou": true
+              },
+              "assignee": null,
+              "why": [
+                {
+                  "code": "process_origin",
+                  "label": "Schritt in „Neue Schuhe\"",
+                  "explanation": "Schuhe zu klein, kaputt oder fehlen",
+                  "contribution": 8
+                },
+                {
+                  "code": "low_cost",
+                  "label": "Schnell erledigt",
+                  "explanation": "Geschätzt 2 Minuten, Energiebedarf „niedrig“.",
+                  "contribution": 12
+                },
+                {
+                  "code": "your_domain",
+                  "label": "Dein Verantwortungsbereich",
+                  "explanation": "Du trägst für diesen Bereich die Verantwortung.",
+                  "contribution": 7
+                }
+              ],
+              "ifItWaits": "Keine akute Folge. Es bleibt vorgemerkt und taucht wieder auf, wenn der Moment passt.",
+              "nextStep": "Schuhgröße aktualisieren",
+              "estimatedMinutes": 2,
+              "mentalEnergy": "low",
+              "state": "blocked"
+            },
+            {
+              "subjectType": "task",
+              "subjectId": "01a07d12-3537-7fb2-8f3b-a0ac9d3bbfd4",
+              "title": "Füße messen",
+              "domain": {
+                "id": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+                "path": "Kinder / Kind A / Kleidung / Schuhe"
+              },
+              "owner": {
+                "membershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+                "displayName": "Anna",
+                "isYou": true
+              },
+              "assignee": null,
+              "why": [
+                {
+                  "code": "process_origin",
+                  "label": "Schritt in „Neue Schuhe\"",
+                  "explanation": "Schuhe zu klein, kaputt oder fehlen",
+                  "contribution": 8
+                },
+                {
+                  "code": "low_cost",
+                  "label": "Schnell erledigt",
+                  "explanation": "Geschätzt 5 Minuten, Energiebedarf „niedrig“.",
+                  "contribution": 12
+                },
+                {
+                  "code": "your_domain",
+                  "label": "Dein Verantwortungsbereich",
+                  "explanation": "Du trägst für diesen Bereich die Verantwortung.",
+                  "contribution": 7
+                }
+              ],
+              "ifItWaits": "Keine akute Folge. Es bleibt vorgemerkt und taucht wieder auf, wenn der Moment passt.",
+              "nextStep": "Füße messen",
+              "estimatedMinutes": 5,
+              "mentalEnergy": "low",
+              "state": "ready"
+            },
+            {
+              "subjectType": "task",
+              "subjectId": "01a07d11-afbb-7bbb-abe4-ba3bb6bcfe67",
+              "title": "Beim nächsten Schuheanziehen Zehenraum prüfen",
+              "domain": {
+                "id": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+                "path": "Kinder / Kind A / Kleidung / Schuhe"
+              },
+              "owner": {
+                "membershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+                "displayName": "Anna",
+                "isYou": true
+              },
+              "assignee": {
+                "membershipId": "01a07d11-af2b-710a-afa5-ab628f3cf977",
+                "displayName": "Ben",
+                "isYou": false
+              },
+              "why": [
+                {
+                  "code": "low_cost",
+                  "label": "Schnell erledigt",
+                  "explanation": "Geschätzt 2 Minuten, Energiebedarf „niedrig“.",
+                  "contribution": 12
+                },
+                {
+                  "code": "your_domain",
+                  "label": "Dein Verantwortungsbereich",
+                  "explanation": "Du trägst für diesen Bereich die Verantwortung.",
+                  "contribution": 7
+                }
+              ],
+              "ifItWaits": "Keine akute Folge. Es bleibt vorgemerkt und taucht wieder auf, wenn der Moment passt.",
+              "nextStep": "Beim nächsten Schuheanziehen Zehenraum prüfen",
+              "estimatedMinutes": 2,
+              "mentalEnergy": "low",
+              "state": "ready"
+            },
+            {
+              "subjectType": "task",
+              "subjectId": "01a07d12-353b-70bf-baa7-c19e3c230ca4",
+              "title": "Modelle auswählen",
+              "domain": {
+                "id": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+                "path": "Kinder / Kind A / Kleidung / Schuhe"
+              },
+              "owner": {
+                "membershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+                "displayName": "Anna",
+                "isYou": true
+              },
+              "assignee": null,
+              "why": [
+                {
+                  "code": "process_origin",
+                  "label": "Schritt in „Neue Schuhe\"",
+                  "explanation": "Schuhe zu klein, kaputt oder fehlen",
+                  "contribution": 8
+                },
+                {
+                  "code": "your_domain",
+                  "label": "Dein Verantwortungsbereich",
+                  "explanation": "Du trägst für diesen Bereich die Verantwortung.",
+                  "contribution": 7
+                }
+              ],
+              "ifItWaits": "Keine akute Folge. Es bleibt vorgemerkt und taucht wieder auf, wenn der Moment passt.",
+              "nextStep": "Modelle auswählen",
+              "estimatedMinutes": 20,
+              "mentalEnergy": "medium",
+              "state": "blocked"
+            },
+            {
+              "subjectType": "task",
+              "subjectId": "01a07d12-353c-7a05-a21b-55b22eb36c14",
+              "title": "Bestellen oder kaufen",
+              "domain": {
+                "id": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+                "path": "Kinder / Kind A / Kleidung / Schuhe"
+              },
+              "owner": {
+                "membershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+                "displayName": "Anna",
+                "isYou": true
+              },
+              "assignee": null,
+              "why": [
+                {
+                  "code": "process_origin",
+                  "label": "Schritt in „Neue Schuhe\"",
+                  "explanation": "Schuhe zu klein, kaputt oder fehlen",
+                  "contribution": 8
+                },
+                {
+                  "code": "your_domain",
+                  "label": "Dein Verantwortungsbereich",
+                  "explanation": "Du trägst für diesen Bereich die Verantwortung.",
+                  "contribution": 7
+                }
+              ],
+              "ifItWaits": "Keine akute Folge. Es bleibt vorgemerkt und taucht wieder auf, wenn der Moment passt.",
+              "nextStep": "Bestellen oder kaufen",
+              "estimatedMinutes": 30,
+              "mentalEnergy": "medium",
+              "state": "blocked"
+            },
+            {
+              "subjectType": "task",
+              "subjectId": "01a07d12-353d-7f93-8bf6-e4df08bc6e60",
+              "title": "Anprobieren",
+              "domain": {
+                "id": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+                "path": "Kinder / Kind A / Kleidung / Schuhe"
+              },
+              "owner": {
+                "membershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+                "displayName": "Anna",
+                "isYou": true
+              },
+              "assignee": null,
+              "why": [
+                {
+                  "code": "process_origin",
+                  "label": "Schritt in „Neue Schuhe\"",
+                  "explanation": "Schuhe zu klein, kaputt oder fehlen",
+                  "contribution": 8
+                },
+                {
+                  "code": "your_domain",
+                  "label": "Dein Verantwortungsbereich",
+                  "explanation": "Du trägst für diesen Bereich die Verantwortung.",
+                  "contribution": 7
+                }
+              ],
+              "ifItWaits": "Keine akute Folge. Es bleibt vorgemerkt und taucht wieder auf, wenn der Moment passt.",
+              "nextStep": "Anprobieren",
+              "estimatedMinutes": 10,
+              "mentalEnergy": "low",
+              "state": "blocked"
+            },
+            {
+              "subjectType": "task",
+              "subjectId": "01a07d12-3540-7a05-8471-1950fc06c5f2",
+              "title": "Gegebenenfalls retournieren",
+              "domain": {
+                "id": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+                "path": "Kinder / Kind A / Kleidung / Schuhe"
+              },
+              "owner": {
+                "membershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+                "displayName": "Anna",
+                "isYou": true
+              },
+              "assignee": null,
+              "why": [
+                {
+                  "code": "process_origin",
+                  "label": "Schritt in „Neue Schuhe\"",
+                  "explanation": "Schuhe zu klein, kaputt oder fehlen",
+                  "contribution": 8
+                },
+                {
+                  "code": "your_domain",
+                  "label": "Dein Verantwortungsbereich",
+                  "explanation": "Du trägst für diesen Bereich die Verantwortung.",
+                  "contribution": 7
+                }
+              ],
+              "ifItWaits": "Keine akute Folge. Es bleibt vorgemerkt und taucht wieder auf, wenn der Moment passt.",
+              "nextStep": "Gegebenenfalls retournieren",
+              "estimatedMinutes": 15,
+              "mentalEnergy": "medium",
+              "state": "blocked"
+            },
+            {
+              "subjectType": "task",
+              "subjectId": "01a07d12-3542-7cdb-a4bb-0782ba1a485d",
+              "title": "Alte Schuhe aussortieren",
+              "domain": {
+                "id": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+                "path": "Kinder / Kind A / Kleidung / Schuhe"
+              },
+              "owner": {
+                "membershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+                "displayName": "Anna",
+                "isYou": true
+              },
+              "assignee": null,
+              "why": [
+                {
+                  "code": "process_origin",
+                  "label": "Schritt in „Neue Schuhe\"",
+                  "explanation": "Schuhe zu klein, kaputt oder fehlen",
+                  "contribution": 8
+                },
+                {
+                  "code": "your_domain",
+                  "label": "Dein Verantwortungsbereich",
+                  "explanation": "Du trägst für diesen Bereich die Verantwortung.",
+                  "contribution": 7
+                }
+              ],
+              "ifItWaits": "Keine akute Folge. Es bleibt vorgemerkt und taucht wieder auf, wenn der Moment passt.",
+              "nextStep": "Alte Schuhe aussortieren",
+              "estimatedMinutes": 10,
+              "mentalEnergy": "low",
+              "state": "blocked"
+            },
+            {
+              "subjectType": "task",
+              "subjectId": "67d8af9f-d252-4de4-9f06-7aa259f632ee",
+              "title": "Wocheneinkauf",
+              "domain": {
+                "id": "01a07d11-afa8-7712-ab06-fcf31dd309e0",
+                "path": "Haushalt / Lebensmittel"
+              },
+              "owner": {
+                "membershipId": "01a07d11-af2b-710a-afa5-ab628f3cf977",
+                "displayName": "Ben",
+                "isYou": false
+              },
+              "assignee": {
+                "membershipId": "01a07d11-af2b-710a-afa5-ab628f3cf977",
+                "displayName": "Ben",
+                "isYou": false
+              },
+              "why": [
+                {
+                  "code": "domain_criticality",
+                  "label": "Wichtiger Bereich",
+                  "explanation": "Der Bereich ist als wichtig markiert.",
+                  "contribution": 12
+                }
+              ],
+              "ifItWaits": "Keine akute Folge. Es bleibt vorgemerkt und taucht wieder auf, wenn der Moment passt.",
+              "nextStep": "Wocheneinkauf",
+              "estimatedMinutes": 60,
+              "mentalEnergy": "medium",
+              "state": "ready"
+            }
+          ]
+        },
+        {
+          "key": "needs_clarification",
+          "label": "Braucht Klärung",
+          "limit": null,
+          "items": [
+            {
+              "subjectType": "question",
+              "subjectId": "af44f338-ecc0-4328-992f-92c596229d7c",
+              "title": "Wie erkenne ich, ob die Gummistiefel noch passen?",
+              "domain": {
+                "id": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+                "path": "Kinder / Kind A / Kleidung / Schuhe"
+              },
+              "owner": {
+                "membershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+                "displayName": "Anna",
+                "isYou": true
+              },
+              "assignee": null,
+              "why": [
+                {
+                  "code": "open_question",
+                  "label": "Offene Frage",
+                  "explanation": "Diese Frage ist an dich gerichtet.",
+                  "contribution": 15
+                },
+                {
+                  "code": "low_cost",
+                  "label": "Schnell erledigt",
+                  "explanation": "Geschätzt 5 Minuten, Energiebedarf „niedrig“.",
+                  "contribution": 12
+                },
+                {
+                  "code": "assigned_to_you",
+                  "label": "Dir zugewiesen",
+                  "explanation": "Diese Aufgabe ist ausdrücklich dir zugewiesen.",
+                  "contribution": 10
+                }
+              ],
+              "ifItWaits": "Keine akute Folge. Es bleibt vorgemerkt und taucht wieder auf, wenn der Moment passt.",
+              "nextStep": "Wie erkenne ich, ob die Gummistiefel noch passen?",
+              "estimatedMinutes": 5,
+              "mentalEnergy": "low",
+              "state": "open"
+            }
+          ]
+        },
+        {
+          "key": "waiting",
+          "label": "Wartet auf jemand anderen",
+          "limit": null,
+          "items": []
+        },
+        {
+          "key": "soon",
+          "label": "Demnächst relevant",
+          "limit": null,
+          "items": []
+        },
+        {
+          "key": "low_energy",
+          "label": "Geht auch mit wenig Energie",
+          "limit": null,
+          "items": [
+            {
+              "subjectType": "task",
+              "subjectId": "01a07d12-353e-72bb-be4c-2f06a3b2715b",
+              "title": "Passform beurteilen",
+              "domain": {
+                "id": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+                "path": "Kinder / Kind A / Kleidung / Schuhe"
+              },
+              "owner": {
+                "membershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+                "displayName": "Anna",
+                "isYou": true
+              },
+              "assignee": null,
+              "why": [
+                {
+                  "code": "process_origin",
+                  "label": "Schritt in „Neue Schuhe\"",
+                  "explanation": "Schuhe zu klein, kaputt oder fehlen",
+                  "contribution": 8
+                },
+                {
+                  "code": "low_cost",
+                  "label": "Schnell erledigt",
+                  "explanation": "Geschätzt 5 Minuten, Energiebedarf „niedrig“.",
+                  "contribution": 12
+                },
+                {
+                  "code": "your_domain",
+                  "label": "Dein Verantwortungsbereich",
+                  "explanation": "Du trägst für diesen Bereich die Verantwortung.",
+                  "contribution": 7
+                }
+              ],
+              "ifItWaits": "Keine akute Folge. Es bleibt vorgemerkt und taucht wieder auf, wenn der Moment passt.",
+              "nextStep": "Passform beurteilen",
+              "estimatedMinutes": 5,
+              "mentalEnergy": "low",
+              "state": "blocked"
+            },
+            {
+              "subjectType": "task",
+              "subjectId": "01a07d12-3541-75cf-9bdd-6f0a5c6e0e22",
+              "title": "Schuhgröße aktualisieren",
+              "domain": {
+                "id": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+                "path": "Kinder / Kind A / Kleidung / Schuhe"
+              },
+              "owner": {
+                "membershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+                "displayName": "Anna",
+                "isYou": true
+              },
+              "assignee": null,
+              "why": [
+                {
+                  "code": "process_origin",
+                  "label": "Schritt in „Neue Schuhe\"",
+                  "explanation": "Schuhe zu klein, kaputt oder fehlen",
+                  "contribution": 8
+                },
+                {
+                  "code": "low_cost",
+                  "label": "Schnell erledigt",
+                  "explanation": "Geschätzt 2 Minuten, Energiebedarf „niedrig“.",
+                  "contribution": 12
+                },
+                {
+                  "code": "your_domain",
+                  "label": "Dein Verantwortungsbereich",
+                  "explanation": "Du trägst für diesen Bereich die Verantwortung.",
+                  "contribution": 7
+                }
+              ],
+              "ifItWaits": "Keine akute Folge. Es bleibt vorgemerkt und taucht wieder auf, wenn der Moment passt.",
+              "nextStep": "Schuhgröße aktualisieren",
+              "estimatedMinutes": 2,
+              "mentalEnergy": "low",
+              "state": "blocked"
+            },
+            {
+              "subjectType": "task",
+              "subjectId": "01a07d12-3537-7fb2-8f3b-a0ac9d3bbfd4",
+              "title": "Füße messen",
+              "domain": {
+                "id": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+                "path": "Kinder / Kind A / Kleidung / Schuhe"
+              },
+              "owner": {
+                "membershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+                "displayName": "Anna",
+                "isYou": true
+              },
+              "assignee": null,
+              "why": [
+                {
+                  "code": "process_origin",
+                  "label": "Schritt in „Neue Schuhe\"",
+                  "explanation": "Schuhe zu klein, kaputt oder fehlen",
+                  "contribution": 8
+                },
+                {
+                  "code": "low_cost",
+                  "label": "Schnell erledigt",
+                  "explanation": "Geschätzt 5 Minuten, Energiebedarf „niedrig“.",
+                  "contribution": 12
+                },
+                {
+                  "code": "your_domain",
+                  "label": "Dein Verantwortungsbereich",
+                  "explanation": "Du trägst für diesen Bereich die Verantwortung.",
+                  "contribution": 7
+                }
+              ],
+              "ifItWaits": "Keine akute Folge. Es bleibt vorgemerkt und taucht wieder auf, wenn der Moment passt.",
+              "nextStep": "Füße messen",
+              "estimatedMinutes": 5,
+              "mentalEnergy": "low",
+              "state": "ready"
+            },
+            {
+              "subjectType": "task",
+              "subjectId": "01a07d11-afbb-7bbb-abe4-ba3bb6bcfe67",
+              "title": "Beim nächsten Schuheanziehen Zehenraum prüfen",
+              "domain": {
+                "id": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+                "path": "Kinder / Kind A / Kleidung / Schuhe"
+              },
+              "owner": {
+                "membershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+                "displayName": "Anna",
+                "isYou": true
+              },
+              "assignee": {
+                "membershipId": "01a07d11-af2b-710a-afa5-ab628f3cf977",
+                "displayName": "Ben",
+                "isYou": false
+              },
+              "why": [
+                {
+                  "code": "low_cost",
+                  "label": "Schnell erledigt",
+                  "explanation": "Geschätzt 2 Minuten, Energiebedarf „niedrig“.",
+                  "contribution": 12
+                },
+                {
+                  "code": "your_domain",
+                  "label": "Dein Verantwortungsbereich",
+                  "explanation": "Du trägst für diesen Bereich die Verantwortung.",
+                  "contribution": 7
+                }
+              ],
+              "ifItWaits": "Keine akute Folge. Es bleibt vorgemerkt und taucht wieder auf, wenn der Moment passt.",
+              "nextStep": "Beim nächsten Schuheanziehen Zehenraum prüfen",
+              "estimatedMinutes": 2,
+              "mentalEnergy": "low",
+              "state": "ready"
+            },
+            {
+              "subjectType": "task",
+              "subjectId": "01a07d12-353d-7f93-8bf6-e4df08bc6e60",
+              "title": "Anprobieren",
+              "domain": {
+                "id": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+                "path": "Kinder / Kind A / Kleidung / Schuhe"
+              },
+              "owner": {
+                "membershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+                "displayName": "Anna",
+                "isYou": true
+              },
+              "assignee": null,
+              "why": [
+                {
+                  "code": "process_origin",
+                  "label": "Schritt in „Neue Schuhe\"",
+                  "explanation": "Schuhe zu klein, kaputt oder fehlen",
+                  "contribution": 8
+                },
+                {
+                  "code": "your_domain",
+                  "label": "Dein Verantwortungsbereich",
+                  "explanation": "Du trägst für diesen Bereich die Verantwortung.",
+                  "contribution": 7
+                }
+              ],
+              "ifItWaits": "Keine akute Folge. Es bleibt vorgemerkt und taucht wieder auf, wenn der Moment passt.",
+              "nextStep": "Anprobieren",
+              "estimatedMinutes": 10,
+              "mentalEnergy": "low",
+              "state": "blocked"
+            }
+          ]
+        }
+      ]
+    },
+    "agenda": {
+      "from": "2026-09-07T22:00:00.000Z",
+      "to": "2026-09-21T22:00:00.000Z",
+      "overdue": [
+        {
+          "kind": "task",
+          "id": "9c5893c9-abc0-4233-99ce-b2b8fda3668d",
+          "title": "Tropfenden Wasserhahn reparieren",
+          "at": "2026-08-26T18:11:46.090Z",
+          "endsAt": null,
+          "allDay": false,
+          "domain": {
+            "id": "01a07d11-afa9-7262-bf12-91c8fa811686",
+            "name": "Reparaturen"
+          },
+          "owner": null,
+          "assignee": null,
+          "hidden": false
+        },
+        {
+          "kind": "check",
+          "id": "47c7a58f-2120-4e49-8d08-f1cd4e7aaa16",
+          "title": "Schuhgröße prüfen",
+          "at": "2026-09-07T18:11:46.090Z",
+          "endsAt": null,
+          "allDay": true,
+          "domain": {
+            "id": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+            "name": "Schuhe"
+          },
+          "owner": {
+            "membershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+            "displayName": "Anna"
+          },
+          "assignee": null,
+          "hidden": false
+        },
+        {
+          "kind": "check",
+          "id": "6ccdf43c-9b8d-4cc4-917a-604c19523786",
+          "title": "Medikamentenvorrat",
+          "at": "2026-09-07T18:11:46.090Z",
+          "endsAt": null,
+          "allDay": true,
+          "domain": {
+            "id": "01a07d11-afa6-72ce-8b50-bb291b6b88f0",
+            "name": "Gesundheit"
+          },
+          "owner": {
+            "membershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+            "displayName": "Anna"
+          },
+          "assignee": null,
+          "hidden": false
+        },
+        {
+          "kind": "check",
+          "id": "5ea37a7e-29dd-43ba-8fbf-3f3a4737e97c",
+          "title": "Offene Kita-Angaben",
+          "at": "2026-09-07T18:11:46.090Z",
+          "endsAt": null,
+          "allDay": true,
+          "domain": {
+            "id": "01a07d11-afa6-7a40-9524-23374744b995",
+            "name": "Kita"
+          },
+          "owner": null,
+          "assignee": null,
+          "hidden": false
+        }
+      ],
+      "days": [],
+      "perMember": [
+        {
+          "membershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+          "displayName": "Anna",
+          "open": 10,
+          "waiting": 0,
+          "items": [
+            {
+              "id": "01a07d12-3538-7288-8bbd-8c9dab5f6ec8",
+              "title": "Schuhart bestimmen",
+              "domain": "Schuhe"
+            },
+            {
+              "id": "01a07d12-353a-7518-82ae-c8629019072c",
+              "title": "Größe bestimmen",
+              "domain": "Schuhe"
+            },
+            {
+              "id": "01a07d12-353b-70bf-baa7-c19e3c230ca4",
+              "title": "Modelle auswählen",
+              "domain": "Schuhe"
+            }
+          ]
+        },
+        {
+          "membershipId": "01a07d11-af2b-710a-afa5-ab628f3cf977",
+          "displayName": "Ben",
+          "open": 2,
+          "waiting": 0,
+          "items": [
+            {
+              "id": "01a07d11-afbb-7bbb-abe4-ba3bb6bcfe67",
+              "title": "Beim nächsten Schuheanziehen Zehenraum prüfen",
+              "domain": "Schuhe"
+            },
+            {
+              "id": "67d8af9f-d252-4de4-9f06-7aa259f632ee",
+              "title": "Wocheneinkauf",
+              "domain": "Lebensmittel"
+            }
+          ]
+        }
+      ],
+      "unassigned": []
+    },
+    "inbox": {
+      "items": [
+        {
+          "id": "01a07d12-34e9-7707-81c5-47136b43ba37",
+          "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+          "createdBy": "01a07d11-af2b-763b-964e-a39b84258615",
+          "rawText": "Regenjacke Kind B prüfen",
+          "source": "manual",
+          "sourceRef": null,
+          "state": "suggested",
+          "suggestion": {
+            "fields": {
+              "title": "Regenjacke Kind B prüfen"
+            },
+            "reason": "Der Text beschreibt etwas zu Erledigendes.",
+            "domainId": null,
+            "confidence": "low",
+            "targetType": "task"
+          },
+          "resultingObjectType": null,
+          "resultingObjectId": null,
+          "discardReason": null,
+          "occurredAt": "2026-09-07T18:12:20.329Z",
+          "processedAt": null,
+          "createdAt": "2026-09-07T18:12:20.324Z",
+          "updatedAt": "2026-09-07T18:12:20.324Z",
+          "version": 1
+        }
+      ]
+    },
+    "attention": {
+      "items": []
+    },
+    "members": {
+      "items": [
+        {
+          "id": "01a07d11-af2b-763b-964e-a39b84258615",
+          "displayName": "Anna",
+          "role": "admin",
+          "status": "active",
+          "linkedPersonId": null
+        },
+        {
+          "id": "01a07d11-af2b-710a-afa5-ab628f3cf977",
+          "displayName": "Ben",
+          "role": "adult",
+          "status": "active",
+          "linkedPersonId": null
+        }
+      ]
+    },
+    "persons": {
+      "items": [
+        {
+          "id": "01a07d11-af9e-7cf7-b7c0-8bca42c0a6b1",
+          "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+          "displayName": "Kind A",
+          "personKind": "child",
+          "birthDate": "2020-04-12",
+          "sensitivityDefault": "normal",
+          "note": null,
+          "deletedAt": null,
+          "createdAt": "2026-09-07T18:11:46.197Z",
+          "updatedAt": "2026-09-07T18:11:46.197Z",
+          "version": 1
+        },
+        {
+          "id": "d41b9073-2097-4015-93bd-497f61fd92d9",
+          "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+          "displayName": "Kind B",
+          "personKind": "child",
+          "birthDate": "2023-09-01",
+          "sensitivityDefault": "normal",
+          "note": null,
+          "deletedAt": null,
+          "createdAt": "2026-09-07T18:11:46.197Z",
+          "updatedAt": "2026-09-07T18:11:46.197Z",
+          "version": 1
+        }
+      ]
+    },
+    "notifications": {
+      "items": [],
+      "unread": 0,
+      "note": "Auch unterdrückte Nachrichten stehen hier. Was du nicht per Push bekommst, geht nicht verloren – es wartet nur leiser."
+    },
+    "balance": {
+      "dimensions": [
+        {
+          "key": "areas",
+          "label": "Verantwortungsbereiche",
+          "question": "Für wie viele Bereiche denkt jemand mit?",
+          "evenlyShared": false,
+          "members": [
+            {
+              "membershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+              "displayName": "Anna",
+              "band": "ausgeglichen"
+            },
+            {
+              "membershipId": "01a07d11-af2b-710a-afa5-ab628f3cf977",
+              "displayName": "Ben",
+              "band": "ausgeglichen"
+            }
+          ]
+        },
+        {
+          "key": "critical",
+          "label": "Wichtige Bereiche",
+          "question": "Wer trägt die Bereiche, bei denen Liegenbleiben spürbar wäre?",
+          "evenlyShared": true,
+          "members": [
+            {
+              "membershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+              "displayName": "Anna",
+              "band": "ausgeglichen"
+            },
+            {
+              "membershipId": "01a07d11-af2b-710a-afa5-ab628f3cf977",
+              "displayName": "Ben",
+              "band": "ausgeglichen"
+            }
+          ]
+        },
+        {
+          "key": "checks",
+          "label": "Regelmäßiges Nachhalten",
+          "question": "Wer muss an wiederkehrende Prüfungen denken?",
+          "evenlyShared": true,
+          "members": [
+            {
+              "membershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+              "displayName": "Anna",
+              "band": "ausgeglichen"
+            },
+            {
+              "membershipId": "01a07d11-af2b-710a-afa5-ab628f3cf977",
+              "displayName": "Ben",
+              "band": "ausgeglichen"
+            }
+          ]
+        },
+        {
+          "key": "running",
+          "label": "Laufende Vorgänge",
+          "question": "Wer hat gerade wie viel in Arbeit?",
+          "evenlyShared": true,
+          "members": [
+            {
+              "membershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+              "displayName": "Anna",
+              "band": "ausgeglichen"
+            },
+            {
+              "membershipId": "01a07d11-af2b-710a-afa5-ab628f3cf977",
+              "displayName": "Ben",
+              "band": "ausgeglichen"
+            }
+          ]
+        },
+        {
+          "key": "uncertainty",
+          "label": "Offene Unklarheiten",
+          "question": "Wo ist noch vieles ungeklärt?",
+          "evenlyShared": true,
+          "members": [
+            {
+              "membershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+              "displayName": "Anna",
+              "band": "ausgeglichen"
+            },
+            {
+              "membershipId": "01a07d11-af2b-710a-afa5-ab628f3cf977",
+              "displayName": "Ben",
+              "band": "ausgeglichen"
+            }
+          ]
+        },
+        {
+          "key": "external",
+          "label": "Abhängigkeiten nach außen",
+          "question": "Wer wartet auf Antworten von Dritten?",
+          "evenlyShared": true,
+          "members": [
+            {
+              "membershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+              "displayName": "Anna",
+              "band": "ausgeglichen"
+            },
+            {
+              "membershipId": "01a07d11-af2b-710a-afa5-ab628f3cf977",
+              "displayName": "Ben",
+              "band": "ausgeglichen"
+            }
+          ]
+        }
+      ],
+      "dataQuality": {
+        "domainsTotal": 13,
+        "domainsWithOwner": 6,
+        "statesWithEffortEstimate": 2,
+        "statesTotal": 3,
+        "note": "Die Einschätzung beruht auf 6 von 13 Bereichen mit eingetragener Verantwortung. Was niemandem zugeordnet ist, taucht hier nicht auf."
+      },
+      "note": "Das ist eine Gesprächsgrundlage, kein Messergebnis. Vieles vom eigentlichen Mental Load – Vorausdenken, Aushandeln, im Kopf behalten – lässt sich nicht zählen und steht deshalb hier nicht."
+    },
+    "invitations": {
+      "items": []
+    },
+    "playbooks": {
+      "items": [
+        {
+          "id": "01a07d11-afbd-730d-9343-994d7be184b8",
+          "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+          "domainId": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+          "title": "Neue Schuhe",
+          "triggerDescription": "Schuhe zu klein, kaputt oder nicht mehr passend",
+          "scope": "domain",
+          "archivedAt": null,
+          "createdBy": "01a07d11-af2b-763b-964e-a39b84258615",
+          "createdAt": "2026-09-07T18:11:46.197Z",
+          "updatedAt": "2026-09-07T18:11:46.197Z",
+          "version": 1,
+          "steps": [
+            {
+              "id": "820cc1a6-c761-49c9-a812-6c23cdcebac2",
+              "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+              "playbookId": "01a07d11-afbd-730d-9343-994d7be184b8",
+              "position": 1,
+              "title": "Füße messen",
+              "description": null,
+              "estimatedMinutes": 5,
+              "mentalEnergy": "low",
+              "branchCondition": null,
+              "createdAt": "2026-09-07T18:11:46.197Z"
+            },
+            {
+              "id": "99c63ee8-0304-40b9-84ec-ce5379816da4",
+              "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+              "playbookId": "01a07d11-afbd-730d-9343-994d7be184b8",
+              "position": 2,
+              "title": "Notwendige Schuhart bestimmen",
+              "description": null,
+              "estimatedMinutes": 5,
+              "mentalEnergy": "medium",
+              "branchCondition": null,
+              "createdAt": "2026-09-07T18:11:46.197Z"
+            },
+            {
+              "id": "23af96d3-24ed-418b-a954-d4635d3bd1fd",
+              "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+              "playbookId": "01a07d11-afbd-730d-9343-994d7be184b8",
+              "position": 3,
+              "title": "Passende Größe bestimmen",
+              "description": null,
+              "estimatedMinutes": 5,
+              "mentalEnergy": "low",
+              "branchCondition": null,
+              "createdAt": "2026-09-07T18:11:46.197Z"
+            },
+            {
+              "id": "63eb02bb-b4b3-4538-bcb1-24bfe2f422bf",
+              "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+              "playbookId": "01a07d11-afbd-730d-9343-994d7be184b8",
+              "position": 4,
+              "title": "Modelle auswählen",
+              "description": null,
+              "estimatedMinutes": 20,
+              "mentalEnergy": "medium",
+              "branchCondition": null,
+              "createdAt": "2026-09-07T18:11:46.197Z"
+            },
+            {
+              "id": "5eb7ac77-31ce-4d37-9724-5bd217d077c3",
+              "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+              "playbookId": "01a07d11-afbd-730d-9343-994d7be184b8",
+              "position": 5,
+              "title": "Bestellen oder kaufen",
+              "description": null,
+              "estimatedMinutes": 30,
+              "mentalEnergy": "medium",
+              "branchCondition": null,
+              "createdAt": "2026-09-07T18:11:46.197Z"
+            },
+            {
+              "id": "4e1518d2-8bb1-4642-bd6a-bc350ccc1c02",
+              "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+              "playbookId": "01a07d11-afbd-730d-9343-994d7be184b8",
+              "position": 6,
+              "title": "Anprobieren",
+              "description": null,
+              "estimatedMinutes": 10,
+              "mentalEnergy": "low",
+              "branchCondition": null,
+              "createdAt": "2026-09-07T18:11:46.197Z"
+            },
+            {
+              "id": "ad4d2930-bb02-4eff-accc-66fa34d93852",
+              "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+              "playbookId": "01a07d11-afbd-730d-9343-994d7be184b8",
+              "position": 7,
+              "title": "Passform beurteilen",
+              "description": null,
+              "estimatedMinutes": 5,
+              "mentalEnergy": "low",
+              "branchCondition": null,
+              "createdAt": "2026-09-07T18:11:46.197Z"
+            },
+            {
+              "id": "d2b99650-5863-42ee-bd86-70c2d37ac366",
+              "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+              "playbookId": "01a07d11-afbd-730d-9343-994d7be184b8",
+              "position": 8,
+              "title": "Gegebenenfalls retournieren",
+              "description": null,
+              "estimatedMinutes": 15,
+              "mentalEnergy": "medium",
+              "branchCondition": null,
+              "createdAt": "2026-09-07T18:11:46.197Z"
+            },
+            {
+              "id": "6c302080-5adb-46a8-b556-8b57de43327e",
+              "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+              "playbookId": "01a07d11-afbd-730d-9343-994d7be184b8",
+              "position": 9,
+              "title": "Schuhgröße im System aktualisieren",
+              "description": null,
+              "estimatedMinutes": 2,
+              "mentalEnergy": "low",
+              "branchCondition": null,
+              "createdAt": "2026-09-07T18:11:46.197Z"
+            },
+            {
+              "id": "7b1e597d-4d7b-4976-afa4-fbf39a520c3d",
+              "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+              "playbookId": "01a07d11-afbd-730d-9343-994d7be184b8",
+              "position": 10,
+              "title": "Alte Schuhe aussortieren",
+              "description": null,
+              "estimatedMinutes": 10,
+              "mentalEnergy": "low",
+              "branchCondition": null,
+              "createdAt": "2026-09-07T18:11:46.197Z"
+            }
+          ]
+        },
+        {
+          "id": "01a07d12-3522-7f58-a1aa-8cf10a0718a0",
+          "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+          "domainId": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+          "title": "Neue Schuhe",
+          "triggerDescription": "Schuhe zu klein, kaputt oder fehlen",
+          "scope": "domain",
+          "archivedAt": null,
+          "createdBy": "01a07d11-af2b-763b-964e-a39b84258615",
+          "createdAt": "2026-09-07T18:12:20.382Z",
+          "updatedAt": "2026-09-07T18:12:20.382Z",
+          "version": 1,
+          "steps": [
+            {
+              "id": "351b822a-173e-47cc-b73d-69c2f6591c90",
+              "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+              "playbookId": "01a07d12-3522-7f58-a1aa-8cf10a0718a0",
+              "position": 1,
+              "title": "Füße messen",
+              "description": null,
+              "estimatedMinutes": 5,
+              "mentalEnergy": "low",
+              "branchCondition": null,
+              "createdAt": "2026-09-07T18:12:20.382Z"
+            },
+            {
+              "id": "b94f9b1a-4776-49c8-8598-fb68e73fd981",
+              "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+              "playbookId": "01a07d12-3522-7f58-a1aa-8cf10a0718a0",
+              "position": 2,
+              "title": "Schuhart bestimmen",
+              "description": null,
+              "estimatedMinutes": 5,
+              "mentalEnergy": "medium",
+              "branchCondition": null,
+              "createdAt": "2026-09-07T18:12:20.382Z"
+            },
+            {
+              "id": "a21c6c1e-6210-4c59-9073-64ca523b1c3a",
+              "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+              "playbookId": "01a07d12-3522-7f58-a1aa-8cf10a0718a0",
+              "position": 3,
+              "title": "Größe bestimmen",
+              "description": null,
+              "estimatedMinutes": 5,
+              "mentalEnergy": "low",
+              "branchCondition": null,
+              "createdAt": "2026-09-07T18:12:20.382Z"
+            },
+            {
+              "id": "259963a3-d8e5-4db2-a936-d73c868bb252",
+              "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+              "playbookId": "01a07d12-3522-7f58-a1aa-8cf10a0718a0",
+              "position": 4,
+              "title": "Modelle auswählen",
+              "description": null,
+              "estimatedMinutes": 20,
+              "mentalEnergy": "medium",
+              "branchCondition": null,
+              "createdAt": "2026-09-07T18:12:20.382Z"
+            },
+            {
+              "id": "4da2cad0-eeaa-4982-b921-e8dfad1ee7da",
+              "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+              "playbookId": "01a07d12-3522-7f58-a1aa-8cf10a0718a0",
+              "position": 5,
+              "title": "Bestellen oder kaufen",
+              "description": null,
+              "estimatedMinutes": 30,
+              "mentalEnergy": "medium",
+              "branchCondition": null,
+              "createdAt": "2026-09-07T18:12:20.382Z"
+            },
+            {
+              "id": "019706a0-854e-48cf-84e4-e96706156f15",
+              "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+              "playbookId": "01a07d12-3522-7f58-a1aa-8cf10a0718a0",
+              "position": 6,
+              "title": "Anprobieren",
+              "description": null,
+              "estimatedMinutes": 10,
+              "mentalEnergy": "low",
+              "branchCondition": null,
+              "createdAt": "2026-09-07T18:12:20.382Z"
+            },
+            {
+              "id": "eb467c39-f827-44ed-af80-a906bad8abcc",
+              "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+              "playbookId": "01a07d12-3522-7f58-a1aa-8cf10a0718a0",
+              "position": 7,
+              "title": "Passform beurteilen",
+              "description": null,
+              "estimatedMinutes": 5,
+              "mentalEnergy": "low",
+              "branchCondition": null,
+              "createdAt": "2026-09-07T18:12:20.382Z"
+            },
+            {
+              "id": "1685fa02-d7bb-490b-b1fc-f85f51ec2a4a",
+              "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+              "playbookId": "01a07d12-3522-7f58-a1aa-8cf10a0718a0",
+              "position": 8,
+              "title": "Gegebenenfalls retournieren",
+              "description": null,
+              "estimatedMinutes": 15,
+              "mentalEnergy": "medium",
+              "branchCondition": null,
+              "createdAt": "2026-09-07T18:12:20.382Z"
+            },
+            {
+              "id": "49f72580-ed8e-478f-9793-9ca794261a25",
+              "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+              "playbookId": "01a07d12-3522-7f58-a1aa-8cf10a0718a0",
+              "position": 9,
+              "title": "Schuhgröße aktualisieren",
+              "description": null,
+              "estimatedMinutes": 2,
+              "mentalEnergy": "low",
+              "branchCondition": null,
+              "createdAt": "2026-09-07T18:12:20.382Z"
+            },
+            {
+              "id": "8136ba70-8d38-4c46-8fb9-3990ecab995a",
+              "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+              "playbookId": "01a07d12-3522-7f58-a1aa-8cf10a0718a0",
+              "position": 10,
+              "title": "Alte Schuhe aussortieren",
+              "description": null,
+              "estimatedMinutes": 10,
+              "mentalEnergy": "low",
+              "branchCondition": null,
+              "createdAt": "2026-09-07T18:12:20.382Z"
+            }
+          ]
+        }
+      ],
+      "note": "Ein Playbook ist eine Vorlage. Sie wird nicht abgearbeitet – aus ihr entsteht jedes Mal ein neuer Vorgang mit eigenen Schritten."
+    },
+    "needs": {
+      "items": [],
+      "note": "Ein Bedürfnis bleibt bestehen, auch wenn der auslösende Hinweis längst weg ist."
+    },
+    "grants": {
+      "items": []
+    },
+    "audit": {
+      "items": []
+    },
+    "coverages": {
+      "items": []
+    },
+    "overview": {
+      "domains": [
+        {
+          "id": "01a07d11-afaa-747a-b9f1-72582bc426fd",
+          "path": "familie",
+          "name": "Familie",
+          "criticality": "normal",
+          "effectiveOwner": {
+            "membershipId": "01a07d11-af2b-710a-afa5-ab628f3cf977",
+            "displayName": "Ben",
+            "inheritedFrom": null,
+            "viaCoverage": false
+          }
+        },
+        {
+          "id": "01a07d11-afaa-74c1-911e-2d5403729b55",
+          "path": "familie.urlaube",
+          "name": "Urlaube",
+          "criticality": "low",
+          "effectiveOwner": {
+            "membershipId": "01a07d11-af2b-710a-afa5-ab628f3cf977",
+            "displayName": "Ben",
+            "inheritedFrom": null,
+            "viaCoverage": false
+          }
+        },
+        {
+          "id": "01a07d11-afab-7eb9-8294-f1315fffec21",
+          "path": "familie.versicherungen",
+          "name": "Versicherungen",
+          "criticality": "high",
+          "effectiveOwner": {
+            "membershipId": "01a07d11-af2b-710a-afa5-ab628f3cf977",
+            "displayName": "Ben",
+            "inheritedFrom": "familie",
+            "viaCoverage": false
+          }
+        },
+        {
+          "id": "01a07d11-afa7-7e9a-90c0-b4a20cd4b03c",
+          "path": "haushalt",
+          "name": "Haushalt",
+          "criticality": "normal",
+          "effectiveOwner": null
+        },
+        {
+          "id": "01a07d11-afa8-7712-ab06-fcf31dd309e0",
+          "path": "haushalt.lebensmittel",
+          "name": "Lebensmittel",
+          "criticality": "high",
+          "effectiveOwner": {
+            "membershipId": "01a07d11-af2b-710a-afa5-ab628f3cf977",
+            "displayName": "Ben",
+            "inheritedFrom": null,
+            "viaCoverage": false
+          }
+        },
+        {
+          "id": "01a07d11-afa9-7262-bf12-91c8fa811686",
+          "path": "haushalt.reparaturen",
+          "name": "Reparaturen",
+          "criticality": "low",
+          "effectiveOwner": null
+        },
+        {
+          "id": "01a07d11-afa8-76df-82ee-b8a099d4579e",
+          "path": "haushalt.waesche",
+          "name": "Wäsche",
+          "criticality": "normal",
+          "effectiveOwner": {
+            "membershipId": "01a07d11-af2b-710a-afa5-ab628f3cf977",
+            "displayName": "Ben",
+            "inheritedFrom": null,
+            "viaCoverage": false
+          }
+        },
+        {
+          "id": "01a07d11-af9f-7c43-a853-e5781ee2430c",
+          "path": "kinder",
+          "name": "Kinder",
+          "criticality": "normal",
+          "effectiveOwner": null
+        },
+        {
+          "id": "01a07d11-afa2-70f4-913e-00cdcc974e54",
+          "path": "kinder.kind_a",
+          "name": "Kind A",
+          "criticality": "normal",
+          "effectiveOwner": null
+        },
+        {
+          "id": "01a07d11-afa6-72ce-8b50-bb291b6b88f0",
+          "path": "kinder.kind_a.gesundheit",
+          "name": "Gesundheit",
+          "criticality": "critical",
+          "effectiveOwner": {
+            "membershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+            "displayName": "Anna",
+            "inheritedFrom": null,
+            "viaCoverage": false
+          }
+        },
+        {
+          "id": "01a07d11-afa6-7a40-9524-23374744b995",
+          "path": "kinder.kind_a.kita",
+          "name": "Kita",
+          "criticality": "high",
+          "effectiveOwner": null
+        },
+        {
+          "id": "01a07d11-afa4-78f4-8268-75bc6e3acce4",
+          "path": "kinder.kind_a.kleidung",
+          "name": "Kleidung",
+          "criticality": "normal",
+          "effectiveOwner": {
+            "membershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+            "displayName": "Anna",
+            "inheritedFrom": null,
+            "viaCoverage": false
+          }
+        },
+        {
+          "id": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+          "path": "kinder.kind_a.kleidung.schuhe",
+          "name": "Schuhe",
+          "criticality": "normal",
+          "effectiveOwner": {
+            "membershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+            "displayName": "Anna",
+            "inheritedFrom": "kinder.kind_a.kleidung",
+            "viaCoverage": false
+          }
+        }
+      ],
+      "unownedCritical": [
+        {
+          "id": "01a07d11-afa6-7a40-9524-23374744b995",
+          "path": "kinder.kind_a.kita"
+        }
+      ],
+      "activeCoverages": [],
+      "reducedCapacity": [],
+      "note": "Diese Übersicht zeigt, wo Verantwortung liegt und wo sie unklar ist. Sie ist kein Vergleich zwischen Personen und misst keine Leistung."
+    },
+    "settings": {
+      "id": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+      "name": "Familie Beispiel",
+      "timezone": "Europe/Berlin",
+      "notificationContentLevel": "minimal",
+      "balanceViewEnabled": true,
+      "version": 1,
+      "yourRole": "admin",
+      "explanations": {
+        "notificationContentLevel": "Bei „minimal\" enthalten Push und E-Mail nur, dass etwas ansteht – nie den Inhalt. Termine und Gesundheitsangaben bleiben damit auf dem Sperrbildschirm unsichtbar.",
+        "balanceViewEnabled": "Zeigt, wie Verantwortung verteilt ist – als Bänder, nie als Prozentzahl. Standardmäßig aus, weil so eine Ansicht nicht in jeder Familie hilfreich ist."
+      }
+    },
+    "capacity/me": {
+      "level": "normal",
+      "acceptsNewAssignments": true,
+      "criticalOnly": false,
+      "mutePush": false
+    },
+    "knowledge": {
+      "items": []
+    },
+    "colors": {
+      "members": {},
+      "domains": {}
+    },
+    "decisions": {
+      "items": [
+        {
+          "id": "01a07d12-3559-772b-b1ac-3783d6f0c421",
+          "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+          "domainId": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+          "title": "Kinderschuhe bis etwa 70 €",
+          "body": "Bei Winterstiefeln darf es mehr sein.",
+          "decisionKind": "family_decision",
+          "bindingLevel": "orientation",
+          "decidedBy": "01a07d11-af2b-763b-964e-a39b84258615",
+          "decidedAt": "2026-09-07T18:12:20.437Z",
+          "reviewAfter": null,
+          "supersedesId": null,
+          "supersededAt": null,
+          "createdAt": "2026-09-07T18:12:20.437Z",
+          "updatedAt": "2026-09-07T18:12:20.437Z",
+          "version": 1
+        }
+      ]
+    },
+    "monitors": {
+      "items": [
+        {
+          "id": "47c7a58f-2120-4e49-8d08-f1cd4e7aaa16",
+          "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+          "domainId": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+          "stateDefinitionId": "01a07d11-afb5-730e-9fcc-1e067e0dacca",
+          "name": "Schuhgröße prüfen",
+          "ruleKind": "state_freshness",
+          "config": {},
+          "defaultResponse": "attention_item",
+          "automationRuleId": null,
+          "enabled": true,
+          "origin": "human",
+          "createdBy": "01a07d11-af2b-763b-964e-a39b84258615",
+          "lastEvaluatedAt": null,
+          "nextEvaluationAt": "2026-09-07T18:11:46.090Z",
+          "consecutiveFailures": 0,
+          "lastError": null,
+          "createdAt": "2026-09-07T18:11:46.197Z",
+          "updatedAt": "2026-09-07T18:11:46.197Z",
+          "version": 1
+        },
+        {
+          "id": "6ccdf43c-9b8d-4cc4-917a-604c19523786",
+          "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+          "domainId": "01a07d11-afa6-72ce-8b50-bb291b6b88f0",
+          "stateDefinitionId": "01a07d11-afb5-73f8-9f2d-578e48eba4ae",
+          "name": "Medikamentenvorrat",
+          "ruleKind": "state_threshold",
+          "config": {
+            "op": "lt",
+            "value": 7
+          },
+          "defaultResponse": "attention_item",
+          "automationRuleId": null,
+          "enabled": true,
+          "origin": "human",
+          "createdBy": "01a07d11-af2b-763b-964e-a39b84258615",
+          "lastEvaluatedAt": null,
+          "nextEvaluationAt": "2026-09-07T18:11:46.090Z",
+          "consecutiveFailures": 0,
+          "lastError": null,
+          "createdAt": "2026-09-07T18:11:46.197Z",
+          "updatedAt": "2026-09-07T18:11:46.197Z",
+          "version": 1
+        },
+        {
+          "id": "5ea37a7e-29dd-43ba-8fbf-3f3a4737e97c",
+          "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+          "domainId": "01a07d11-afa6-7a40-9524-23374744b995",
+          "stateDefinitionId": "01a07d11-afb5-7776-9ac6-dedf41c5b6db",
+          "name": "Offene Kita-Angaben",
+          "ruleKind": "state_unknown",
+          "config": {
+            "afterDays": 14
+          },
+          "defaultResponse": "attention_item",
+          "automationRuleId": null,
+          "enabled": true,
+          "origin": "human",
+          "createdBy": "01a07d11-af2b-763b-964e-a39b84258615",
+          "lastEvaluatedAt": null,
+          "nextEvaluationAt": "2026-09-07T18:11:46.090Z",
+          "consecutiveFailures": 0,
+          "lastError": null,
+          "createdAt": "2026-09-07T18:11:46.197Z",
+          "updatedAt": "2026-09-07T18:11:46.197Z",
+          "version": 1
+        }
+      ]
+    },
+    "questions": {
+      "items": [
+        {
+          "id": "af44f338-ecc0-4328-992f-92c596229d7c",
+          "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+          "domainId": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+          "body": "Wie erkenne ich, ob die Gummistiefel noch passen?",
+          "state": "open",
+          "askedBy": "01a07d11-af2b-710a-afa5-ab628f3cf977",
+          "directedTo": "01a07d11-af2b-763b-964e-a39b84258615",
+          "answerBody": null,
+          "answeredBy": null,
+          "answeredAt": null,
+          "answerKnowledgeId": null,
+          "createdAt": "2026-09-07T18:11:46.197Z",
+          "updatedAt": "2026-09-07T18:11:46.197Z",
+          "version": 1
+        }
+      ]
+    },
+    "processes": {
+      "items": [
+        {
+          "id": "01a07d12-3535-79f7-ac9e-86bc42c4653d",
+          "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+          "domainId": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+          "playbookId": "01a07d12-3522-7f58-a1aa-8cf10a0718a0",
+          "attentionItemId": null,
+          "title": "Neue Schuhe",
+          "goal": "Schuhe zu klein, kaputt oder fehlen",
+          "state": "active",
+          "outcome": null,
+          "outcomeReason": null,
+          "learnings": null,
+          "ownerMembershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+          "dueAt": null,
+          "completedAt": null,
+          "origin": "human",
+          "originRef": null,
+          "createdBy": "01a07d11-af2b-763b-964e-a39b84258615",
+          "createdAt": "2026-09-07T18:12:20.399Z",
+          "updatedAt": "2026-09-07T18:12:20.399Z",
+          "version": 1,
+          "progress": {
+            "done": 0,
+            "total": 10,
+            "open": 10
+          },
+          "nextStep": {
+            "id": "01a07d12-3537-7fb2-8f3b-a0ac9d3bbfd4",
+            "title": "Füße messen",
+            "assigneeMembershipId": null
+          },
+          "waiting": true
+        }
+      ]
+    },
+    "calendar-connections": {
+      "own": [],
+      "othersCount": 0,
+      "note": "Termininhalte anderer sind standardmäßig verborgen. Für die Zeitplanung reicht, dass ein Zeitraum belegt ist."
+    },
+    "calendar-events": {
+      "items": []
+    },
+    "notification-preferences": {
+      "items": [
+        {
+          "notificationKind": "attention.new",
+          "priorityFloor": "low",
+          "channels": [
+            "in_app"
+          ],
+          "quietHours": null,
+          "configurable": true,
+          "explanation": "Etwas in einem deiner Bereiche könnte Aufmerksamkeit brauchen."
+        },
+        {
+          "notificationKind": "attention.escalated",
+          "priorityFloor": "low",
+          "channels": [
+            "in_app"
+          ],
+          "quietHours": null,
+          "configurable": true,
+          "explanation": "Ein Hinweis ist dringender geworden."
+        },
+        {
+          "notificationKind": "task.assigned_to_you",
+          "priorityFloor": "low",
+          "channels": [
+            "in_app"
+          ],
+          "quietHours": null,
+          "configurable": true,
+          "explanation": "Jemand hat dir eine Aufgabe zugewiesen."
+        },
+        {
+          "notificationKind": "task.due_soon",
+          "priorityFloor": "low",
+          "channels": [
+            "in_app"
+          ],
+          "quietHours": null,
+          "configurable": true,
+          "explanation": "Für eine Aufgabe rückt der vorgesehene Zeitpunkt näher."
+        },
+        {
+          "notificationKind": "task.waiting_released",
+          "priorityFloor": "low",
+          "channels": [
+            "in_app"
+          ],
+          "quietHours": null,
+          "configurable": true,
+          "explanation": "Etwas, worauf gewartet wurde, ist eingetroffen."
+        },
+        {
+          "notificationKind": "question.directed_to_you",
+          "priorityFloor": "low",
+          "channels": [
+            "in_app"
+          ],
+          "quietHours": null,
+          "configurable": true,
+          "explanation": "Eine Frage ist an dich gerichtet."
+        },
+        {
+          "notificationKind": "question.answered",
+          "priorityFloor": "low",
+          "channels": [
+            "in_app"
+          ],
+          "quietHours": null,
+          "configurable": true,
+          "explanation": "Eine deiner Fragen wurde beantwortet."
+        },
+        {
+          "notificationKind": "process.stalled",
+          "priorityFloor": "low",
+          "channels": [
+            "in_app"
+          ],
+          "quietHours": null,
+          "configurable": true,
+          "explanation": "Ein Vorgang hat gerade keinen nächsten Schritt."
+        },
+        {
+          "notificationKind": "ownership.assigned_to_you",
+          "priorityFloor": "low",
+          "channels": [
+            "in_app"
+          ],
+          "quietHours": null,
+          "configurable": true,
+          "explanation": "Dir wurde die Verantwortung für einen Bereich übertragen."
+        },
+        {
+          "notificationKind": "ownership.coverage_starting",
+          "priorityFloor": "low",
+          "channels": [
+            "in_app"
+          ],
+          "quietHours": null,
+          "configurable": true,
+          "explanation": "Eine Vertretung beginnt."
+        },
+        {
+          "notificationKind": "ownership.coverage_return_due",
+          "priorityFloor": "low",
+          "channels": [
+            "in_app"
+          ],
+          "quietHours": null,
+          "configurable": true,
+          "explanation": "Eine Vertretung endet und wartet auf Bestätigung."
+        },
+        {
+          "notificationKind": "domain.unowned_critical",
+          "priorityFloor": "low",
+          "channels": [
+            "in_app",
+            "push"
+          ],
+          "quietHours": null,
+          "configurable": true,
+          "explanation": "Ein wichtiger Bereich hat gerade keine klare Zuständigkeit."
+        },
+        {
+          "notificationKind": "state.conflict",
+          "priorityFloor": "low",
+          "channels": [
+            "in_app",
+            "push"
+          ],
+          "quietHours": null,
+          "configurable": true,
+          "explanation": "Zu einer Angabe gibt es zwei unterschiedliche Werte."
+        },
+        {
+          "notificationKind": "calendar.connection_unhealthy",
+          "priorityFloor": "low",
+          "channels": [
+            "in_app"
+          ],
+          "quietHours": null,
+          "configurable": true,
+          "explanation": "Eine Kalenderverbindung liefert keine Daten mehr."
+        },
+        {
+          "notificationKind": "capacity.coverage_gap",
+          "priorityFloor": "low",
+          "channels": [
+            "in_app",
+            "push"
+          ],
+          "quietHours": null,
+          "configurable": true,
+          "explanation": "Jemand hat weniger Kapazität; wichtige Bereiche brauchen Klärung."
+        },
+        {
+          "notificationKind": "system.export_ready",
+          "priorityFloor": "low",
+          "channels": [
+            "in_app"
+          ],
+          "quietHours": null,
+          "configurable": false,
+          "explanation": "Dein Datenexport steht bereit."
+        },
+        {
+          "notificationKind": "system.deletion_scheduled",
+          "priorityFloor": "low",
+          "channels": [
+            "in_app"
+          ],
+          "quietHours": null,
+          "configurable": false,
+          "explanation": "Eine Löschung wurde beantragt."
+        },
+        {
+          "notificationKind": "security.new_login",
+          "priorityFloor": "low",
+          "channels": [
+            "in_app",
+            "email"
+          ],
+          "quietHours": null,
+          "configurable": false,
+          "explanation": "Neue Anmeldung an deinem Konto."
+        },
+        {
+          "notificationKind": "security.grant_changed",
+          "priorityFloor": "low",
+          "channels": [
+            "in_app",
+            "email"
+          ],
+          "quietHours": null,
+          "configurable": false,
+          "explanation": "Berechtigungen wurden geändert."
+        },
+        {
+          "notificationKind": "security.sensitive_access",
+          "priorityFloor": "low",
+          "channels": [
+            "in_app",
+            "email"
+          ],
+          "quietHours": null,
+          "configurable": false,
+          "explanation": "Jemand hat auf besonders geschützte Inhalte zugegriffen."
+        }
+      ],
+      "note": "Ein ignorierter Hinweis geht nie verloren – er bleibt in der App sichtbar, auch wenn kein Kanal aktiv ist."
+    },
+    "push-subscriptions": {
+      "items": []
+    },
+    "exports": {
+      "__status": 404,
+      "message": "Route GET:/api/v1/households/01a07d11-af2b-7173-aa52-4c6454d2e5b3/exports not found",
+      "error": "Not Found",
+      "statusCode": 404
+    },
+    "deletion-requests": {
+      "__status": 404,
+      "message": "Route GET:/api/v1/households/01a07d11-af2b-7173-aa52-4c6454d2e5b3/deletion-requests not found",
+      "error": "Not Found",
+      "statusCode": 404
+    },
+    "search": {
+      "items": [
+        {
+          "kind": "domain",
+          "id": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+          "title": "Schuhe",
+          "subtitle": "Kinder / Kind A / Kleidung",
+          "domainId": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+          "href": "/bereiche/01a07d11-afa5-7f8e-90a0-ed9ba4d53687"
+        },
+        {
+          "kind": "state",
+          "id": "01a07d11-afb5-730e-9fcc-1e067e0dacca",
+          "title": "Schuhgröße",
+          "subtitle": "Kinder / Kind A / Kleidung / Schuhe",
+          "domainId": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+          "href": "/bereiche/01a07d11-afa5-7f8e-90a0-ed9ba4d53687"
+        },
+        {
+          "kind": "task",
+          "id": "01a07d12-3538-7288-8bbd-8c9dab5f6ec8",
+          "title": "Schuhart bestimmen",
+          "subtitle": "Offene Aufgabe · Kinder / Kind A / Kleidung / Schuhe",
+          "domainId": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+          "href": "/vorgang/01a07d12-3535-79f7-ac9e-86bc42c4653d"
+        },
+        {
+          "kind": "task",
+          "id": "01a07d12-3541-75cf-9bdd-6f0a5c6e0e22",
+          "title": "Schuhgröße aktualisieren",
+          "subtitle": "Offene Aufgabe · Kinder / Kind A / Kleidung / Schuhe",
+          "domainId": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+          "href": "/vorgang/01a07d12-3535-79f7-ac9e-86bc42c4653d"
+        },
+        {
+          "kind": "process",
+          "id": "01a07d12-3535-79f7-ac9e-86bc42c4653d",
+          "title": "Neue Schuhe",
+          "subtitle": "Laufender Vorgang · Kinder / Kind A / Kleidung / Schuhe",
+          "domainId": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+          "href": "/vorgang/01a07d12-3535-79f7-ac9e-86bc42c4653d"
+        },
+        {
+          "kind": "playbook",
+          "id": "01a07d11-afbd-730d-9343-994d7be184b8",
+          "title": "Neue Schuhe",
+          "subtitle": "Ablauf · Kinder / Kind A / Kleidung / Schuhe",
+          "domainId": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+          "href": "/familie/ablaeufe"
+        },
+        {
+          "kind": "playbook",
+          "id": "01a07d12-3522-7f58-a1aa-8cf10a0718a0",
+          "title": "Neue Schuhe",
+          "subtitle": "Ablauf · Kinder / Kind A / Kleidung / Schuhe",
+          "domainId": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+          "href": "/familie/ablaeufe"
+        },
+        {
+          "kind": "task",
+          "id": "01a07d12-3542-7cdb-a4bb-0782ba1a485d",
+          "title": "Alte Schuhe aussortieren",
+          "subtitle": "Offene Aufgabe · Kinder / Kind A / Kleidung / Schuhe",
+          "domainId": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+          "href": "/vorgang/01a07d12-3535-79f7-ac9e-86bc42c4653d"
+        },
+        {
+          "kind": "decision",
+          "id": "01a07d12-3559-772b-b1ac-3783d6f0c421",
+          "title": "Kinderschuhe bis etwa 70 €",
+          "subtitle": "Entscheidung · Kinder / Kind A / Kleidung / Schuhe",
+          "domainId": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+          "href": "/bereiche/01a07d11-afa5-7f8e-90a0-ed9ba4d53687"
+        },
+        {
+          "kind": "task",
+          "id": "01a07d11-afbb-7bbb-abe4-ba3bb6bcfe67",
+          "title": "Beim nächsten Schuheanziehen Zehenraum prüfen",
+          "subtitle": "Offene Aufgabe · Kinder / Kind A / Kleidung / Schuhe",
+          "domainId": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+          "href": "/bereiche/01a07d11-afa5-7f8e-90a0-ed9ba4d53687"
+        }
+      ]
+    },
+    "history": {
+      "items": [
+        {
+          "seq": 124,
+          "id": "01a07d12-3645-765c-a05e-5e1912e05489",
+          "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+          "eventType": "task.created",
+          "eventVersion": 1,
+          "subjectType": "task",
+          "subjectId": "01a07d12-3644-7d28-9f5f-b1008dd98db5",
+          "actorKind": "user",
+          "actorMembershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+          "actorRef": null,
+          "payload": {
+            "title": "Rauchtest Ausgänge",
+            "domainId": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+            "processId": null
+          },
+          "before": null,
+          "after": null,
+          "correlationId": "01a07d12-3641-7231-86a1-43505198e0eb",
+          "causationId": null,
+          "occurredAt": "2026-09-07T18:12:20.673Z"
+        },
+        {
+          "seq": 119,
+          "id": "01a07d12-3615-78b3-ac16-3dca96877b51",
+          "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+          "eventType": "task.created",
+          "eventVersion": 1,
+          "subjectType": "task",
+          "subjectId": "01a07d12-3614-7d05-98c5-9a7b1a5900c5",
+          "actorKind": "user",
+          "actorMembershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+          "actorRef": null,
+          "payload": {
+            "title": "Rauchtest-Aufgabe",
+            "domainId": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+            "processId": null
+          },
+          "before": null,
+          "after": null,
+          "correlationId": "01a07d12-3610-7b59-9166-2d12432b22dc",
+          "causationId": null,
+          "occurredAt": "2026-09-07T18:12:20.624Z"
+        },
+        {
+          "seq": 114,
+          "id": "01a07d12-3536-79c3-87a8-1e7db4d2bb49",
+          "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+          "eventType": "process.created",
+          "eventVersion": 1,
+          "subjectType": "process",
+          "subjectId": "01a07d12-3535-79f7-ac9e-86bc42c4653d",
+          "actorKind": "user",
+          "actorMembershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+          "actorRef": null,
+          "payload": {
+            "title": "Neue Schuhe",
+            "domainId": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687"
+          },
+          "before": null,
+          "after": null,
+          "correlationId": "01a07d12-352f-7b23-8e91-78102a43d32b",
+          "causationId": null,
+          "occurredAt": "2026-09-07T18:12:20.399Z"
+        },
+        {
+          "seq": 113,
+          "id": "01a07d12-3524-702c-9be0-f73e9f2da255",
+          "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+          "eventType": "playbook.created",
+          "eventVersion": 1,
+          "subjectType": "playbook",
+          "subjectId": "01a07d12-3522-7f58-a1aa-8cf10a0718a0",
+          "actorKind": "user",
+          "actorMembershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+          "actorRef": null,
+          "payload": {
+            "steps": 10,
+            "title": "Neue Schuhe",
+            "domainId": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687"
+          },
+          "before": null,
+          "after": null,
+          "correlationId": "01a07d12-351d-7365-8fb3-5f61fd36f7cf",
+          "causationId": null,
+          "occurredAt": "2026-09-07T18:12:20.382Z"
+        }
+      ]
+    },
+    "domains/detail": {
+      "domain": {
+        "id": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+        "parentId": "01a07d11-afa4-78f4-8268-75bc6e3acce4",
+        "path": "kinder.kind_a.kleidung.schuhe",
+        "name": "Schuhe",
+        "criticality": "normal",
+        "sensitivity": "normal",
+        "ownershipInheritance": "inherit",
+        "position": 0,
+        "archivedAt": null,
+        "version": 1,
+        "effectiveOwner": {
+          "membershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+          "assignmentKind": "primary_owner",
+          "inheritedFrom": "kinder.kind_a.kleidung",
+          "viaCoverage": false,
+          "permanentMembershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+          "sharedWith": [],
+          "reason": "Verantwortung geerbt von „kinder.kind_a.kleidung“.",
+          "displayName": "Anna",
+          "sharedNames": []
+        }
+      },
+      "children": [],
+      "states": [
+        {
+          "id": "77573403-d314-435d-a42f-2e3599fa1506",
+          "definition": {
+            "id": "01a07d11-afb5-730e-9fcc-1e067e0dacca",
+            "domainId": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+            "key": "shoe_size",
+            "label": "Schuhgröße",
+            "dataType": "number",
+            "freshnessInterval": "P6W",
+            "isCritical": false,
+            "sensitivity": "normal",
+            "unit": null,
+            "version": 1
+          },
+          "valueKind": "known",
+          "value": 29,
+          "verifiedAt": "2026-07-20T18:11:46.090Z",
+          "staleAt": "2026-08-31T18:11:46.090Z",
+          "isStale": true,
+          "origin": "human",
+          "confirmedAt": "2026-07-20T18:11:46.090Z",
+          "conflict": null,
+          "version": 1
+        }
+      ],
+      "monitors": [
+        {
+          "id": "47c7a58f-2120-4e49-8d08-f1cd4e7aaa16",
+          "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+          "domainId": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+          "stateDefinitionId": "01a07d11-afb5-730e-9fcc-1e067e0dacca",
+          "name": "Schuhgröße prüfen",
+          "ruleKind": "state_freshness",
+          "config": {},
+          "defaultResponse": "attention_item",
+          "automationRuleId": null,
+          "enabled": true,
+          "origin": "human",
+          "createdBy": "01a07d11-af2b-763b-964e-a39b84258615",
+          "lastEvaluatedAt": null,
+          "nextEvaluationAt": "2026-09-07T18:11:46.090Z",
+          "consecutiveFailures": 0,
+          "lastError": null,
+          "createdAt": "2026-09-07T18:11:46.197Z",
+          "updatedAt": "2026-09-07T18:11:46.197Z",
+          "version": 1
+        }
+      ],
+      "knowledge": [],
+      "questions": [
+        {
+          "id": "af44f338-ecc0-4328-992f-92c596229d7c",
+          "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+          "domainId": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+          "body": "Wie erkenne ich, ob die Gummistiefel noch passen?",
+          "state": "open",
+          "askedBy": "01a07d11-af2b-710a-afa5-ab628f3cf977",
+          "directedTo": "01a07d11-af2b-763b-964e-a39b84258615",
+          "answerBody": null,
+          "answeredBy": null,
+          "answeredAt": null,
+          "answerKnowledgeId": null,
+          "createdAt": "2026-09-07T18:11:46.197Z",
+          "updatedAt": "2026-09-07T18:11:46.197Z",
+          "version": 1
+        }
+      ],
+      "decisions": [
+        {
+          "id": "01a07d12-3559-772b-b1ac-3783d6f0c421",
+          "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+          "domainId": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+          "title": "Kinderschuhe bis etwa 70 €",
+          "body": "Bei Winterstiefeln darf es mehr sein.",
+          "decisionKind": "family_decision",
+          "bindingLevel": "orientation",
+          "decidedBy": "01a07d11-af2b-763b-964e-a39b84258615",
+          "decidedAt": "2026-09-07T18:12:20.437Z",
+          "reviewAfter": null,
+          "supersedesId": null,
+          "supersededAt": null,
+          "createdAt": "2026-09-07T18:12:20.437Z",
+          "updatedAt": "2026-09-07T18:12:20.437Z",
+          "version": 1
+        }
+      ],
+      "processes": [
+        {
+          "id": "01a07d12-3535-79f7-ac9e-86bc42c4653d",
+          "householdId": "01a07d11-af2b-7173-aa52-4c6454d2e5b3",
+          "domainId": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+          "playbookId": "01a07d12-3522-7f58-a1aa-8cf10a0718a0",
+          "attentionItemId": null,
+          "title": "Neue Schuhe",
+          "goal": "Schuhe zu klein, kaputt oder fehlen",
+          "state": "active",
+          "outcome": null,
+          "outcomeReason": null,
+          "learnings": null,
+          "ownerMembershipId": "01a07d11-af2b-763b-964e-a39b84258615",
+          "dueAt": null,
+          "completedAt": null,
+          "origin": "human",
+          "originRef": null,
+          "createdBy": "01a07d11-af2b-763b-964e-a39b84258615",
+          "createdAt": "2026-09-07T18:12:20.399Z",
+          "updatedAt": "2026-09-07T18:12:20.399Z",
+          "version": 1,
+          "progress": {
+            "done": 0,
+            "total": 10,
+            "open": 10
+          },
+          "nextStep": {
+            "id": "01a07d12-3537-7fb2-8f3b-a0ac9d3bbfd4",
+            "title": "Füße messen",
+            "assigneeMembershipId": null
+          },
+          "waiting": true
+        }
+      ],
+      "attention": [],
+      "tasks": [
+        {
+          "id": "01a07d11-b000-7000-8000-000000000001",
+          "title": "Beim nächsten Schuheanziehen Zehenraum prüfen",
+          "state": "ready",
+          "dueAt": null,
+          "deferUntil": null,
+          "assigneeMembershipId": null,
+          "estimatedMinutes": 2,
+          "origin": "human",
+          "rationale": null
+        }
+      ]
+    },
+    "domains/handover": {
+      "domain": {
+        "id": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+        "name": "Schuhe"
+      },
+      "openStates": [],
+      "staleStates": [
+        {
+          "stateDefinitionId": "01a07d11-afb5-730e-9fcc-1e067e0dacca",
+          "label": "Schuhgröße",
+          "question": "Stimmt „Schuhgröße\" noch?"
+        }
+      ],
+      "openQuestions": [
+        {
+          "id": "af44f338-ecc0-4328-992f-92c596229d7c",
+          "body": "Wie erkenne ich, ob die Gummistiefel noch passen?"
+        }
+      ],
+      "knowledgePrompts": [
+        "Was muss regelmäßig überprüft werden – und woran merkt man, dass es Zeit ist?",
+        "Wo liegen die Sachen, die dazugehören?",
+        "Was hat in der Vergangenheit gut funktioniert?",
+        "Was sollte man vermeiden?",
+        "Gibt es saisonale Wechsel oder feste Termine?",
+        "An wen wendet man sich bei Fragen?"
+      ],
+      "activeChecks": 1,
+      "note": "Diese Liste ist ein Gesprächsleitfaden, keine Pflichtübung. Was du nicht weißt, kannst du als offene Frage festhalten – auch das ist ein gültiges Ergebnis."
+    },
+    "domains/ownership-history": {
+      "at": null,
+      "owners": []
+    },
+    "domains/state-definitions": {
+      "items": [
+        {
+          "id": "01a07d11-afb5-730e-9fcc-1e067e0dacca",
+          "domainId": "01a07d11-afa5-7f8e-90a0-ed9ba4d53687",
+          "key": "shoe_size",
+          "label": "Schuhgröße",
+          "dataType": "number",
+          "freshnessInterval": "P6W",
+          "isCritical": false,
+          "sensitivity": "normal",
+          "unit": null,
+          "version": 1
+        }
+      ]
+    },
+    "dishes": {
+      "items": [
+        {
+          "id": "01a07d11-0000-7000-8000-00000000d001",
+          "name": "Chili sin Carne",
+          "description": null,
+          "servings": 4,
+          "prepMinutes": 15,
+          "cookMinutes": 30,
+          "totalMinutes": 45,
+          "steps": null,
+          "notes": null,
+          "sourceUrl": null,
+          "imageUrl": null,
+          "excludedFromSuggestions": false,
+          "archivedAt": null,
+          "tags": [
+            "vegetarisch",
+            "Eintopf"
+          ],
+          "ingredients": [
+            {
+              "id": "01a07d11-0000-7000-8000-00000000e001",
+              "name": "Kidneybohnen",
+              "quantity": 2,
+              "unit": "Dose",
+              "note": null
+            }
+          ],
+          "ratings": [
+            {
+              "membershipId": "01a07d11-0000-7000-8000-00000000f001",
+              "displayName": "Anna",
+              "rating": "love"
+            }
+          ],
+          "lastPlannedOn": "2026-08-15",
+          "plannedCount": 6,
+          "plannedLast90": 3
+        },
+        {
+          "id": "01a07d11-0000-7000-8000-00000000d002",
+          "name": "Brotzeit",
+          "description": null,
+          "servings": null,
+          "prepMinutes": null,
+          "cookMinutes": null,
+          "totalMinutes": null,
+          "steps": null,
+          "notes": null,
+          "sourceUrl": null,
+          "imageUrl": null,
+          "excludedFromSuggestions": false,
+          "archivedAt": null,
+          "tags": [
+            "sehr schnell"
+          ],
+          "ingredients": [],
+          "ratings": [],
+          "lastPlannedOn": null,
+          "plannedCount": 0,
+          "plannedLast90": 0
+        }
+      ]
+    },
+    "meals/upcoming": {
+      "today": "2026-09-10",
+      "weekStart": "2026-09-07",
+      "items": [
+        {
+          "date": "2026-09-10",
+          "slot": "dinner",
+          "dishName": "Chili sin Carne",
+          "totalMinutes": 45
+        }
+      ]
+    },
+    "meals/week": {
+      "weekStart": "2026-09-07",
+      "defaultServings": 4,
+      "days": [
+        {
+          "date": "2026-09-07",
+          "weekday": 1,
+          "slots": [
+            {
+              "slot": "dinner",
+              "entry": null
+            }
+          ]
+        },
+        {
+          "date": "2026-09-08",
+          "weekday": 2,
+          "slots": [
+            {
+              "slot": "dinner",
+              "entry": null
+            }
+          ]
+        },
+        {
+          "date": "2026-09-09",
+          "weekday": 3,
+          "slots": [
+            {
+              "slot": "dinner",
+              "entry": null
+            }
+          ]
+        },
+        {
+          "date": "2026-09-10",
+          "weekday": 4,
+          "slots": [
+            {
+              "slot": "dinner",
+              "entry": {
+                "id": "01a07d11-0000-7000-8000-0000000000a1",
+                "dishId": "01a07d11-0000-7000-8000-00000000d001",
+                "dishName": "Chili sin Carne",
+                "totalMinutes": 45,
+                "servings": null,
+                "note": null,
+                "locked": false,
+                "source": "suggested",
+                "suggestionReason": "Lange nicht gegessen"
+              }
+            }
+          ]
+        },
+        {
+          "date": "2026-09-11",
+          "weekday": 5,
+          "slots": [
+            {
+              "slot": "dinner",
+              "entry": null
+            }
+          ]
+        },
+        {
+          "date": "2026-09-12",
+          "weekday": 6,
+          "slots": [
+            {
+              "slot": "lunch",
+              "entry": null
+            },
+            {
+              "slot": "dinner",
+              "entry": null
+            }
+          ]
+        },
+        {
+          "date": "2026-09-13",
+          "weekday": 0,
+          "slots": [
+            {
+              "slot": "lunch",
+              "entry": null
+            },
+            {
+              "slot": "dinner",
+              "entry": null
+            }
+          ]
+        }
+      ]
+    },
+    "meals/settings": {
+      "lunchWeekdays": [
+        0,
+        6
+      ],
+      "defaultServings": 4,
+      "suggestionMode": "balanced",
+      "dayRules": []
+    },
+    "meals/shopping": {
+      "id": "01a07d11-0000-7000-8000-0000000000b1",
+      "weekStart": "2026-09-07",
+      "items": [
+        {
+          "id": "01a07d11-0000-7000-8000-0000000000c1",
+          "name": "Kidneybohnen",
+          "quantity": 2,
+          "unit": "Dose",
+          "note": null,
+          "checked": false,
+          "haveAtHome": false,
+          "origin": "dish",
+          "pushedAt": null
+        }
+      ]
+    }
+  }
+}

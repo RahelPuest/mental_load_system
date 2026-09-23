@@ -1,0 +1,31 @@
+# Der Build-Kontext wird vollständig an den Daemon übertragen. Ohne diese Datei wären das
+# 844 MB – darunter node_modules mit den **macOS**-Binärpaketen von esbuild und argon2,
+# die in einem Linux-Image nicht laufen. Auf einem Raspberry Pi kostet das Minuten pro Build.
+node_modules
+**/node_modules
+dist
+**/dist
+build
+coverage
+.pnpm-store
+
+# Geheimnisse gehören nie in ein Image – auch nicht in eine Zwischenschicht.
+.env
+.env.*
+ops/docker/.env.prod
+
+# Ergebnisse, keine Quellen
+*.log
+.DS_Store
+apps/web/dev-dist
+apps/web/e2e/.shots
+apps/web/e2e/.artifacts
+apps/web/e2e/.auth
+ops/tmp
+playwright-report
+test-results
+
+# Für die Laufzeit unnötig
+docs
+.github
+.git

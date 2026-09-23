@@ -1,0 +1,137 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+env:
+  DATABASE_ADMIN_URL: postgres://thealotta:thealotta_dev_only@localhost:5432/thealotta
+  TEST_DATABASE_URL: postgres://thealotta_app_user:thealotta_dev_only@localhost:5432/thealotta
+  DATABASE_URL: postgres://thealotta_app_user:thealotta_dev_only@localhost:5432/thealotta
+
+jobs:
+  static:
+    name: Lint & Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm lint
+
+  unit:
+    name: Domänentests (ohne I/O)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm vitest run packages/domain --coverage
+
+  integration:
+    name: Datenbank-, API- und Worker-Tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: thealotta
+          POSTGRES_PASSWORD: thealotta_dev_only
+          POSTGRES_DB: thealotta
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U thealotta" --health-interval 3s --health-timeout 3s --health-retries 20
+      redis:
+        image: redis:7-alpine
+        ports: ['6379:6379']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+
+      # Die Anwendung darf NICHT als Superuser verbinden – sonst umgeht Postgres die RLS
+      # und die Tenant-Isolation wäre nur scheinbar wirksam (ADR-0003).
+      - name: Rollen anlegen
+        run: psql "$DATABASE_ADMIN_URL" -f ops/scripts/create-roles.sql
+      - name: Migrationen anwenden
+        run: DATABASE_URL="$DATABASE_ADMIN_URL" pnpm db:migrate
+
+      - run: pnpm vitest run packages/db apps/api apps/worker
+
+  migrations:
+    name: Migrationen vorwärts und rückwärts
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: thealotta
+          POSTGRES_PASSWORD: thealotta_dev_only
+          POSTGRES_DB: thealotta
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U thealotta" --health-interval 3s --health-timeout 3s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: psql "$DATABASE_ADMIN_URL" -f ops/scripts/create-roles.sql
+      - name: Migrationen anwenden
+        run: DATABASE_URL="$DATABASE_ADMIN_URL" pnpm db:migrate
+      - name: Seed einspielen
+        run: pnpm db:seed
+      - name: Erneut anwenden (muss folgenlos sein)
+        run: DATABASE_URL="$DATABASE_ADMIN_URL" pnpm db:migrate
+      - name: Nachträglich veränderte Migration erkennen
+        run: |
+          echo "-- absichtliche Änderung" >> packages/db/migrations/0001_extensions_and_roles.sql
+          if DATABASE_URL="$DATABASE_ADMIN_URL" pnpm db:migrate; then
+            echo "FEHLER: veränderte Migration wurde akzeptiert"; exit 1
+          fi
+          git checkout packages/db/migrations/0001_extensions_and_roles.sql
+
+  security:
+    name: Sicherheitsprüfungen
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - name: Abhängigkeiten prüfen
+        run: pnpm audit --audit-level high
+        continue-on-error: true
+      - name: Secrets im Verlauf suchen
+        uses: gitleaks/gitleaks-action@v2
+        env: { GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}' }
+      - name: SSRF- und Redaction-Tests
+        run: pnpm vitest run apps/worker/test/ssrf.spec.ts packages/domain/test/invariants
+
+  build:
+    name: Images bauen
+    runs-on: ubuntu-latest
+    needs: [static, unit]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: API
+        uses: docker/build-push-action@v6
+        with: { context: ., file: ops/docker/Dockerfile.api, push: false, tags: 'thealotta-api:${{ github.sha }}' }
+      - name: Worker
+        uses: docker/build-push-action@v6
+        with: { context: ., file: ops/docker/Dockerfile.worker, push: false, tags: 'thealotta-worker:${{ github.sha }}' }
+      - name: Web
+        uses: docker/build-push-action@v6
+        with: { context: ., file: ops/docker/Dockerfile.web, push: false, tags: 'thealotta-web:${{ github.sha }}' }

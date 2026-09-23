@@ -1,0 +1,703 @@
+/*
+ * Designtokens (docs/42-design-system.md).
+ *
+ * Kein Wert im Produktcode darf außerhalb dieser Datei entstehen. Jede Ausnahme wird sonst
+ * zur nächsten Inkonsistenz.
+ */
+
+:root {
+  color-scheme: light dark;
+
+  /* ══ Papier und Stempel ═════════════════════════════════════════════
+   * Richtung A (docs/66, docs/69). Der Grund ist Haferpapier, der Text ist Tinte, und dazu
+   * gibt es **vier Flächenfarben mit fester Bedeutung** – keine Verläufe, keine Zwischentöne,
+   * keine fünfte.
+   *
+   *   Tomate     etwas ist kritisch
+   *   Senf       etwas verlangt Aufmerksamkeit
+   *   Tanne      etwas ist in Ordnung; zugleich die Handlungsfarbe
+   *   Flieder    etwas ist Termin oder Hinweis
+   *
+   * Diese vier sind **Flächen**, nicht Text: Sie werden gefüllt und mit Tinte beschriftet.
+   * Genau darin liegt der Unterschied zu einer blassen Tönung – ein Stempel ist deckend.
+   *
+   * Die Rampe ist eine Hilfsgröße; verbindlich sind die Rollen darunter, und
+   * `tokens.spec.ts` rechnet jedes Kontrastpaar in beiden Modi nach.
+   */
+  --n-0:    #ffffff;  /* Dialog, Bogen – das einzige Weiß im ganzen Produkt */
+  --n-50:   #fbf7ec;  /* Karte: eine Spur heller als der Grund, damit sie darauf liegt */
+  --n-100:  #f3ede0;  /* das Haferpapier selbst */
+  --n-150:  #f2ebd9;  /* berührt */
+  --n-200:  #ece3cf;  /* vertieft: Suchfeld, eingelassene Zeile */
+  --n-250:  #e7ddc6;  /* gedrückt */
+  --n-300:  #d8cdb4;  /* Haarlinie im Inneren einer Karte */
+  --n-400:  #9c8f74;
+  --n-500:  #655b4b;  /* Metatext */
+  --n-600:  #554c3e;  /* Begleittext */
+  --n-700:  #3e372c;
+  --n-800:  #2a251b;
+  --n-850:  #201c14;  /* dunkles Papier, angehoben */
+  --n-900:  #141210;  /* Tinte */
+  --n-950:  #17140e;  /* dunkles Papier */
+  --n-1000: #120f0a;  /* dunkles Papier, vertieft */
+
+  /* ── Die vier Flächenfarben ── */
+  --a-50:  #dfe8e2;  --a-100: #cddcd3;  --a-200: #9db8ac;
+  --a-300: #8fc4ae;  --a-500: #2f5d50;  --a-600: #245043;  --a-700: #1b3d33;
+  --tomate: #c0401c;  --senf: #f5b700;  --flieder: #c9c5ec;
+
+  /* ── Semantik: gefüllte Felder mit Tinte darauf ── */
+  --success-fg: #1f4f3d;   --success-bg: #dfe8e2;   --success-line: #2f5d50;
+  --attention-fg: #141210; --attention-bg: #f5b700; --attention-line: #141210;
+  --critical-fg: #fbf7ec;  --critical-bg: #c0401c;  --critical-line: #141210;
+  --info-fg: #141210;      --info-bg: #c9c5ec;      --info-line: #141210;
+
+  /* ── Rollen ── */
+  --bg:              var(--n-100);
+  --surface:         var(--n-50);
+  --surface-raised:  var(--n-0);
+  --surface-sunken:  var(--n-200);
+  --surface-hover:   var(--n-150);
+  --surface-active:  var(--n-250);
+
+  /*
+    Der Rand ist Tinte.
+
+    Das ist die tragende Entscheidung dieser Gestalt und der Gegenentwurf zur vorigen: Dort
+    hatte fast nichts einen Rahmen, hier hat jede Karte einen – 2 px, schwarz, sichtbar.
+    „Fein" gibt es nur **innerhalb** einer Karte, als Haarlinie zwischen ihren Zeilen.
+  */
+  --border-subtle: var(--n-300);
+  --border:        var(--n-900);
+  --border-strong: var(--n-900);
+
+  --text:           var(--n-900);
+  --text-secondary: var(--n-600);
+  --text-muted:     var(--n-500);
+  --text-inverse:   var(--n-50);
+
+  --accent:         var(--a-600);
+  --accent-hover:   var(--a-700);
+  --accent-soft:    var(--a-50);
+  --accent-line:    var(--a-200);
+  --accent-solid:       var(--a-500);
+  --accent-solid-hover: var(--a-600);
+  --accent-text:    var(--n-50);
+
+  /* Der Fokusring ist Tomate: die einzige Farbe, die sonst nur „kritisch" bedeutet – und
+   * genau deshalb unverwechselbar, wenn sie einmal an einem Bedienelement auftaucht. */
+  --focus: var(--tomate);
+
+  /* ── Personenfarben ──────────────────────────────────────────────────
+   * Zwölf Töne, dieselben Farbwinkel wie zuvor – niemand wechselt beim Umbau die Farbe. Neu
+   * abgestimmt auf Haferpapier: wärmer und eine Spur dunkler, damit sie auf dem getönten
+   * Grund nicht blass wirken.
+   *
+   * Sie stehen in dieser Gestalt bewusst **nicht** als gefüllte Flächen, sondern als Punkte
+   * und Kanten. Der Grund steht in docs/66: Tomate und Senf belegen genau die Töne, die
+   * sonst Menschen gehören – die Trennung läuft deshalb über die Form, nicht über den
+   * Farbkreis. Fläche heißt Zustand, Punkt heißt Person.
+   *
+   *   hell    fg hsl(H 44% 26%)  bg hsl(H 26% 88%)  line hsl(H 30% 70%)
+   *   dunkel  fg hsl(H 40% 69%)  bg hsl(H 20% 15%)  line hsl(H 22% 30%)
+   */
+  --m1-fg: #255f44; --m1-bg: #d8e8e1; --m1-line: #9cc9b4;
+  --m2-fg: #25425f; --m2-bg: #d8e0e8; --m2-line: #9cb2c9;
+  --m3-fg: #40255f; --m3-bg: #e0d8e8; --m3-line: #b19cc9;
+  --m4-fg: #5f3e25; --m4-bg: #e8dfd8; --m4-line: #c9af9c;
+  --m5-fg: #5f253b; --m5-bg: #e8d8de; --m5-line: #c99cac;
+  --m6-fg: #25545f; --m6-bg: #d8e5e8; --m6-line: #9cc0c9;
+  --m7-fg: #5f5825; --m7-bg: #e8e6d8; --m7-line: #c9c39c;
+  --m8-fg: #5f255f; --m8-bg: #e8d8e8; --m8-line: #c99cc9;
+  --m9-fg: #5f2525; --m9-bg: #e8d8d8; --m9-line: #c99c9c;
+  --m10-fg: #25295f; --m10-bg: #d8dae8; --m10-line: #9c9fc9;
+  --m11-fg: #465f25; --m11-bg: #e1e8d8; --m11-line: #b6c99c;
+  --m12-fg: #5f254c; --m12-bg: #e8d8e3; --m12-line: #c99cba;
+
+  /* ── Abstände: 4-px-Basis ── */
+  /*
+    Zwei Stufen unterhalb der Hauptskala – benannt, weil sie sonst als handgesetzte Zahlen
+    im Stylesheet stehen. Vorher lagen dort 2, 3, 5 und 6 px für zwei Absichten:
+    „anhaften" und „Symbol neben Kleintext". Vier willkürliche Werte für zwei Beziehungen.
+
+    Sie skalieren bewusst NICHT mit der Dichte: Ein Haaransatz bleibt ein Haaransatz, und
+    der Abstand zwischen einem Symbol und seinem Wort hängt an der Schriftgröße, nicht am
+    Luftbedürfnis der Seite.
+  */
+  --s-hair: 2px;   /* anhaften: Hinweis unter Titel, Haarlinie zwischen Zeilen, optische Nachjustierung */
+  --s-micro: 6px;  /* Symbol ↔ Text in kleinen Bauteilen: Chip, Augenbraue, Metazeile, Schalter */
+
+  /*
+    Personenpunkte – drei Größen auf demselben Raster wie die Symbole (16/20/24), eine
+    Stufe größer, weil ein Punkt eine Fläche ist und ein Symbol eine Linie. Vorher standen
+    18, 22 und 30 px im Stylesheet: drei Werte, von denen keiner auf einem Raster lag.
+  */
+  /*
+    Die Ikonenskala – dieselben drei Stufen in CSS wie in `ICON` im TypeScript.
+
+    Sie fehlte als Token: Ikonen im Markup kamen aus `ICON.sm/md`, Ikonen aus dem Stylesheet
+    (Leerzustand, untere Leiste) griffen ersatzweise auf die Punkt-Token zu. Zwei Quellen für
+    dieselbe Größe laufen auseinander – gemessen gab es dadurch 16, 20 und 24 px ohne
+    erkennbare Regel (docs/65).
+  */
+  --icon-sm: 16px;  /* neben Fließtext, in kleinen Bauteilen */
+  --icon-md: 20px;  /* der Regelfall: Zeilen, Knöpfe, Überschriften */
+  --icon-lg: 24px;  /* steht für sich: Leerzustand, Daumenleiste */
+
+  /*
+    Die Höhe eines Bedienelements – zwei Stufen, keine dritte.
+
+    `.btn` sagte 44, `.btn-sm` 36; beides war gewollt. Daneben standen vier Bauteile mit einer
+    eigenhändigen 40 – Kopfleistenknopf, Kontomenü, Zurück-Knopf, Farbknopf – und ein Farbfeld
+    mit 34. Gemessen hatte die Anwendung damit fünf Bedienhöhen, und im Bereichskopf standen
+    zwei davon nebeneinander: der Farbknopf 40 px, „Aufgabe" daneben 44 (docs/65).
+
+    Eine Stufe ist nicht „kleiner gemeint", sondern ein Ort: `--control-h` steht für sich,
+    `--control-h-sm` steht in einer Leiste, einer Zeile oder neben einer Hauptaktion. Die
+    berührbare Fläche bleibt davon unberührt – am Finger wachsen beide auf 44 px (§23).
+  */
+  --control-h: 44px;
+  --control-h-sm: 36px;
+
+  --dot-sm: 20px;  /* in Metazeilen und Zuständigkeitsabzeichen */
+  --dot-md: 24px;  /* in Zeilen */
+  --dot-lg: 32px;  /* in Personenlisten */
+
+  --s-1: 4px;   --s-2: 8px;   --s-3: 12px;  --s-4: 16px;
+  --s-5: 20px;  --s-6: 24px;  --s-8: 32px;  --s-10: 40px;
+  --s-12: 48px; --s-16: 64px; --s-20: 80px;
+
+  /* ── Radien ──────────────────────────────────────────────────────
+   * Nicht kantig und nicht rund: eine Ecke, der die Härte genommen wurde. Sechs Pixel an
+   * einer Karte mit 2-px-Rand lesen sich als gedruckt, nicht als Kachel.
+   */
+  --r-sm: 3px; --r-md: 5px; --r-lg: 6px; --r-xl: 10px; --r-full: 999px;
+
+  /* ── Tiefe ───────────────────────────────────────────────────────
+   * **Der versetzte Schatten ist das Erkennungszeichen dieser Gestalt – und er bedeutet
+   * etwas.** Er sitzt ausschließlich an Dingen, die man drücken kann: Ein Knopf steht drei
+   * Pixel über dem Papier, beim Drücken senkt er sich darauf. Keine Weichzeichnung, keine
+   * Transparenz – ein Versatz in Tinte, wie ein Stempel neben seinem Abdruck.
+   *
+   * Flächen bekommen ihn nicht. Eine Karte liegt auf dem Papier, sie schwebt nicht.
+   */
+  --shadow-raised:  3px 3px 0 var(--border);
+  --shadow-overlay: 8px 8px 0 var(--border);
+
+  /* ── Bewegung ────────────────────────────────────────────────────
+   * Umblättern statt animieren: kürzer als zuvor, damit nichts nachschwingt.
+   */
+  --motion-fast: 100ms;
+  --motion-base: 150ms;
+  --motion-slow: 220ms;
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+
+  /* ══ Typografie ══════════════════════════════════════════════════════
+   * **Eine Familie, getrennt durch Gewicht und Breite.**
+   *
+   * Die vorige Gestalt teilte die Arbeit auf zwei Schriften auf – eine benannte, eine
+   * arbeitete. A macht das anders: Dieselbe Schrift wird für Titel **schwer und schmal**
+   * gesetzt und für alles andere klein und fett. Der Unterschied kommt aus den Achsen, nicht
+   * aus dem Schriftkasten.
+   *
+   * `--font-display` zeigt deshalb auf dieselbe Familie. Das Token bleibt, weil die Bauteile
+   * es benutzen und weil es die Rolle benennt – nicht, weil eine zweite Schrift dahintersteht.
+   */
+  --font: "Bricolage Grotesque", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font);
+  /* Ziffern laufen in derselben Schrift, tabellarisch gestellt. */
+  --font-num: var(--font);
+
+  /*
+   * Große Sprünge oben, enge Stufen unten: 40 → 32 → 22 → 17 → 16 → 15 → 14 → 13 → 12.
+   * Der Abstand zwischen Seitentitel und Abschnittstitel ist bewusst groß – in einer Gestalt
+   * ohne feine Grautöne muss die Hierarchie aus der Größe kommen.
+   */
+  --t-display-size: 2.5rem;    --t-display-weight: 800;  --t-display-lh: 1.02;
+  --t-title-size:   2rem;      --t-title-weight:   800;  --t-title-lh:   1.06;
+  --t-heading-size: 1.375rem;  --t-heading-weight: 800;  --t-heading-lh: 1.2;
+  --t-sub-size:     1.0625rem; --t-sub-weight:     800;  --t-sub-lh:     1.32;
+  --t-body-size:    1rem;      --t-body-lh:        1.55;
+  --t-bodysm-size:  0.9375rem; --t-bodysm-lh:      1.5;
+  --t-label-size:   0.875rem;  --t-label-weight:   700;
+  --t-caption-size: 0.8125rem; --t-caption-weight: 700;
+  --t-overline-size: 0.75rem;  --t-overline-weight: 800; --t-overline-track: 0.06em;
+
+  /* Wie eng die großen Grade stehen. Die Breitenachse macht daraus einen eigenen Schnitt
+   * statt einer gestauchten Schrift – deshalb ist sie der Grund für die Schriftwahl. */
+  --display-stretch: 86%;
+
+  /*
+   * Rollen, nicht Bauteile. Jede hat genau ein Paar aus Größe und Gewicht; ein Test hält das
+   * fest. „Alles andere klein und fett" heißt hier: Die Gewichte liegen durchweg hoch, und
+   * Zurücktreten passiert über Farbe, nicht über dünnere Schrift.
+   */
+  /* Titel einer Zeile oder eines Eintrags. */
+  --t-item-size:    var(--t-sub-size);     --t-item-weight:    800;
+  /* Beschriftung eines Bedienelements: Knopf, Umschalter, Wortmarke. */
+  --t-control-size: var(--t-bodysm-size);  --t-control-weight: 800;
+  /* Kleines Etikett auf eigener Fläche: Chip, Abzeichen, Schrittmarke, Navigationstext. */
+  --t-tag-size:     var(--t-caption-size); --t-tag-weight:     800;
+  /* Zähler auf einem Bedienelement – die kleinste Schrift, die noch lesbar ist. */
+  --t-count-size:   var(--t-overline-size); --t-count-weight:  800;
+  /* Begleitinformation, die neben ihrem Bezugstext zurücktreten soll. */
+  --t-quiet-weight: 500;
+
+  /* ── Layout ── */
+  --measure: 64ch;
+  /*
+    Wie breit ein Formularfeld höchstens wird.
+
+    Ohne Grenze zog `width: 100%` ein Auswahlfeld mit dem Wert „Alle Bereiche" auf einem
+    1920-px-Bildschirm über 1580 px – der Pfeil stand anderthalb Meter vom Text entfernt, und
+    daneben lag eine 378 px breite Karte. Zwei Elemente derselben Seite, zwei Breitenlogiken.
+
+    34rem ist kein neuer Wert, sondern die Breite eines Bogens: Ein Feld wird nie breiter als
+    das Formular, in dem es sonst steht. Was in einer Zeile mit anderen liegt (`.field-row`)
+    oder eine Fläche füllt, bleibt davon unberührt.
+  */
+  --measure-field: 34rem;
+  --content-max: 44rem;
+  --sidebar-w: 15rem;
+  --context-w: 18rem;
+  --bottombar-h: 60px;
+  /* Höhe der Kopfleiste – alles, was darunter kleben soll, rechnet damit. */
+  --appbar-h: 56px;
+}
+
+/*
+ * Dunkelmodus in drei Fassungen, damit die Wahl in den Einstellungen greift:
+ *   - ohne Angabe folgt Thealotta dem Gerät,
+ *   - `data-theme="dark"` erzwingt dunkel,
+ *   - `data-theme="light"` erzwingt hell und schlägt die Geräteeinstellung.
+ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    /*
+      Dunkles Papier – und der Aufdruck wechselt die Farbe.
+
+      Im Hellen ist der Rahmen Tinte auf Hafer. Im Dunkeln kann er das nicht bleiben: Ein
+      schwarzer Rand auf dunklem Grund ist kein Rand. Also dreht sich das Paar um – der
+      Rahmen wird Papier, der Grund wird Tinte. Dieselbe Aussage, umgekehrtes Vorzeichen.
+
+      Der versetzte Schatten dreht sich automatisch mit, weil er auf `--border` zeigt.
+
+      Die vier Flächenfarben bleiben gefüllt und behalten ihre Bedeutung; nur Tomate und
+      Senf werden abgesenkt, damit sie auf dunklem Grund nicht glühen.
+    */
+    --success-fg: #8fc4ae;   --success-bg: #17231d;   --success-line: #3a5148;
+    --attention-fg: #141210; --attention-bg: #e0aa14; --attention-line: #f3ede0;
+    --critical-fg: #fbf7ec;  --critical-bg: #a8381a;  --critical-line: #f3ede0;
+    --info-fg: #141210;      --info-bg: #a9a3dd;      --info-line: #f3ede0;
+
+    --bg:             var(--n-950);
+    --surface:        var(--n-850);
+    --surface-raised: var(--n-800);
+    --surface-sunken: var(--n-1000);
+    --surface-hover:  #2a251b;
+    --surface-active: #332d21;
+
+    --border-subtle: #3a331f;
+    --border:        var(--n-100);
+    --border-strong: var(--n-100);
+
+    --text:           var(--n-100);
+    --text-secondary: #bdb29c;
+    --text-muted:     #a89d87;
+    --text-inverse:   var(--n-900);
+
+    --accent:       var(--a-300);
+    --accent-hover: #a8d6c2;
+    --accent-soft:  #1a241f;
+    --accent-line:  #3a5148;
+    --accent-solid:       #57a08a;
+    --accent-solid-hover: #6cb49e;
+    --accent-text:  #0e0c08;
+
+    /* Tomate färbt auch Text (Dringlichkeit, Feldfehler) – auf dunklem Papier braucht sie
+       deshalb eine hellere Fassung, sonst fällt sie unter die Lesbarkeitsgrenze. */
+    --tomate: #f08a5d;
+    --focus: var(--tomate);
+
+    --m1-fg: #90d0b2; --m1-bg: #1f2e27; --m1-line: #3c5d4e;
+    --m2-fg: #90b0d0; --m2-bg: #1f262e; --m2-line: #3c4c5d;
+    --m3-fg: #ae90d0; --m3-bg: #261f2e; --m3-line: #4b3c5d;
+    --m4-fg: #d0ac90; --m4-bg: #2e251f; --m4-line: #5d4a3c;
+    --m5-fg: #d090a8; --m5-bg: #2e1f24; --m5-line: #5d3c48;
+    --m6-fg: #90c3d0; --m6-bg: #1f2b2e; --m6-line: #3c575d;
+    --m7-fg: #d0c790; --m7-bg: #2e2c1f; --m7-line: #5d593c;
+    --m8-fg: #d090d0; --m8-bg: #2e1f2e; --m8-line: #5d3c5d;
+    --m9-fg: #d09090; --m9-bg: #2e1f1f; --m9-line: #5d3c3c;
+    --m10-fg: #9095d0; --m10-bg: #1f202e; --m10-line: #3c3e5d;
+    --m11-fg: #b4d090; --m11-bg: #272e1f; --m11-line: #4f5d3c;
+    --m12-fg: #d090ba; --m12-bg: #2e1f29; --m12-line: #5d3c52;
+
+    /* Auch hier: der Versatz bleibt, er wechselt nur die Farbe. */
+    --shadow-raised:  3px 3px 0 var(--border);
+    --shadow-overlay: 8px 8px 0 var(--border);
+  }
+}
+
+:root[data-theme='dark'] {
+    /*
+      Dunkles Papier – und der Aufdruck wechselt die Farbe.
+
+      Im Hellen ist der Rahmen Tinte auf Hafer. Im Dunkeln kann er das nicht bleiben: Ein
+      schwarzer Rand auf dunklem Grund ist kein Rand. Also dreht sich das Paar um – der
+      Rahmen wird Papier, der Grund wird Tinte. Dieselbe Aussage, umgekehrtes Vorzeichen.
+
+      Der versetzte Schatten dreht sich automatisch mit, weil er auf `--border` zeigt.
+
+      Die vier Flächenfarben bleiben gefüllt und behalten ihre Bedeutung; nur Tomate und
+      Senf werden abgesenkt, damit sie auf dunklem Grund nicht glühen.
+    */
+    --success-fg: #8fc4ae;   --success-bg: #17231d;   --success-line: #3a5148;
+    --attention-fg: #141210; --attention-bg: #e0aa14; --attention-line: #f3ede0;
+    --critical-fg: #fbf7ec;  --critical-bg: #a8381a;  --critical-line: #f3ede0;
+    --info-fg: #141210;      --info-bg: #a9a3dd;      --info-line: #f3ede0;
+
+    --bg:             var(--n-950);
+    --surface:        var(--n-850);
+    --surface-raised: var(--n-800);
+    --surface-sunken: var(--n-1000);
+    --surface-hover:  #2a251b;
+    --surface-active: #332d21;
+
+    --border-subtle: #3a331f;
+    --border:        var(--n-100);
+    --border-strong: var(--n-100);
+
+    --text:           var(--n-100);
+    --text-secondary: #bdb29c;
+    --text-muted:     #a89d87;
+    --text-inverse:   var(--n-900);
+
+    --accent:       var(--a-300);
+    --accent-hover: #a8d6c2;
+    --accent-soft:  #1a241f;
+    --accent-line:  #3a5148;
+    --accent-solid:       #57a08a;
+    --accent-solid-hover: #6cb49e;
+    --accent-text:  #0e0c08;
+
+    /* Tomate färbt auch Text (Dringlichkeit, Feldfehler) – auf dunklem Papier braucht sie
+       deshalb eine hellere Fassung, sonst fällt sie unter die Lesbarkeitsgrenze. */
+    --tomate: #f08a5d;
+    --focus: var(--tomate);
+
+    --m1-fg: #90d0b2; --m1-bg: #1f2e27; --m1-line: #3c5d4e;
+    --m2-fg: #90b0d0; --m2-bg: #1f262e; --m2-line: #3c4c5d;
+    --m3-fg: #ae90d0; --m3-bg: #261f2e; --m3-line: #4b3c5d;
+    --m4-fg: #d0ac90; --m4-bg: #2e251f; --m4-line: #5d4a3c;
+    --m5-fg: #d090a8; --m5-bg: #2e1f24; --m5-line: #5d3c48;
+    --m6-fg: #90c3d0; --m6-bg: #1f2b2e; --m6-line: #3c575d;
+    --m7-fg: #d0c790; --m7-bg: #2e2c1f; --m7-line: #5d593c;
+    --m8-fg: #d090d0; --m8-bg: #2e1f2e; --m8-line: #5d3c5d;
+    --m9-fg: #d09090; --m9-bg: #2e1f1f; --m9-line: #5d3c3c;
+    --m10-fg: #9095d0; --m10-bg: #1f202e; --m10-line: #3c3e5d;
+    --m11-fg: #b4d090; --m11-bg: #272e1f; --m11-line: #4f5d3c;
+    --m12-fg: #d090ba; --m12-bg: #2e1f29; --m12-line: #5d3c52;
+
+    /* Auch hier: der Versatz bleibt, er wechselt nur die Farbe. */
+    --shadow-raised:  3px 3px 0 var(--border);
+    --shadow-overlay: 8px 8px 0 var(--border);
+  }
+
+
+/* ══ Etablierte Farbschemata ═════════════════════════════════════════
+ * Auswählbar unter Einstellungen → Darstellung, gespeichert als `data-scheme` am <html>.
+ *
+ * Die Flächen- und Identitätsfarben stammen unverändert aus den offiziellen Paletten.
+ * Neun Textrollen mussten abgeleitet werden: Diese Paletten sind für Code-Editoren
+ * entworfen, wo eingegraute Kommentare erwünscht sind – in einer Oberfläche mit viel
+ * Fließtext fallen sie unter die Lesbarkeitsgrenze. Abgeleitet heißt: der offizielle Wert
+ * wird in Richtung des Vordergrunds derselben Palette gemischt, bis 4.5:1 erreicht ist.
+ * Kein erfundener Farbton, nur ein hellerer Nachbar. Vollständige Liste in docs/47.
+ *
+ * Geprüft wird jedes Schema in beiden Modi – apps/web/test/tokens.spec.ts.
+ */
+
+/* ── Dracula / Alucard ── offizielle Werte, Abweichungen siehe docs/47 ── */
+:root[data-scheme='dracula'] {
+  --bg: #fffbeb;  --surface: #ffffff;  --surface-raised: #ffffff;
+  --surface-sunken: #f5f1e0;  --surface-hover: #ffffff;  --surface-active: #ededed;
+  --border-subtle: #e9e7dd;  --border: #cfcab4;  --border-strong: #a8a493;
+  --text: #1f1f1f;  --text-secondary: #6c664b;  --text-muted: #6c664b;  --text-inverse: #fffbeb;
+  --accent: #644ac9;  --accent-hover: #5641a7;
+  --accent-soft: #ece9f9;  --accent-line: #c4baea;
+  --accent-solid: #644ac9;  --accent-solid-hover: #5c45b5;  --accent-text: #ffffff;
+  --focus: #644ac9;
+  --success-fg: #14710a;  --success-bg: #e3eee2;  --success-line: #a1c69d;
+  --attention-fg: #a34d14;  --attention-bg: #f4eae3;  --attention-line: #dab8a1;
+  --critical-fg: #bf3829;  --critical-bg: #f9e7e5;  --critical-line: #eab0aa;
+  --info-fg: #036a96;  --info-bg: #e1edf2;  --info-line: #9ac3d5;
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-scheme='dracula']:not([data-theme='light']) {
+  --bg: #21222c;  --surface: #282a36;  --surface-raised: #343746;
+  --surface-sunken: #191a21;  --surface-hover: #343746;  --surface-active: #444654;
+  --border-subtle: #353746;  --border: #44475a;  --border-strong: #6c6e7b;
+  --text: #f8f8f2;  --text-secondary: #a0a9c4;  --text-muted: #98a2c0;  --text-inverse: #21222c;
+  --accent: #c39df8;  --accent-hover: #ceaff7;
+  --accent-soft: #433d59;  --accent-line: #6b598e;
+  --accent-solid: #bd93f9;  --accent-solid-hover: #c49ff8;  --accent-text: #000000;
+  --focus: #c39df8;
+  --success-fg: #50fa7b;  --success-bg: #2d433e;  --success-line: #387d52;
+  --attention-fg: #ffb86c;  --attention-bg: #423b3c;  --attention-line: #7e634c;
+  --critical-fg: #fe7271;  --critical-bg: #422f3a;  --critical-line: #7e3b42;
+  --info-fg: #8be9fd;  --info-bg: #34414e;  --info-line: #507686;
+}
+}
+:root[data-scheme='dracula'][data-theme='dark'] {
+  --bg: #21222c;  --surface: #282a36;  --surface-raised: #343746;
+  --surface-sunken: #191a21;  --surface-hover: #343746;  --surface-active: #444654;
+  --border-subtle: #353746;  --border: #44475a;  --border-strong: #6c6e7b;
+  --text: #f8f8f2;  --text-secondary: #a0a9c4;  --text-muted: #98a2c0;  --text-inverse: #21222c;
+  --accent: #c39df8;  --accent-hover: #ceaff7;
+  --accent-soft: #433d59;  --accent-line: #6b598e;
+  --accent-solid: #bd93f9;  --accent-solid-hover: #c49ff8;  --accent-text: #000000;
+  --focus: #c39df8;
+  --success-fg: #50fa7b;  --success-bg: #2d433e;  --success-line: #387d52;
+  --attention-fg: #ffb86c;  --attention-bg: #423b3c;  --attention-line: #7e634c;
+  --critical-fg: #fe7271;  --critical-bg: #422f3a;  --critical-line: #7e3b42;
+  --info-fg: #8be9fd;  --info-bg: #34414e;  --info-line: #507686;
+}
+
+/* ── Catppuccin Mocha / Latte ── offizielle Werte, Abweichungen siehe docs/47 ── */
+:root[data-scheme='catppuccin'] {
+  --bg: #eff1f5;  --surface: #ffffff;  --surface-raised: #ffffff;
+  --surface-sunken: #e6e9ef;  --surface-hover: #ffffff;  --surface-active: #f1f1f3;
+  --border-subtle: #e8eaee;  --border: #ccd0da;  --border-strong: #b0b4c1;
+  --text: #4c4f69;  --text-secondary: #5d6078;  --text-muted: #63667d;  --text-inverse: #eff1f5;
+  --accent: #8538ea;  --accent-hover: #7a3dd0;
+  --accent-soft: #f1e7fd;  --accent-line: #d2b4f9;
+  --accent-solid: #8839ef;  --accent-solid-hover: #813cdf;  --accent-text: #ffffff;
+  --focus: #8538ea;
+  --success-fg: #46774b;  --success-bg: #e8f4e6;  --success-line: #b3d9aa;
+  --attention-fg: #9e593e;  --attention-bg: #ffece2;  --attention-line: #ffc19d;
+  --critical-fg: #cb123b;  --critical-bg: #fae2e7;  --critical-line: #ed9fb0;
+  --info-fg: #2662dd;  --info-bg: #e4edfe;  --info-line: #a5c2fb;
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-scheme='catppuccin']:not([data-theme='light']) {
+  --bg: #181825;  --surface: #1e1e2e;  --surface-raised: #313244;
+  --surface-sunken: #11111b;  --surface-hover: #313244;  --surface-active: #3d3f52;
+  --border-subtle: #303042;  --border: #45475a;  --border-strong: #63667c;
+  --text: #cdd6f4;  --text-secondary: #a6adc8;  --text-muted: #a6adc8;  --text-inverse: #181825;
+  --accent: #cba6f7;  --accent-hover: #cbb0f6;
+  --accent-soft: #3d3652;  --accent-line: #6c5b88;
+  --accent-solid: #cba6f7;  --accent-solid-hover: #cbacf7;  --accent-text: #000000;
+  --focus: #cba6f7;
+  --success-fg: #a6e3a1;  --success-bg: #2e363c;  --success-line: #546d5c;
+  --attention-fg: #fab387;  --attention-bg: #383039;  --attention-line: #765a52;
+  --critical-fg: #f38ba8;  --critical-bg: #382b3d;  --critical-line: #734a5f;
+  --info-fg: #89b4fa;  --info-bg: #2b3046;  --info-line: #495a80;
+}
+}
+:root[data-scheme='catppuccin'][data-theme='dark'] {
+  --bg: #181825;  --surface: #1e1e2e;  --surface-raised: #313244;
+  --surface-sunken: #11111b;  --surface-hover: #313244;  --surface-active: #3d3f52;
+  --border-subtle: #303042;  --border: #45475a;  --border-strong: #63667c;
+  --text: #cdd6f4;  --text-secondary: #a6adc8;  --text-muted: #a6adc8;  --text-inverse: #181825;
+  --accent: #cba6f7;  --accent-hover: #cbb0f6;
+  --accent-soft: #3d3652;  --accent-line: #6c5b88;
+  --accent-solid: #cba6f7;  --accent-solid-hover: #cbacf7;  --accent-text: #000000;
+  --focus: #cba6f7;
+  --success-fg: #a6e3a1;  --success-bg: #2e363c;  --success-line: #546d5c;
+  --attention-fg: #fab387;  --attention-bg: #383039;  --attention-line: #765a52;
+  --critical-fg: #f38ba8;  --critical-bg: #382b3d;  --critical-line: #734a5f;
+  --info-fg: #89b4fa;  --info-bg: #2b3046;  --info-line: #495a80;
+}
+
+/* ── Nord ── offizielle Werte, Abweichungen siehe docs/47 ── */
+:root[data-scheme='nord'] {
+  --bg: #eceff4;  --surface: #ffffff;  --surface-raised: #ffffff;
+  --surface-sunken: #e5e9f0;  --surface-hover: #ffffff;  --surface-active: #eeeff0;
+  --border-subtle: #edf0f5;  --border: #d8dee9;  --border-strong: #b3b9c4;
+  --text: #2e3440;  --text-secondary: #4c566a;  --text-muted: #4c566a;  --text-inverse: #eceff4;
+  --accent: #4c688b;  --accent-hover: #465e7c;
+  --accent-soft: #ecf0f5;  --accent-line: #c2cfdf;
+  --accent-solid: #5e81ac;  --accent-solid-hover: #58789f;  --accent-text: #000000;
+  --focus: #4c688b;
+  --success-fg: #647363;  --success-bg: #f4f7f1;  --success-line: #dae5d1;
+  --attention-fg: #8c645c;  --attention-bg: #f9f1ee;  --attention-line: #eccfc6;
+  --critical-fg: #9c5660;  --critical-bg: #f7eced;  --critical-line: #e5c0c3;
+  --info-fg: #5c7087;  --info-bg: #f0f4f8;  --info-line: #cdd9e6;
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-scheme='nord']:not([data-theme='light']) {
+  --bg: #2e3440;  --surface: #3b4252;  --surface-raised: #434c5e;
+  --surface-sunken: #272c36;  --surface-hover: #434c5e;  --surface-active: #51596a;
+  --border-subtle: #434b5d;  --border: #4c566a;  --border-strong: #6f7888;
+  --text: #eceff4;  --text-secondary: #d8dee9;  --text-muted: #d8dee9;  --text-inverse: #2e3440;
+  --accent: #b4d5e0;  --accent-hover: #bfdae4;
+  --accent-soft: #495969;  --accent-line: #5e7b8b;
+  --accent-solid: #88c0d0;  --accent-solid-hover: #94c6d4;  --accent-text: #000000;
+  --focus: #b4d5e0;
+  --success-fg: #b5caa5;  --success-bg: #475159;  --success-line: #657469;
+  --attention-fg: #ebcb8b;  --attention-bg: #505259;  --attention-line: #817969;
+  --critical-fg: #d7aeb5;  --critical-bg: #4b4655;  --critical-line: #704e5c;
+  --info-fg: #adc1d6;  --info-bg: #434d5f;  --info-line: #57687e;
+}
+}
+:root[data-scheme='nord'][data-theme='dark'] {
+  --bg: #2e3440;  --surface: #3b4252;  --surface-raised: #434c5e;
+  --surface-sunken: #272c36;  --surface-hover: #434c5e;  --surface-active: #51596a;
+  --border-subtle: #434b5d;  --border: #4c566a;  --border-strong: #6f7888;
+  --text: #eceff4;  --text-secondary: #d8dee9;  --text-muted: #d8dee9;  --text-inverse: #2e3440;
+  --accent: #b4d5e0;  --accent-hover: #bfdae4;
+  --accent-soft: #495969;  --accent-line: #5e7b8b;
+  --accent-solid: #88c0d0;  --accent-solid-hover: #94c6d4;  --accent-text: #000000;
+  --focus: #b4d5e0;
+  --success-fg: #b5caa5;  --success-bg: #475159;  --success-line: #657469;
+  --attention-fg: #ebcb8b;  --attention-bg: #505259;  --attention-line: #817969;
+  --critical-fg: #d7aeb5;  --critical-bg: #4b4655;  --critical-line: #704e5c;
+  --info-fg: #adc1d6;  --info-bg: #434d5f;  --info-line: #57687e;
+}
+
+/* ── Solarized ── offizielle Werte, Abweichungen siehe docs/47 ── */
+:root[data-scheme='solarized'] {
+  --bg: #fdf6e3;  --surface: #ffffff;  --surface-raised: #ffffff;
+  --surface-sunken: #eee8d5;  --surface-hover: #ffffff;  --surface-active: #ebeff0;
+  --border-subtle: #f0ede3;  --border: #ddd6c1;  --border-strong: #aeb3a5;
+  --text: #073642;  --text-secondary: #4b656d;  --text-muted: #546b72;  --text-inverse: #fdf6e3;
+  --accent: #1d6ba2;  --accent-hover: #19608f;
+  --accent-soft: #e5f1fa;  --accent-line: #add3ee;
+  --accent-solid: #268bd2;  --accent-solid-hover: #2281c1;  --accent-text: #000000;
+  --focus: #1d6ba2;
+  --success-fg: #597617;  --success-bg: #f0f3e0;  --success-line: #ced699;
+  --attention-fg: #7a6d16;  --attention-bg: #f6f1e0;  --attention-line: #e1d099;
+  --critical-fg: #c23231;  --critical-bg: #fbe6e6;  --critical-line: #f1adac;
+  --info-fg: #1d7877;  --info-bg: #e5f4f3;  --info-line: #aad9d6;
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-scheme='solarized']:not([data-theme='light']) {
+  --bg: #002b36;  --surface: #073642;  --surface-raised: #0b4a59;
+  --surface-sunken: #00212b;  --surface-hover: #0b4a59;  --surface-active: #1e5864;
+  --border-subtle: #2b4f59;  --border: #586e75;  --border-strong: #7c8c8d;
+  --text: #fdf6e3;  --text-secondary: #b4bbb5;  --text-muted: #aab4b0;  --text-inverse: #002b36;
+  --accent: #82b9d9;  --accent-hover: #9bc5db;
+  --accent-soft: #0d455c;  --accent-line: #155c83;
+  --accent-solid: #268bd2;  --accent-solid-hover: #4098d4;  --accent-text: #000000;
+  --focus: #82b9d9;
+  --success-fg: #a2af36;  --success-bg: #16423a;  --success-line: #395e28;
+  --attention-fg: #c5a132;  --attention-bg: #1c403a;  --attention-line: #4d5728;
+  --critical-fg: #e97e75;  --critical-bg: #213640;  --critical-line: #5c343a;
+  --info-fg: #61b7ac;  --info-bg: #0b434c;  --info-line: #156164;
+}
+}
+:root[data-scheme='solarized'][data-theme='dark'] {
+  --bg: #002b36;  --surface: #073642;  --surface-raised: #0b4a59;
+  --surface-sunken: #00212b;  --surface-hover: #0b4a59;  --surface-active: #1e5864;
+  --border-subtle: #2b4f59;  --border: #586e75;  --border-strong: #7c8c8d;
+  --text: #fdf6e3;  --text-secondary: #b4bbb5;  --text-muted: #aab4b0;  --text-inverse: #002b36;
+  --accent: #82b9d9;  --accent-hover: #9bc5db;
+  --accent-soft: #0d455c;  --accent-line: #155c83;
+  --accent-solid: #268bd2;  --accent-solid-hover: #4098d4;  --accent-text: #000000;
+  --focus: #82b9d9;
+  --success-fg: #a2af36;  --success-bg: #16423a;  --success-line: #395e28;
+  --attention-fg: #c5a132;  --attention-bg: #1c403a;  --attention-line: #4d5728;
+  --critical-fg: #e97e75;  --critical-bg: #213640;  --critical-line: #5c343a;
+  --info-fg: #61b7ac;  --info-bg: #0b434c;  --info-line: #156164;
+}
+
+/* ══ Grundlagen ══════════════════════════════════════════════════════ */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+/*
+ * Der Platz für den Scrollbalken bleibt immer reserviert.
+ *
+ * Ohne das springt die ganze Seite waagerecht, sobald eine Ansicht scrollt und die nächste
+ * nicht: Der Inhalt ist zentriert, ein klassischer Balken nimmt rund 15 px, und die beiden
+ * Spalten der Bereichsseite verschieben sich dadurch um etwa 8 px. Auf Systemen mit
+ * überlagerten Balken (macOS-Standard) fällt es nicht auf – auf Windows, Linux und mit der
+ * Einstellung „Scrollbalken immer anzeigen" bei jedem Wechsel des Abschnitts.
+ *
+ * `stable` reserviert die Rinne dauerhaft, auch wenn gerade nichts zu scrollen ist.
+ */
+html { -webkit-text-size-adjust: 100%; }
+
+/*
+ * Nur dort, wo es klassische Balken gibt: Auf Touchgeräten überlagern sie den Inhalt,
+ * nichts springt – und die reservierte Rinne wäre dort 15 px totes Band am rechten Rand,
+ * das auch die untere Leiste verschmälert (im Test aufgefallen).
+ */
+@media (min-width: 1080px) {
+  html { scrollbar-gutter: stable; }
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: var(--t-body-size);
+  line-height: var(--t-body-lh);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, p, figure, blockquote, ul, ol { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
+button, input, select, textarea { font: inherit; color: inherit; }
+a { color: var(--accent); }
+
+:focus-visible {
+  outline: 2.5px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: var(--r-lg);
+}
+:focus:not(:focus-visible) { outline: none; }
+
+::selection { background: var(--accent-soft); color: var(--text); }
+
+@media (pointer: coarse) {
+  :root { --appbar-h: 60px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ══ Typografie-Rollen ═══════════════════════════════════════════════ */
+
+/* Die großen Grade stehen eng – das ist der Unterschied zwischen Titel und Text. */
+.t-display  { font-family: var(--font-display); font-stretch: var(--display-stretch); font-size: var(--t-display-size); font-weight: var(--t-display-weight); line-height: var(--t-display-lh); letter-spacing: -0.022em; }
+.t-title    { font-family: var(--font-display); font-stretch: var(--display-stretch); font-size: var(--t-title-size);   font-weight: var(--t-title-weight);   line-height: var(--t-title-lh);   letter-spacing: -0.018em; }
+.t-heading  { font-family: var(--font-display); font-size: var(--t-heading-size); font-weight: var(--t-heading-weight); line-height: var(--t-heading-lh); letter-spacing: -0.012em; }
+.t-sub      { font-family: var(--font-display); font-size: var(--t-sub-size);     font-weight: var(--t-sub-weight);     line-height: var(--t-sub-lh);     letter-spacing: -0.004em; }
+/*
+  Die arbeitenden Rollen nennen ihre Familie und ihre Breite ausdrücklich.
+
+  In dieser Gestalt gibt es nur eine Familie, aber zwei Breiten: Die großen Grade stehen eng.
+  Ohne diese Zeilen erbte ein Zähler neben einer Abschnittsüberschrift deren schmalen Schnitt
+  und stand dann als einziger Kleintext der Seite gestaucht da. Eine Rolle, die ihre
+  Ausprägung nur manchmal bekommt, ist keine Rolle.
+*/
+.t-body     { font-family: var(--font); font-size: var(--t-body-size);    line-height: var(--t-body-lh); }
+.t-body-sm  { font-family: var(--font); font-size: var(--t-bodysm-size);  line-height: var(--t-bodysm-lh); }
+.t-label    { font-family: var(--font); font-size: var(--t-label-size);   font-weight: var(--t-label-weight); }
+.t-caption  { font-family: var(--font); font-size: var(--t-caption-size); font-weight: var(--t-caption-weight); }
+.t-overline {
+  font-family: var(--font);
+  font-stretch: 100%;
+  font-size: var(--t-overline-size);
+  font-weight: var(--t-overline-weight);
+  letter-spacing: var(--t-overline-track);
+  text-transform: uppercase;
+}
+
+.c-secondary { color: var(--text-secondary); }
+.c-muted     { color: var(--text-muted); }
+.num         { font-variant-numeric: tabular-nums; }
+
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}

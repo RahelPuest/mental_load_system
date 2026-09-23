@@ -1,0 +1,262 @@
+# Produktionsstack für EINEN Rechner (Raspberry Pi 5, 16 GB, 64-Bit-OS, NVMe/SSD).
+#
+# Erreichbarkeit: Cloudflare Tunnel. Am Router wird KEIN Port geöffnet; cloudflared baut
+# ausschließlich ausgehende Verbindungen auf. Davor liegt Cloudflare Access, sodass ein
+# anonymer Scanner den Login der Anwendung nie zu sehen bekommt.
+#
+# Alle Aufrufe laufen über ops/scripts/thealotta – das Skript setzt --env-file und -f richtig.
+# Von Hand wäre es:
+#   docker compose --env-file ops/docker/.env.prod -f ops/docker/docker-compose.prod.yml \
+#     --profile cloudflare up -d
+#
+# Anleitung: docs/78-selbstbetrieb-rpi5.md
+name: thealotta
+
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: '10m'
+    max-file: '3'
+
+# Gemeinsame Härtung der selbst gebauten Node-Dienste (docs/27 §3).
+x-node-hardening: &node-hardening
+  restart: unless-stopped
+  read_only: true
+  tmpfs: ['/tmp']
+  security_opt: ['no-new-privileges:true']
+  cap_drop: ['ALL']
+  logging: *logging
+
+x-crypto: &crypto
+  ENCRYPTION_KEYS: ${ENCRYPTION_KEYS:?ENCRYPTION_KEYS fehlt – ohne Schlüssel keine Daten}
+  ENCRYPTION_ACTIVE_KEY_ID: ${ENCRYPTION_ACTIVE_KEY_ID:?ENCRYPTION_ACTIVE_KEY_ID fehlt}
+
+services:
+  # ── Daten ────────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: thealotta
+      POSTGRES_PASSWORD: ${POSTGRES_SUPERUSER_PASSWORD:?POSTGRES_SUPERUSER_PASSWORD fehlt}
+      POSTGRES_DB: thealotta
+      # Nur vom initdb-Skript gelesen, und nur beim allerersten Start mit leerem Datenverzeichnis.
+      APP_DB_PASSWORD: ${APP_DB_PASSWORD:?APP_DB_PASSWORD fehlt}
+      MONITOR_DB_PASSWORD: ${MONITOR_DB_PASSWORD:?MONITOR_DB_PASSWORD fehlt}
+      NOTIFIER_DB_PASSWORD: ${NOTIFIER_DB_PASSWORD:?NOTIFIER_DB_PASSWORD fehlt}
+      SYNC_DB_PASSWORD: ${SYNC_DB_PASSWORD:?SYNC_DB_PASSWORD fehlt}
+    command:
+      - postgres
+      - -c
+      - max_connections=60
+      - -c
+      - shared_buffers=1GB
+      - -c
+      - effective_cache_size=4GB
+      - -c
+      - work_mem=16MB
+      - -c
+      - maintenance_work_mem=256MB
+      - -c
+      - wal_compression=on
+      - -c
+      - log_min_duration_statement=1000
+      - -c
+      - log_statement=none
+    volumes:
+      # MUSS lokal auf SSD/NVMe liegen – kein NFS, kein SMB (docs/78 §2).
+      - ${DATA_DIR:-/srv/thealotta}/pgdata:/var/lib/postgresql/data
+      - ./initdb-prod:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U thealotta -d thealotta']
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    logging: *logging
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    # Nur Transport – die Wahrheit steht in Postgres (docs/20). Trotzdem mit Passwort:
+    # ein kompromittierter Container im selben Netz soll die Queue nicht umschreiben können.
+    command:
+      - redis-server
+      - --appendonly
+      - 'yes'
+      - --requirepass
+      - ${REDIS_PASSWORD:?REDIS_PASSWORD fehlt}
+      - --maxmemory
+      - 512mb
+      - --maxmemory-policy
+      - noeviction
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    volumes:
+      - ${DATA_DIR:-/srv/thealotta}/redis:/data
+    healthcheck:
+      test: ['CMD-SHELL', 'redis-cli -a "$$REDIS_PASSWORD" ping | grep -q PONG']
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    logging: *logging
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+
+  # ── Migration: läuft bei jedem Start, ist idempotent, läuft als Superuser ────
+  migrate:
+    image: thealotta-api:${IMAGE_TAG:-local}
+    build:
+      context: ../..
+      dockerfile: ops/docker/Dockerfile.api
+    command: ['node', '--experimental-strip-types', 'packages/db/src/migrate.ts']
+    environment:
+      <<: *crypto
+      # Migrationen als Superuser – die Anwendung niemals (ADR-0003).
+      DATABASE_URL: postgres://thealotta:${POSTGRES_SUPERUSER_PASSWORD}@postgres:5432/thealotta
+    depends_on:
+      postgres: { condition: service_healthy }
+    restart: 'no'
+    logging: *logging
+
+  # ── Anwendung ────────────────────────────────────────────────────────
+  api:
+    <<: *node-hardening
+    image: thealotta-api:${IMAGE_TAG:-local}
+    build:
+      context: ../..
+      dockerfile: ops/docker/Dockerfile.api
+    environment:
+      <<: *crypto
+      NODE_ENV: production
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      # Anwendungsrolle: kein Superuser, kein Tabelleneigentümer – sonst ist RLS wirkungslos.
+      DATABASE_URL: postgres://thealotta_app_user:${APP_DB_PASSWORD}@postgres:5432/thealotta
+      DATABASE_POOL_MAX: ${DATABASE_POOL_MAX:-10}
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379
+      SESSION_SECRETS: ${SESSION_SECRETS:?SESSION_SECRETS fehlt (mindestens 32 Zeichen)}
+      SESSION_TTL_DAYS: ${SESSION_TTL_DAYS:-30}
+      # Der Login läuft ausschließlich über HTTPS. Anders geht es nicht: das Sitzungscookie
+      # wird mit Secure gesetzt, und ein Browser nimmt das über http nicht an.
+      COOKIE_SECURE: 'true'
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:?PUBLIC_BASE_URL fehlt, z. B. https://thealotta.example.de}
+      CORS_ORIGINS: ${PUBLIC_BASE_URL}
+      RATE_LIMIT_GLOBAL_PER_MIN: ${RATE_LIMIT_GLOBAL_PER_MIN:-300}
+      RATE_LIMIT_AUTH_PER_MIN: ${RATE_LIMIT_AUTH_PER_MIN:-10}
+      VAPID_PUBLIC_KEY: ${VAPID_PUBLIC_KEY:-}
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+      migrate: { condition: service_completed_successfully }
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+
+  # EIN Worker-Container – bewusst.
+  #
+  # Die Aufteilung in worker-default / worker-sync / worker-notify mit je eigener DB-Rolle
+  # (README §Betrieb, docs/27 §2) ist mit dem heutigen Code NICHT möglich:
+  # apps/worker/src/main.ts startet unbedingt alle drei BullMQ-Worker und liest WORKER_QUEUES
+  # nicht aus. Drei Container würden sich die Jobs gegenseitig wegnehmen und an fehlenden
+  # Rechten scheitern. INV-006 und INV-012 sind damit heute nicht durch Berechtigungen
+  # durchgesetzt. Siehe docs/78 §9.
+  worker:
+    <<: *node-hardening
+    image: thealotta-worker:${IMAGE_TAG:-local}
+    build:
+      context: ../..
+      dockerfile: ops/docker/Dockerfile.worker
+    environment:
+      <<: *crypto
+      NODE_ENV: production
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      DATABASE_URL: postgres://thealotta_app_user:${APP_DB_PASSWORD}@postgres:5432/thealotta
+      DATABASE_POOL_MAX: ${DATABASE_POOL_MAX:-10}
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379
+      WORKER_CONCURRENCY: ${WORKER_CONCURRENCY:-3}
+      VAPID_PUBLIC_KEY: ${VAPID_PUBLIC_KEY:-}
+      VAPID_PRIVATE_KEY: ${VAPID_PRIVATE_KEY:-}
+      VAPID_SUBJECT: ${VAPID_SUBJECT:-mailto:ops@example.invalid}
+      SMTP_URL: ${SMTP_URL:-}
+      SMTP_FROM: ${SMTP_FROM:-Thealotta <noreply@example.invalid>}
+      FEATURE_GOOGLE_CALENDAR: ${FEATURE_GOOGLE_CALENDAR:-false}
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+      migrate: { condition: service_completed_successfully }
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+
+  web:
+    image: thealotta-web:${IMAGE_TAG:-local}
+    build:
+      context: ../..
+      dockerfile: ops/docker/Dockerfile.web
+    restart: unless-stopped
+    # Nur auf dem Pi selbst erreichbar; nach außen geht es allein über den Tunnel.
+    # Praktisch für Diagnose – für den Login taugt es nicht, weil Secure-Cookies
+    # über http nicht angenommen werden.
+    ports: ['127.0.0.1:8080:8080']
+    depends_on: [api]
+    logging: *logging
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+  # ── Sicherung auf die Synology ───────────────────────────────────────
+  backup:
+    image: postgres:16-bookworm
+    restart: unless-stopped
+    entrypoint: ['/bin/bash', '/opt/thealotta/backup-loop.sh']
+    environment:
+      PGHOST: postgres
+      PGUSER: thealotta
+      PGPASSWORD: ${POSTGRES_SUPERUSER_PASSWORD}
+      PGDATABASE: thealotta
+      BACKUP_PASSPHRASE: ${BACKUP_PASSPHRASE:?BACKUP_PASSPHRASE fehlt – unverschlüsselt aufs NAS ist keine Option}
+      BACKUP_AT: ${BACKUP_AT:-02:30}
+      KEEP_DAILY_DAYS: ${KEEP_DAILY_DAYS:-35}
+      KEEP_MONTHLY_COUNT: ${KEEP_MONTHLY_COUNT:-12}
+      VERIFY_WEEKDAY: ${VERIFY_WEEKDAY:-7}
+      HEALTHCHECK_URL: ${HEALTHCHECK_URL:-}
+      TZ: ${TZ:-Europe/Berlin}
+    volumes:
+      - ../scripts/backup-loop.sh:/opt/thealotta/backup-loop.sh:ro
+      # Hier liegt der NFS-Mount der Synology.
+      - ${BACKUP_DIR:?BACKUP_DIR fehlt, z. B. /mnt/synology/thealotta}:/backups
+    depends_on:
+      postgres: { condition: service_healthy }
+    logging: *logging
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
+  # ── Erreichbarkeit ───────────────────────────────────────────────────
+  cloudflared:
+    profiles: ['cloudflare']
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    command: ['tunnel', '--no-autoupdate', 'run']
+    environment:
+      TUNNEL_TOKEN: ${CF_TUNNEL_TOKEN:?CF_TUNNEL_TOKEN fehlt}
+      TUNNEL_METRICS: 127.0.0.1:2000
+    depends_on: [web]
+    # Der Tunnel braucht keinerlei eingehende Erreichbarkeit.
+    read_only: true
+    security_opt: ['no-new-privileges:true']
+    cap_drop: ['ALL']
+    logging: *logging
+    deploy:
+      resources:
+        limits:
+          memory: 256M

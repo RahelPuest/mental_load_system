@@ -1,0 +1,39 @@
+# syntax=docker/dockerfile:1.7
+# Worker-Image. In Produktion laufen drei Instanzen mit UNTERSCHIEDLICHEN DATABASE_URLs
+# (thealotta_monitor / thealotta_notifier / thealotta_sync) – die Rollentrennung trägt INV-006 und INV-012.
+FROM node:24-bookworm-slim AS base
+ENV PNPM_HOME=/pnpm PATH=/pnpm:$PATH
+RUN corepack enable && apt-get update && apt-get install -y --no-install-recommends tini \
+    && rm -rf /var/lib/apt/lists/*
+WORKDIR /app
+
+FROM base AS deps
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+COPY packages/contracts/package.json packages/contracts/
+COPY packages/domain/package.json packages/domain/
+COPY packages/db/package.json packages/db/
+COPY packages/crypto/package.json packages/crypto/
+COPY packages/observability/package.json packages/observability/
+COPY packages/services/package.json packages/services/
+COPY apps/worker/package.json apps/worker/
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile --filter @thealotta/worker...
+
+FROM base AS runtime
+ENV NODE_ENV=production
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/packages ./packages
+COPY --from=deps /app/apps ./apps
+COPY packages ./packages
+COPY apps/worker ./apps/worker
+COPY tsconfig.base.json ./
+
+# uid 10001: fester, nicht privilegierter Nutzer
+RUN useradd --uid 10001 --create-home --shell /usr/sbin/nologin thealotta \
+    && chown -R thealotta:thealotta /app
+USER 10001
+
+
+# Der Worker hat keinen eingehenden Port; die Lebendigkeit wird über die Queue-Metriken überwacht.
+
+ENTRYPOINT ["/usr/bin/tini", "--"]
+CMD ["node", "--experimental-strip-types", "--enable-source-maps", "apps/worker/src/main.ts"]

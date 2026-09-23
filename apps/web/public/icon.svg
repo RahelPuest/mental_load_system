@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" role="img" aria-label="Thealotta">
+  <rect width="192" height="192" rx="42" fill="#2f5d50"/>
+  <circle cx="96" cy="80" r="30" fill="none" stroke="#faf8f5" stroke-width="10"/>
+  <path d="M96 110v46M70 140h52" stroke="#faf8f5" stroke-width="10" stroke-linecap="round"/>
+</svg>

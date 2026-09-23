@@ -1,0 +1,16 @@
+{
+  "name": "@thealotta/services",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": { "typecheck": "tsc --noEmit" },
+  "dependencies": {
+    "@thealotta/contracts": "workspace:*",
+    "@thealotta/crypto": "workspace:*",
+    "@thealotta/db": "workspace:*",
+    "@thealotta/domain": "workspace:*",
+    "drizzle-orm": "^0.36.4"
+  }
+}
