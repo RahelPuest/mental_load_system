@@ -210,13 +210,22 @@ ein Rückweg löst also keinen Fehler aus.
 Die letzten drei Image-Stände bleiben auf dem Gerät, damit der Rückweg nicht daran
 scheitert, dass das Image aufgeräumt wurde.
 
-Der Quellstand kommt entweder per `git pull` (wenn auf dem Pi ein Klon liegt) oder per
-`rsync` vom Arbeitsrechner:
+Seit September 2026 liegt das Projekt unter Versionsverwaltung, aber **ohne Remote**. Für den
+Pi gibt es damit zwei Wege:
 
 ```bash
-rsync -a --delete --exclude node_modules --exclude .env --exclude 'ops/docker/.env.prod' \
-  ./ pi@raspberrypi:/home/pi/thealotta/
+# A – vom Arbeitsrechner klonen (SSH muss vom Pi zum Mac gehen)
+pi$ git clone ssh://benutzer@arbeitsrechner/Users/axon/Documents/development/web/mental_load_system thealotta
+
+# B – ohne Git: spiegeln. Auch hier gilt: Geheimnisse bleiben hier.
+mac$ rsync -a --delete --exclude node_modules --exclude .env --exclude 'ops/docker/.env.prod' \
+       ./ pi@raspberrypi:/home/pi/thealotta/
 ```
+
+Mit Weg A zieht `thealotta update` den neuen Stand selbst (`git pull --ff-only`); mit Weg B
+muss vor jedem Update gespiegelt werden. Ein Remote auf GitHub würde beides vereinfachen –
+dann aber mit privatem Repository, denn `ops/scripts/seed-demo.ts` trägt ein festes
+Demopasswort (§docs/79 und die Anmerkung unten).
 
 > **Wenn die Bauzeit auf dem Pi störend wird**, ist der nächste Schritt eine GitHub Action,
 > die `linux/arm64`-Images in die GitHub Container Registry schiebt; `thealotta update` würde
@@ -317,9 +326,11 @@ unmittelbar betreffen:
    sich die Jobs wegnehmen und an fehlenden Rechten scheitern. INV-006 und INV-012 sind
    damit dokumentiert, aber nicht durch Berechtigungen durchgesetzt. Das Compose fährt
    deshalb bewusst **einen** Worker mit `thealotta_app_user`.
-3. **`ops/scripts/create-roles.sql` enthält die Entwicklungspasswörter**, obwohl die README
-   es als Produktionsschritt führt. Für den Produktivbetrieb legt
-   `ops/docker/initdb-prod/01-roles.sh` die Rollen mit den Werten aus `.env.prod` an.
+3. ~~**`ops/scripts/create-roles.sql` enthält die Entwicklungspasswörter.**~~ **Behoben.**
+   Die Datei arbeitet jetzt mit `\set`-Platzhaltern (`BITTE_ERSETZEN_*`), die vor dem
+   Ausführen ersetzt werden müssen. Für den Produktivbetrieb auf dem eigenen Gerät ist sie
+   ohnehin nicht nötig: `ops/docker/initdb-prod/01-roles.sh` legt die Anmelderollen beim
+   ersten Start mit den Werten aus `.env.prod` an.
 4. **`COOKIE_SECURE` lässt sich nicht abschalten.** `z.coerce.boolean()` macht aus dem
    String `"false"` ein `true` – jeder nichtleere Wert ist wahr. Für Produktion ist das
    richtig; es erklärt aber, warum ein Zugriff über `http` im LAN nie funktionieren wird.
