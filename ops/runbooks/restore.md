@@ -30,17 +30,32 @@ Der Stand muss zur ausgerollten Anwendungsversion passen. Ist er älter, zuerst 
 
 ## 4. Löschungen erneut anwenden (verpflichtend)
 ```bash
+# Erst berichten, was geschähe …
 DATABASE_URL="$RESTORED_URL" pnpm tsx ops/scripts/reapply-deletions.ts
+# … dann ausführen.
+DATABASE_URL="$RESTORED_URL" pnpm tsx ops/scripts/reapply-deletions.ts --jetzt
 ```
 Das Skript liest `deletion_tombstones` und wendet jede Löschung erneut an, die nach `T`
-ausgeführt wurde.
+ausgeführt wurde. Ohne `--jetzt` löscht es nichts — ein Skript, das beim ersten Aufruf
+löscht, wird im Ernstfall aus Angst nicht benutzt.
+
+> **Heute findet es nichts**, und das ist kein Zeichen von Ordnung: Löschanträge werden
+> angelegt und lassen sich abbrechen, aber niemand führt sie aus. Damit schreibt auch nichts
+> Grabsteine (docs/84). Der Schritt bleibt trotzdem Pflicht — er ist fertig, sobald der
+> Ausführer existiert.
 
 ## 5. Integrität prüfen
 ```bash
 DATABASE_URL="$RESTORED_URL" pnpm tsx ops/scripts/verify-restore.ts
 ```
-Bricht bei doppelten Primary Ownern, ungültigen Bereichspfaden, `known`-Werten ohne Inhalt
-oder unterbrochener Audit-Hash-Kette ab.
+Acht Prüfungen: Bestand vorhanden, Audit-Strom vollständig, Bereichsbaum ohne Zyklen und
+ohne verwaiste Eltern, kein Bereich mit zwei Hauptverantwortlichen, kein veröffentlichtes
+Ereignis ohne Zeitpunkt, keine `known`-Angabe ohne Wert, Fremdschlüssel nachvalidiert.
+Beendet sich mit 1, sobald eine fällt.
+
+> Die **Unverfälschtheit** der Audit-Hashkette prüft es bewusst nicht — sie lässt sich derzeit
+> nicht zuverlässig nachrechnen (docs/84). Geprüft wird die Vollständigkeit des Stroms: Eine
+> abgeschnittene oder halb eingespielte Historie fällt auf.
 
 ## 6. Umschalten und aufarbeiten
 ```bash

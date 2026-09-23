@@ -81,6 +81,7 @@ Das System heißt **Thealotta** (Arbeitstitel) – *Mental Load Infrastructure f
 | 80 | [Planung für Tag, Woche und Monat](80-planung-tag-woche-monat.md) | Sechs Reihenfolgen aus Ablaufplanung und Klinik – mit ehrlicher Angabe, wie gut jede belegt ist |
 | 81 | [Bestehende Einträge ändern](81-eintraege-aendern.md) | Anlegen ging überall, Berichtigen nirgends – fünf fehlende Routen und ein Knopf, der seinen Eintrag nennt |
 | 82 | [UX-Audit, vierter Durchgang](82-ux-audit-4.md) | Getönte Karten ohne eigene Textfarbe, zwei Primäraktionen, ein Bauteil für zwei Aufgaben – und ein Name, der zuletzt kam |
+| 84 | [Rollentrennung und Restore-Skripte](84-rollentrennung-und-restore.md) | WORKER_QUEUES wirkt endlich – und zwei Zusagen, die das Produkt bisher nicht einlöst |
 
 ## Architecture Decision Records
 Siehe [adr/](adr/) – ADR-0001 ff.

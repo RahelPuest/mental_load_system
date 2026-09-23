@@ -16,7 +16,7 @@ export const LOG_ALLOWLIST: ReadonlySet<string> = new Set([
   'deliveryId', 'connectionId', 'inboxItemId', 'jobId', 'eventId', 'subjectId', 'grantId',
   // Technische Metadaten
   'route', 'method', 'statusCode', 'durationMs', 'outcome', 'attempt', 'attemptCount',
-  'queue', 'job', 'topic', 'consumer', 'channel', 'provider', 'ruleKind', 'signalKind',
+  'queue', 'queues', 'repeatables', 'job', 'topic', 'consumer', 'channel', 'provider', 'ruleKind', 'signalKind',
   'eventType', 'subjectType', 'actorKind', 'capability', 'matchedRule', 'code', 'errorCode',
   'state', 'fromState', 'toState', 'count', 'batchSize', 'lagMs', 'nextAttemptAt',
   'ipHash', 'userAgentHash', 'schemaVersion', 'migration', 'keyId', 'reason',

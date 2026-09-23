@@ -265,11 +265,13 @@ openssl enc -d -aes-256-cbc -md sha512 -pbkdf2 -iter 300000 \
   | docker compose ... exec -T postgres pg_restore -U thealotta -d thealotta --clean --if-exists
 ```
 
-**Achtung, offene Stelle:** docs/29 §3 macht Schritt 4 zur Pflicht –
-`ops/scripts/reapply-deletions.ts` soll nach einem Restore die Löschanträge erneut anwenden,
-weil ein Restore sonst gelöschte Daten wiederherstellt und damit ein Datenschutzvorfall wäre.
-**Dieses Skript existiert nicht**, `verify-restore.ts` ebenso wenig. Vor dem ersten echten
-Restore ist das nachzuholen.
+**Beide Skripte gibt es jetzt** (docs/84): `ops/scripts/verify-restore.ts` prüft den
+zurückgespielten Bestand in acht Punkten, `ops/scripts/reapply-deletions.ts` wendet
+festgehaltene Löschungen erneut an — ohne `--jetzt` nur als Bericht.
+
+**Was noch offen ist:** Löschanträge werden angelegt und lassen sich abbrechen, aber niemand
+führt sie aus. Damit schreibt auch nichts Grabsteine, und Schritt 4 findet heute nichts. Die
+API verspricht „die Löschung wird in 30 Tagen ausgeführt"; eingelöst wird das nicht.
 
 ## 10. Laufender Betrieb
 
@@ -319,13 +321,13 @@ unmittelbar betreffen:
    jetzt in `monitorEvaluateInput()` (`apps/worker/src/jobs/maintenance.ts`), die Leseseite
    prüft die Nutzlast statt sie zu behaupten, und
    `apps/worker/test/monitor-scan-naht.spec.ts` deckt die Naht ab.
-2. **Die Rollentrennung der Worker ist nicht in Kraft.** `WORKER_QUEUES` steht im
-   Zod-Schema (`packages/contracts/src/env.ts:56`) und wird von `main.ts` nie gelesen;
-   jeder Prozess startet alle drei BullMQ-Worker. Die drei Deployments aus
-   README §Betrieb und docs/27 §2 sind deshalb heute nicht möglich – drei Container würden
-   sich die Jobs wegnehmen und an fehlenden Rechten scheitern. INV-006 und INV-012 sind
-   damit dokumentiert, aber nicht durch Berechtigungen durchgesetzt. Das Compose fährt
-   deshalb bewusst **einen** Worker mit `thealotta_app_user`.
+2. ~~**Die Rollentrennung der Worker ist nicht in Kraft.**~~ **Behoben.** `WORKER_QUEUES`
+   stand im Zod-Schema und wurde nie gelesen; jeder Prozess startete alle drei BullMQ-Worker.
+   Jetzt bedient jeder Prozess genau die konfigurierten Schlangen, und das Produktions-Compose
+   fährt drei Worker mit je eigener Datenbankrolle: `worker-default` (`thealotta_app_user`),
+   `worker-sync` (`thealotta_sync_user`), `worker-notify` (`thealotta_notifier_user`).
+   INV-006 und INV-012 sind damit durch Berechtigungen durchgesetzt statt durch Disziplin
+   (docs/84).
 3. ~~**`ops/scripts/create-roles.sql` enthält die Entwicklungspasswörter.**~~ **Behoben.**
    Die Datei arbeitet jetzt mit `\set`-Platzhaltern (`BITTE_ERSETZEN_*`), die vor dem
    Ausführen ersetzt werden müssen. Für den Produktivbetrieb auf dem eigenen Gerät ist sie

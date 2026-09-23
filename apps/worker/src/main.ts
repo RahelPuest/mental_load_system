@@ -14,6 +14,7 @@ import { evaluateMonitorJob, type MonitorEvaluateInput } from './jobs/monitor-ev
 import { dispatchNotifications } from './jobs/notification-dispatch.js'
 import { syncIcsConnection } from './jobs/calendar-sync.js'
 import { safeFetchText } from './calendar/safe-fetch.js'
+import { parseQueues, schedulesRepeatables } from './queues.js'
 import { emailSender, inAppSender, pushSender } from './senders.js'
 import type { ChannelSender } from './jobs/notification-dispatch.js'
 
@@ -25,6 +26,14 @@ const logger = createLogger({
   version: process.env['GIT_SHA'] ?? 'dev',
   env: env.NODE_ENV,
 })
+
+/*
+  Welche Warteschlangen bedient dieser Prozess (docs/83)?
+
+  Wird ausgewertet, bevor irgendetwas verbunden wird: Ein Tippfehler in `WORKER_QUEUES` soll
+  den Start verhindern, nicht zu einem Prozess führen, der stumm die falsche Arbeit macht.
+*/
+const aktiveQueues = parseQueues(env.WORKER_QUEUES)
 
 const handle = createDb(env.DATABASE_URL, { max: env.DATABASE_POOL_MAX, onnotice: false })
 const connection = new IORedis(env.REDIS_URL, { maxRetriesPerRequest: null })
@@ -75,7 +84,9 @@ async function instrument<T>(queue: string, name: string, fn: () => Promise<T>):
   }
 }
 
-const defaultWorker = new Worker(
+const gestartet: Worker[] = []
+
+const defaultWorker = aktiveQueues.has('default') ? new Worker(
   'default',
   async (job: Job) => {
     const now = new Date()
@@ -140,9 +151,9 @@ const defaultWorker = new Worker(
     }
   },
   { connection, concurrency: env.WORKER_CONCURRENCY },
-)
+) : null
 
-const syncWorker = new Worker(
+const syncWorker = aktiveQueues.has('sync') ? new Worker(
   'sync',
   async (job: Job) => {
     const now = new Date()
@@ -166,9 +177,9 @@ const syncWorker = new Worker(
     )
   },
   { connection, concurrency: 2 },
-)
+) : null
 
-const notifyWorker = new Worker(
+const notifyWorker = aktiveQueues.has('notify') ? new Worker(
   'notify',
   async (job: Job) => {
     const now = new Date()
@@ -178,7 +189,7 @@ const notifyWorker = new Worker(
     return instrument('notify', job.name, () => dispatchNotifications(handle.db, householdId, senders, now))
   },
   { connection, concurrency: 3 },
-)
+) : null
 
 async function scheduleRepeatables(): Promise<void> {
   await queues.default.add('outbox.relay', {}, { repeat: { every: 2_000 }, ...defaultJobOptions })
@@ -187,13 +198,20 @@ async function scheduleRepeatables(): Promise<void> {
 }
 
 async function main(): Promise<void> {
-  await scheduleRepeatables()
-  logger.info({ queues: Object.keys(queues) }, 'Worker gestartet')
+  for (const w of [defaultWorker, syncWorker, notifyWorker]) if (w) gestartet.push(w)
+
+  // Nur der Prozess mit der `default`-Schlange trägt die Wiederholungen ein.
+  if (schedulesRepeatables(aktiveQueues)) await scheduleRepeatables()
+
+  logger.info(
+    { queues: [...aktiveQueues], repeatables: schedulesRepeatables(aktiveQueues) },
+    'Worker gestartet',
+  )
 }
 
 const shutdown = async (signal: string): Promise<void> => {
   logger.info({ reason: signal }, 'fahre herunter')
-  await Promise.allSettled([defaultWorker.close(), syncWorker.close(), notifyWorker.close()])
+  await Promise.allSettled(gestartet.map((w) => w.close()))
   await Promise.allSettled(Object.values(queues).map((q) => q.close()))
   await connection.quit()
   await handle.close()

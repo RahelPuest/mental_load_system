@@ -158,34 +158,37 @@ services:
         limits:
           memory: 1G
 
-  # EIN Worker-Container – bewusst.
+  # ── Drei Worker, drei Rollen ─────────────────────────────────────────
   #
-  # Die Aufteilung in worker-default / worker-sync / worker-notify mit je eigener DB-Rolle
-  # (README §Betrieb, docs/27 §2) ist mit dem heutigen Code NICHT möglich:
-  # apps/worker/src/main.ts startet unbedingt alle drei BullMQ-Worker und liest WORKER_QUEUES
-  # nicht aus. Drei Container würden sich die Jobs gegenseitig wegnehmen und an fehlenden
-  # Rechten scheitern. INV-006 und INV-012 sind damit heute nicht durch Berechtigungen
-  # durchgesetzt. Siehe docs/78 §9.
-  worker:
+  # Das ist keine Skalierungsmaßnahme, sondern die Durchsetzung zweier Invarianten
+  # (README §Betrieb, docs/27 §2, docs/83):
+  #
+  #   INV-006  Eine fehlgeschlagene Zustellung ändert nichts am Quellobjekt.
+  #   INV-012  Ein Integrationsausfall löscht und schließt nichts.
+  #
+  # Beide hingen bis September 2026 an Disziplin: `WORKER_QUEUES` stand im Schema und wurde
+  # nie gelesen, jeder Prozess startete alle drei Schlangen. Jetzt bekommt jeder Prozess
+  # genau die Schlange **und** genau die Datenbankrolle, die zu ihr gehört. Ein Zusteller,
+  # der eine Aufgabe löschen wollte, scheitert nicht an einer Prüfung – er darf es nicht.
+  #
+  # Jeder bekommt außerdem nur die Geheimnisse, die er braucht: VAPID und SMTP liegen allein
+  # beim Zusteller, die Kalendereinstellungen allein beim Abgleich.
+
+  worker-default: &worker
     <<: *node-hardening
     image: thealotta-worker:${IMAGE_TAG:-local}
     build:
       context: ../..
       dockerfile: ops/docker/Dockerfile.worker
-    environment:
+    environment: &worker-env
       <<: *crypto
       NODE_ENV: production
       LOG_LEVEL: ${LOG_LEVEL:-info}
       DATABASE_URL: postgres://thealotta_app_user:${APP_DB_PASSWORD}@postgres:5432/thealotta
       DATABASE_POOL_MAX: ${DATABASE_POOL_MAX:-10}
       REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379
+      WORKER_QUEUES: default
       WORKER_CONCURRENCY: ${WORKER_CONCURRENCY:-3}
-      VAPID_PUBLIC_KEY: ${VAPID_PUBLIC_KEY:-}
-      VAPID_PRIVATE_KEY: ${VAPID_PRIVATE_KEY:-}
-      VAPID_SUBJECT: ${VAPID_SUBJECT:-mailto:ops@example.invalid}
-      SMTP_URL: ${SMTP_URL:-}
-      SMTP_FROM: ${SMTP_FROM:-Thealotta <noreply@example.invalid>}
-      FEATURE_GOOGLE_CALENDAR: ${FEATURE_GOOGLE_CALENDAR:-false}
     depends_on:
       postgres: { condition: service_healthy }
       redis: { condition: service_healthy }
@@ -194,6 +197,39 @@ services:
       resources:
         limits:
           memory: 1G
+
+  # Kalenderabgleich. `thealotta_sync` darf Kalendertermine schreiben, aber weder Aufgaben
+  # noch Vorgänge anfassen – das ist INV-012 als Berechtigung statt als Vorsatz.
+  worker-sync:
+    <<: *worker
+    environment:
+      <<: *worker-env
+      DATABASE_URL: postgres://thealotta_sync_user:${SYNC_DB_PASSWORD}@postgres:5432/thealotta
+      WORKER_QUEUES: sync
+      WORKER_CONCURRENCY: 2
+      FEATURE_GOOGLE_CALENDAR: ${FEATURE_GOOGLE_CALENDAR:-false}
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
+  # Zustellung. `thealotta_notifier` liest fachliche Tabellen nur – INV-006 als Berechtigung.
+  worker-notify:
+    <<: *worker
+    environment:
+      <<: *worker-env
+      DATABASE_URL: postgres://thealotta_notifier_user:${NOTIFIER_DB_PASSWORD}@postgres:5432/thealotta
+      WORKER_QUEUES: notify
+      WORKER_CONCURRENCY: 3
+      VAPID_PUBLIC_KEY: ${VAPID_PUBLIC_KEY:-}
+      VAPID_PRIVATE_KEY: ${VAPID_PRIVATE_KEY:-}
+      VAPID_SUBJECT: ${VAPID_SUBJECT:-mailto:ops@example.invalid}
+      SMTP_URL: ${SMTP_URL:-}
+      SMTP_FROM: ${SMTP_FROM:-Thealotta <noreply@example.invalid>}
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
   web:
     image: thealotta-web:${IMAGE_TAG:-local}
