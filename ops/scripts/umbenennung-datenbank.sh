@@ -24,6 +24,9 @@ ALT_PROJEKT=mira
 NEU_PROJEKT=thealotta
 NEU_PW=thealotta_dev_only
 TMP_ROLLE=umbenenner_einmalig
+# Kein festes Passwort im Skript – auch nicht für eine Rolle, die nach zwei Minuten wieder
+# verschwindet. Ein Literal in einer Datei ist ein Literal in der Historie.
+TMP_PW=$(openssl rand -hex 24)
 PORT=55432
 
 c_green=$'\033[32m'; c_yellow=$'\033[33m'; c_red=$'\033[31m'; c_dim=$'\033[2m'; c_off=$'\033[0m'
@@ -103,11 +106,11 @@ ok "mira_test entfernt (wird als thealotta_test neu angelegt)"
 info "5/9 Vorübergehende Superuser-Rolle anlegen"
 R mira postgres >/dev/null <<SQL
 DROP ROLE IF EXISTS $TMP_ROLLE;
-CREATE ROLE $TMP_ROLLE SUPERUSER LOGIN PASSWORD 'einmalig';
+CREATE ROLE $TMP_ROLLE SUPERUSER LOGIN PASSWORD '$TMP_PW';
 SQL
 
 info "6/9 Datenbank und Superuser umbenennen"
-docker exec -e PGPASSWORD=einmalig -i "${NEU_PROJEKT}-postgres-1" \
+docker exec -e PGPASSWORD="$TMP_PW" -i "${NEU_PROJEKT}-postgres-1" \
   psql -v ON_ERROR_STOP=1 -h 127.0.0.1 -U "$TMP_ROLLE" -d postgres >/dev/null <<SQL
 ALTER DATABASE mira RENAME TO thealotta;
 ALTER ROLE mira RENAME TO thealotta;
