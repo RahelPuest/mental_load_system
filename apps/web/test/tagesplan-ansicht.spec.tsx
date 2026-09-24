@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { installBackend, renderPage, settle } from './harness.js'
 import { NowPage } from '../src/pages/NowPage.js'
 import fixtures from './fixtures/api.json' with { type: 'json' }
@@ -156,5 +157,52 @@ describe('In der Liste lässt sich arbeiten', () => {
 
     const grund = container.querySelector('.plan-grund')
     expect(grund?.textContent).toContain('Von allem Offenen läuft das hier als Erstes ab.')
+  })
+})
+
+describe('Der Weg zurück zu „Jetzt"', () => {
+  /*
+   * Gemeldet als: „wenn man bei Was zählt gerade Tag/Woche/Monat ausgewählt hat, kann man
+   * nicht mehr zurück zu Jetzt."
+   *
+   * Ursache war ein Zustand zu wenig: „noch nicht entschieden" und „ausdrücklich Jetzt
+   * gewählt" waren beide `null`. `useAsync` behält die alten Daten, während neu geladen wird –
+   * nach dem Klick stand die vorige Antwort mit ihrem Plan noch da, der Übernahme-Block sah
+   * „Plan vorhanden, nichts eingestellt" und stellte sofort wieder her, was der Klick gerade
+   * abgeschaltet hatte.
+   *
+   * Der Fall ist genau dann scharf, wenn der Server eine Liste mitschickt – also bei einer
+   * gemerkten Vorgabe. Deshalb liefert die Attrappe hier immer einen Plan.
+   */
+  it('nach Woche führt ein Klick auf „Jetzt" zurück – auch bei gemerkter Vorgabe', async () => {
+    installBackend({ routes: { now: NOW_MIT_PLAN } })
+    renderPage(<NowPage />)
+    await settle()
+
+    const reiter = () => screen.getByRole('radiogroup', { name: 'Ansicht' })
+    // Der Server schickt einen Tagesplan mit – „Heute" steht gewählt.
+    expect(within(reiter()).getByRole('radio', { name: 'Heute' }).getAttribute('aria-checked')).toBe('true')
+    expect(screen.queryByText(/Passt nicht in den Zeitraum/)).toBeTruthy()
+
+    await userEvent.click(within(reiter()).getByRole('radio', { name: 'Jetzt' }))
+    await settle()
+
+    expect(within(reiter()).getByRole('radio', { name: 'Jetzt' }).getAttribute('aria-checked')).toBe('true')
+    expect(screen.queryByText(/Passt nicht in den Zeitraum/), 'die Liste muss verschwinden').toBeNull()
+    expect(screen.queryByText(/Wie sortiert wird/), 'und mit ihr die Einstellungen').toBeNull()
+  })
+
+  it('und wieder hin – der Weg ist in beide Richtungen offen', async () => {
+    installBackend({ routes: { now: NOW_MIT_PLAN } })
+    renderPage(<NowPage />)
+    await settle()
+
+    const reiter = () => screen.getByRole('radiogroup', { name: 'Ansicht' })
+    await userEvent.click(within(reiter()).getByRole('radio', { name: 'Jetzt' }))
+    await settle()
+    await userEvent.click(within(reiter()).getByRole('radio', { name: 'Woche' }))
+    await settle()
+
+    expect(within(reiter()).getByRole('radio', { name: 'Woche' }).getAttribute('aria-checked')).toBe('true')
   })
 })

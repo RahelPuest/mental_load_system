@@ -54,16 +54,32 @@ export function NowPage() {
    * liefert den Plan aber auch ungefragt, wenn der Betrachter ihn sich einmal gemerkt hat;
    * deshalb wird die Einstellung aus der Antwort übernommen, sobald sie da ist.
    */
-  const [planSettings, setPlanSettings] = useState<PlanSettings | null>(null)
+  /*
+    Drei Zustände, nicht zwei.
+
+    `undefined` heißt „noch nicht entschieden" – dann darf eine gemerkte Vorgabe übernommen
+    werden. `null` heißt „der Betrachter hat ausdrücklich ‚Jetzt' gewählt". Beides als `null`
+    zu führen war der Fehler: `useAsync` behält die alten Daten, während neu geladen wird
+    (`keepPrevious`). Nach einem Klick auf „Jetzt" stand die vorige Antwort noch da, der
+    Übernahme-Block sah „Plan vorhanden, nichts eingestellt" und stellte sofort wieder her,
+    was der Klick gerade abgeschaltet hatte. Der Reiter ließ sich nicht verlassen.
+  */
+  const [planSettings, setPlanSettings] = useState<PlanSettings | null | undefined>(undefined)
 
   const view = useAsync<NowResponse | null>(
     () => (household ? endpoints.now(household.id, planSettings ?? undefined) : Promise.resolve(null)),
     [household?.id, planSettings?.horizon, planSettings?.strategy, planSettings?.aging, planSettings?.slack],
   )
 
-  const plan = view.data?.plan ?? null
-  // Gemerkte Vorgabe: einmal übernehmen, damit die Steuerung den tatsächlichen Stand zeigt.
-  if (plan && planSettings === null) {
+  /*
+    Wer „Jetzt" gewählt hat, bekommt keine Liste – auch dann nicht, wenn der Server eine
+    mitschickt, weil eine Vorgabe gemerkt ist. Die Vorgabe bleibt erhalten; sie gilt beim
+    nächsten Aufruf wieder.
+  */
+  const plan = planSettings === null ? null : (view.data?.plan ?? null)
+
+  // Gemerkte Vorgabe: genau einmal übernehmen, solange nichts entschieden ist.
+  if (plan && planSettings === undefined) {
     setPlanSettings({ horizon: plan.horizon, strategy: plan.strategy, aging: plan.aging, slack: plan.slack })
   }
 
