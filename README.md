@@ -343,8 +343,16 @@ PostgreSQL 16 mit Point-in-Time-Recovery und ein Redis 7.
 ### 1. Datenbankrollen anlegen (einmalig, als Superuser)
 
 ```bash
-psql "$ADMIN_URL" -f ops/scripts/create-roles.sql
+psql "$ADMIN_URL" \
+  -v app_pw="$APP_DB_PASSWORD" -v monitor_pw="$MONITOR_DB_PASSWORD" \
+  -v notifier_pw="$NOTIFIER_DB_PASSWORD" -v sync_pw="$SYNC_DB_PASSWORD" \
+  -f ops/scripts/create-roles.sql
 ```
+
+Fehlt eine der vier Variablen, setzt das Skript für diese Rolle einen Platzhalter, mit dem
+sich niemand anmelden kann – lieber ein Anmeldefehler als still ein bekanntes Passwort.
+Für den Betrieb auf dem eigenen Gerät nimmt `ops/docker/initdb-prod/01-roles.sh` die
+Werte von allein aus `.env.prod`.
 
 > **Das ist kein optionaler Härtungsschritt.** Postgres umgeht Row Level Security für Superuser
 > und Tabelleneigentümer – auch bei `FORCE ROW LEVEL SECURITY`. Verbindet die Anwendung als

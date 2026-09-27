@@ -1,0 +1,42 @@
+# Konfiguration für gitleaks (CI-Job „Sicherheitsprüfungen").
+#
+# Der Zuschnitt ist absichtlich eng: erlaubt werden **einzelne bekannte Werte**, keine
+# Verzeichnisse und keine Regeln. Ein echtes Geheimnis in `apps/api/test/helpers.ts` oder in
+# `.env.example` schlägt weiterhin an – nur genau diese Zeichenketten tun es nicht. Preis dafür:
+# wer einen neuen Entwicklungsplatzhalter einführt, muss ihn hier eintragen. Das ist gewollt,
+# denn die Alternative wäre eine Ausnahme, die mit der Zeit alles durchlässt.
+#
+# Warum ein einziger `[allowlist]`-Block und keine Bindung an Pfade: gitleaks 8.24 liest global
+# nur den Singular (`[[allowlists]]` im Plural wird stillschweigend ignoriert – geprüft), und
+# `paths` und `regexes` in einem Block sind mit ODER verknüpft. Ein Pfad hier würde also die
+# ganze Datei freistellen statt nur den Wert darin. Deshalb: nur Werte.
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Bekannte Platzhalter, Testkennwörter und ein öffentlicher Fremdschlüssel – Begründung je Zeile."
+regexes = [
+  # .env.example: Die Vorlage MUSS einen Wert der richtigen Länge zeigen, sonst prüft niemand
+  # die Mindestlänge von 32 Zeichen, bevor es im Betrieb auffällt.
+  '''bitte_ersetzen_mindestens_32_zeichen_lang_1234''',
+
+  # Sitzungsgeheimnisse der Entwicklung: apps/api/test/helpers.ts und
+  # ops/docker/docker-compose.yml. Der Produktivstack (docker-compose.prod.yml) liest
+  # ausschließlich aus .env.prod und hat keinen eingebauten Wert.
+  '''test_secret_that_is_definitely_long_enough_1234''',
+  '''entwicklung_nur_lokal_mindestens_32_zeichen_lang''',
+
+  # Verschlüsselungsschlüssel der Entwicklung, base64 von „development_only_key_32_bytes_!!".
+  '''ZGV2ZWxvcG1lbnRfb25seV9rZXlfMzJfYnl0ZXNfISE=''',
+
+  # Kennwörter von Konten, die nur in einer Wegwerfdatenbank existieren: Testharness und
+  # Demo-Seed. Wer damit irgendwo hereinkommt, hat ein anderes Problem als dieses Repository.
+  '''Korrekt-Pferd-Batterie-Klammer-7''',
+  '''Neues-Sicheres-Kennwort-99''',
+
+  # Öffentlicher Web-App-Schlüssel von Bring!, kein Nutzergeheimnis: er steht im
+  # Netzwerkverkehr der Web-App und in jeder Gemeinschaftsimplementierung. Siehe den Kommentar
+  # in packages/services/src/bring/client.ts, der genau das festhält.
+  '''cof4Nc6D8saplXjE3h3HXqHH8m7VU2i1Gs0g85Sp''',
+]

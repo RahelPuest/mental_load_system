@@ -6,6 +6,10 @@ on:
   pull_request:
 
 env:
+  # Kein Geheimnis: ein Wegwerf-Postgres im Runner, der den Job nicht überlebt. Der Wert
+  # steht hier genau einmal, weil er sonst in den URLs und im Rollenskript auseinanderläuft –
+  # und das Auseinanderlaufen merkt man erst an 33 roten Suiten mit derselben Meldung.
+  DEV_DB_PASSWORD: thealotta_dev_only
   DATABASE_ADMIN_URL: postgres://thealotta:thealotta_dev_only@localhost:5432/thealotta
   TEST_DATABASE_URL: postgres://thealotta_app_user:thealotta_dev_only@localhost:5432/thealotta
   DATABASE_URL: postgres://thealotta_app_user:thealotta_dev_only@localhost:5432/thealotta
@@ -60,7 +64,11 @@ jobs:
       # Die Anwendung darf NICHT als Superuser verbinden – sonst umgeht Postgres die RLS
       # und die Tenant-Isolation wäre nur scheinbar wirksam (ADR-0003).
       - name: Rollen anlegen
-        run: psql "$DATABASE_ADMIN_URL" -f ops/scripts/create-roles.sql
+        run: |
+          psql "$DATABASE_ADMIN_URL" \
+            -v app_pw="$DEV_DB_PASSWORD" -v monitor_pw="$DEV_DB_PASSWORD" \
+            -v notifier_pw="$DEV_DB_PASSWORD" -v sync_pw="$DEV_DB_PASSWORD" \
+            -f ops/scripts/create-roles.sql
       - name: Migrationen anwenden
         run: DATABASE_URL="$DATABASE_ADMIN_URL" pnpm db:migrate
 
@@ -85,7 +93,12 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 24, cache: pnpm }
       - run: pnpm install --frozen-lockfile
-      - run: psql "$DATABASE_ADMIN_URL" -f ops/scripts/create-roles.sql
+      - name: Rollen anlegen
+        run: |
+          psql "$DATABASE_ADMIN_URL" \
+            -v app_pw="$DEV_DB_PASSWORD" -v monitor_pw="$DEV_DB_PASSWORD" \
+            -v notifier_pw="$DEV_DB_PASSWORD" -v sync_pw="$DEV_DB_PASSWORD" \
+            -f ops/scripts/create-roles.sql
       - name: Migrationen anwenden
         run: DATABASE_URL="$DATABASE_ADMIN_URL" pnpm db:migrate
       - name: Seed einspielen
@@ -113,9 +126,19 @@ jobs:
       - name: Abhängigkeiten prüfen
         run: pnpm audit --audit-level high
         continue-on-error: true
+      # Nicht gitleaks/gitleaks-action@v2: die prüft bei einem `push` nur die Spanne
+      # <vorher>^..<nachher>. Beim ersten Push eines Repositorys hat der Wurzelcommit kein `^`,
+      # git bricht mit „unknown revision" ab – und die Action meldete daraufhin
+      # „no leaks found in partial scan" nach 0 gelesenen Bytes. Ein Wächter, der nichts liest
+      # und trotzdem Entwarnung gibt, ist schlimmer als keiner. Direkt aufgerufen liest gitleaks
+      # bei jedem Anlass dieselbe vollständige Historie (deshalb oben fetch-depth: 0).
       - name: Secrets im Verlauf suchen
-        uses: gitleaks/gitleaks-action@v2
-        env: { GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}' }
+        env:
+          GITLEAKS_VERSION: 8.24.3
+        run: |
+          curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" \
+            | tar -xz -C /tmp gitleaks
+          /tmp/gitleaks git --redact --verbose .
       - name: SSRF- und Redaction-Tests
         run: pnpm vitest run apps/worker/test/ssrf.spec.ts packages/domain/test/invariants
 
