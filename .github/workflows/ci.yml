@@ -6,10 +6,11 @@ on:
   pull_request:
 
 env:
-  # Kein Geheimnis: ein Wegwerf-Postgres im Runner, der den Job nicht überlebt. Der Wert
-  # steht hier genau einmal, weil er sonst in den URLs und im Rollenskript auseinanderläuft –
-  # und das Auseinanderlaufen merkt man erst an 33 roten Suiten mit derselben Meldung.
-  DEV_DB_PASSWORD: thealotta_dev_only
+  # Kein Geheimnis: ein Wegwerf-Postgres im Runner, das den Job nicht überlebt und nur auf
+  # dessen localhost hört. Das Passwort steht ausschließlich hier in den URLs – der Schritt
+  # „Rollen anlegen" liest es daraus, statt es als eigene Variable zu wiederholen. Zwei
+  # Gründe: es kann nicht auseinanderlaufen, und GitHub maskiert Zugangsdaten in einer URL
+  # im Log automatisch (`***localhost:5432/…`), eine nackte Variable dagegen nicht.
   DATABASE_ADMIN_URL: postgres://thealotta:thealotta_dev_only@localhost:5432/thealotta
   TEST_DATABASE_URL: postgres://thealotta_app_user:thealotta_dev_only@localhost:5432/thealotta
   DATABASE_URL: postgres://thealotta_app_user:thealotta_dev_only@localhost:5432/thealotta
@@ -65,9 +66,13 @@ jobs:
       # und die Tenant-Isolation wäre nur scheinbar wirksam (ADR-0003).
       - name: Rollen anlegen
         run: |
+          # Genau das Passwort, mit dem sich die Tests danach anmelden – aus derselben URL
+          # gelesen. Eine zweite Konstante daneben wäre wieder eine Stelle, die abweichen kann;
+          # abgewichen war sie schon einmal, und die Meldung dazu lautet nur
+          # „password authentication failed", ohne zu sagen, welche der beiden Seiten irrt.
+          PW=$(node -p 'new URL(process.env.TEST_DATABASE_URL).password')
           psql "$DATABASE_ADMIN_URL" \
-            -v app_pw="$DEV_DB_PASSWORD" -v monitor_pw="$DEV_DB_PASSWORD" \
-            -v notifier_pw="$DEV_DB_PASSWORD" -v sync_pw="$DEV_DB_PASSWORD" \
+            -v app_pw="$PW" -v monitor_pw="$PW" -v notifier_pw="$PW" -v sync_pw="$PW" \
             -f ops/scripts/create-roles.sql
       - name: Migrationen anwenden
         run: DATABASE_URL="$DATABASE_ADMIN_URL" pnpm db:migrate
@@ -95,9 +100,13 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Rollen anlegen
         run: |
+          # Genau das Passwort, mit dem sich die Tests danach anmelden – aus derselben URL
+          # gelesen. Eine zweite Konstante daneben wäre wieder eine Stelle, die abweichen kann;
+          # abgewichen war sie schon einmal, und die Meldung dazu lautet nur
+          # „password authentication failed", ohne zu sagen, welche der beiden Seiten irrt.
+          PW=$(node -p 'new URL(process.env.TEST_DATABASE_URL).password')
           psql "$DATABASE_ADMIN_URL" \
-            -v app_pw="$DEV_DB_PASSWORD" -v monitor_pw="$DEV_DB_PASSWORD" \
-            -v notifier_pw="$DEV_DB_PASSWORD" -v sync_pw="$DEV_DB_PASSWORD" \
+            -v app_pw="$PW" -v monitor_pw="$PW" -v notifier_pw="$PW" -v sync_pw="$PW" \
             -f ops/scripts/create-roles.sql
       - name: Migrationen anwenden
         run: DATABASE_URL="$DATABASE_ADMIN_URL" pnpm db:migrate

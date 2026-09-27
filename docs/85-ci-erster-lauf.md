@@ -35,6 +35,16 @@ die Passwörter jetzt als psql-Variablen entgegen.
 
 Wer eine Variable weglässt, bekommt weiterhin einen Platzhalter, mit dem sich niemand anmelden
 kann. Ein vergessenes Passwort soll den Zugang verwehren und nicht still ein bekanntes setzen.
+
+Im Workflow steht das Entwicklungspasswort daraufhin **nur noch in den drei URLs**; der Schritt
+liest es von dort:
+
+```yaml
+PW=$(node -p 'new URL(process.env.TEST_DATABASE_URL).password')
+```
+
+Die erste Fassung hatte stattdessen ein `DEV_DB_PASSWORD` daneben. Das war schlechter, aus einem
+Grund, der erst beim Nachsehen im öffentlichen Log auffiel – siehe unten.
 Beide Zweige sind gegen ein echtes Postgres 16 geprüft, von außerhalb des Containers, wo
 `scram-sha-256` gilt: mit Variable meldet sich `thealotta_app_user` an und ein falsches Passwort
 wird abgewiesen; ohne Variable ist es genau umgekehrt.
@@ -90,12 +100,34 @@ Die Regeln von gitleaks brauchen ein englisches Schlüsselwort in der Nähe (`ke
 Das ist eine Grenze des Werkzeugs, keine der Konfiguration – aber eine, die man kennen muss,
 bevor man sich auf einen grünen Job verlässt.
 
+## Was in einem öffentlichen Log sichtbar ist
+
+Das Repository ist öffentlich, also ist jedes Action-Log öffentlich. Registrierte Secrets gibt es
+keine (`gh secret list` ist leer), der Workflow braucht auch keine. Nachgesehen im Log des ersten
+Laufs, 5805 Zeilen:
+
+| Wert | Sichtbar? |
+|---|---|
+| `postgres://…:thealotta_dev_only@localhost` in den drei URLs | **nein** – GitHub maskiert Zugangsdaten in URLs von allein: `***localhost:5432/thealotta`, 108-mal |
+| `POSTGRES_PASSWORD=thealotta_dev_only` in `docker create` des Dienstcontainers | **ja**, zweimal – setzt GitHub selbst zusammen, nicht zu verhindern |
+| Sitzungsgeheimnis, Verschlüsselungsschlüssel, Bring-Schlüssel, Token | kommen nicht vor |
+| Demo-Kennwort des Seeds | erscheint, sobald der Job `Migrationen` durchläuft: `pnpm db:seed` gibt es aus. Es steht ohnehin in `ops/scripts/seed-demo.ts` im öffentlichen Quelltext |
+
+Daraus folgte die Korrektur an der eigenen Änderung: ein workflow-weites `DEV_DB_PASSWORD` hätte
+in **jedem** Schritt-Env-Block im Klartext gestanden, weil GitHub nur die URL-Form maskiert, nicht
+eine nackte Variable. Am Risiko ändert das nichts – der Postgres lebt fünfzig Sekunden in einem
+Wegwerf-Runner und hört nur auf dessen localhost. An der Lesbarkeit des Logs schon: wer `***`
+gewohnt ist, soll es nicht daneben im Klartext finden. Also liest der Schritt das Passwort aus der
+URL, die die Tests benutzen. Nebeneffekt: die beiden Werte können nicht mehr auseinanderlaufen –
+also genau der Fehler, der diesen Abschnitt verursacht hat, ist konstruktiv ausgeschlossen statt
+nur behoben.
+
 ## Was sich geändert hat
 
 | Datei | Änderung |
 |---|---|
 | `ops/scripts/create-roles.sql` | Passwörter als psql-Variablen, Platzhalter nur als Rückfallebene |
-| `.github/workflows/ci.yml` | `DEV_DB_PASSWORD` an einer Stelle; Rollen mit `-v …`; gitleaks direkt statt über die Action |
+| `.github/workflows/ci.yml` | Rollenpasswort aus `TEST_DATABASE_URL` statt als zweite Konstante; gitleaks direkt statt über die Action |
 | `.gitleaks.toml` | neu: sieben freigestellte Werte, je mit Begründung |
 | `README.md` | Betriebsanleitung zeigt den Aufruf mit Variablen |
 
