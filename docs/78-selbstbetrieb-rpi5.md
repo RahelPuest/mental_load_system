@@ -167,8 +167,12 @@ ops/scripts/thealotta secrets          # erzeugt alle Zufallswerte, lässt geset
 npx web-push generate-vapid-keys  # VAPID_PUBLIC_KEY / VAPID_PRIVATE_KEY eintragen
 ```
 
-Von Hand nachzutragen: `PUBLIC_BASE_URL` (`https://thealotta.app`), `CF_TUNNEL_TOKEN`,
-die beiden VAPID-Schlüssel.
+Von Hand nachzutragen: nur `CF_TUNNEL_TOKEN` und die beiden VAPID-Schlüssel.
+`PUBLIC_BASE_URL` steht in der Vorlage schon richtig.
+
+Die VAPID-Schlüssel erzeugst du am besten **auf dem Arbeitsrechner** – dann braucht der Pi
+kein Node. Alles andere an diesem Aufbau läuft in Containern; auf dem Gerät genügen Docker,
+Git und Bash.
 
 **`ENCRYPTION_KEYS` ist der einzige Wert, dessen Verlust nicht zu reparieren ist.**
 Die Sicherungen enthalten die Chiffrate, nicht den Schlüssel. Ohne ihn sind alle
@@ -225,22 +229,21 @@ ein Rückweg löst also keinen Fehler aus.
 Die letzten drei Image-Stände bleiben auf dem Gerät, damit der Rückweg nicht daran
 scheitert, dass das Image aufgeräumt wurde.
 
-Seit September 2026 liegt das Projekt unter Versionsverwaltung, aber **ohne Remote**. Für den
-Pi gibt es damit zwei Wege:
+Seit Oktober 2026 liegt das Projekt auf GitHub, **öffentlich**:
+<https://github.com/RahelPuest/mental_load_system>. Auf dem Pi also schlicht:
 
 ```bash
-# A – vom Arbeitsrechner klonen (SSH muss vom Pi zum Mac gehen)
-pi$ git clone ssh://benutzer@arbeitsrechner/Users/axon/Documents/development/web/mental_load_system thealotta
-
-# B – ohne Git: spiegeln. Auch hier gilt: Geheimnisse bleiben hier.
-mac$ rsync -a --delete --exclude node_modules --exclude .env --exclude 'ops/docker/.env.prod' \
-       ./ pi@raspberrypi:/home/pi/thealotta/
+git clone https://github.com/RahelPuest/mental_load_system.git ~/thealotta
 ```
 
-Mit Weg A zieht `thealotta update` den neuen Stand selbst (`git pull --ff-only`); mit Weg B
-muss vor jedem Update gespiegelt werden. Ein Remote auf GitHub würde beides vereinfachen –
-dann aber mit privatem Repository, denn `ops/scripts/seed-demo.ts` trägt ein festes
-Demopasswort (§docs/79 und die Anmerkung unten).
+`thealotta update` zieht den neuen Stand danach selbst (`git pull --ff-only`) – kein
+Spiegeln per rsync, und kein SSH-Zugang vom Pi auf den Arbeitsrechner.
+
+Dass das Repository öffentlich ist, hat eine Folge, die man kennen muss: `ops/scripts/seed-demo.ts`
+trägt ein festes Demopasswort im Klartext. Für den Betrieb ist das ohne Belang, solange §6
+eingehalten wird – **`pnpm db:seed` läuft nie in Produktion**. Gefährlich wäre erst das
+Gegenteil: der Demohaushalt auf einer erreichbaren Instanz, mit einem Passwort, das jeder
+nachlesen kann.
 
 > **Wenn die Bauzeit auf dem Pi störend wird**, ist der nächste Schritt eine GitHub Action,
 > die `linux/arm64`-Images in die GitHub Container Registry schiebt; `thealotta update` würde
@@ -344,10 +347,11 @@ unmittelbar betreffen:
    INV-006 und INV-012 sind damit durch Berechtigungen durchgesetzt statt durch Disziplin
    (docs/84).
 3. ~~**`ops/scripts/create-roles.sql` enthält die Entwicklungspasswörter.**~~ **Behoben.**
-   Die Datei arbeitet jetzt mit `\set`-Platzhaltern (`BITTE_ERSETZEN_*`), die vor dem
-   Ausführen ersetzt werden müssen. Für den Produktivbetrieb auf dem eigenen Gerät ist sie
-   ohnehin nicht nötig: `ops/docker/initdb-prod/01-roles.sh` legt die Anmelderollen beim
-   ersten Start mit den Werten aus `.env.prod` an.
+   Die Datei nimmt die Passwörter jetzt als psql-Variablen (`-v app_pw=…`); fehlt eine,
+   bleibt ein Platzhalter stehen, mit dem sich niemand anmelden kann (docs/85). Für den
+   Produktivbetrieb auf dem eigenen Gerät ist sie ohnehin nicht nötig:
+   `ops/docker/initdb-prod/01-roles.sh` legt die Anmelderollen beim ersten Start mit den
+   Werten aus `.env.prod` an.
 4. **`COOKIE_SECURE` lässt sich nicht abschalten.** `z.coerce.boolean()` macht aus dem
    String `"false"` ein `true` – jeder nichtleere Wert ist wahr. Für Produktion ist das
    richtig; es erklärt aber, warum ein Zugriff über `http` im LAN nie funktionieren wird.

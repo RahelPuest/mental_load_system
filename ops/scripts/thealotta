@@ -170,7 +170,7 @@ cmd_secrets() {
   fi
   chmod 600 "$ENV_FILE"
   [ "$filled" -gt 0 ] && ok "$filled Geheimnis(se) erzeugt, vorhandene unverändert" || ok "Alle Geheimnisse waren schon gesetzt"
-  warn "Noch von Hand einzutragen: CF_TUNNEL_TOKEN, PUBLIC_BASE_URL, VAPID_* (npx web-push generate-vapid-keys)"
+  warn "Noch von Hand einzutragen: CF_TUNNEL_TOKEN, VAPID_* (npx web-push generate-vapid-keys)"
 }
 
 # ── Gesundheitsprüfung ───────────────────────────────────────────────
