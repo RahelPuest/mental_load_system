@@ -114,9 +114,23 @@ touch /mnt/synology/thealotta/.probe && rm /mnt/synology/thealotta/.probe   # mu
 
 ## 4. Domain, Tunnel, Access
 
-**Domain** bei einem Registrar kaufen (`.de` ab etwa 5 €/Jahr), bei Cloudflare als Zone
-hinzufügen, beim Registrar die Nameserver auf die von Cloudflare umstellen. Warten, bis
-die Zone „Active" zeigt.
+**Domain**: `thealotta.app`, bei Cloudflare Registrar gekauft. Damit liegt die Zone schon
+dort und ist sofort aktiv – der Umweg über einen fremden Registrar und das Umstellen der
+Nameserver entfällt.
+
+> **`.app` erzwingt HTTPS, und das ist hier ein Geschenk.** Die gesamte TLD steht auf der
+> HSTS-Preload-Liste; Browser verweigern `http://` für jede `.app`-Adresse von sich aus.
+> Damit ist der Fehler aus §6 über die öffentliche Adresse ausgeschlossen: ein Sitzungscookie
+> mit `Secure` kann nicht mehr stillschweigend verworfen werden, weil es nie über `http`
+> angefragt wird. Auf dem Pi selbst über `http://127.0.0.1:8080` gilt das nicht – das bleibt
+> Diagnosewerkzeug und kein Anmeldeweg.
+
+Nebenwirkung der Apex-Entscheidung: die Problem-URIs der API zeigen auf
+`https://thealotta.app/errors/*` (`apps/api/src/lib/problem.ts`). Liegt die Anwendung auf der
+Apex, laufen diese Pfade in die Oberfläche und liefern dort keine Fehlerbeschreibung. Das ist
+nicht falsch – RFC 7807 verlangt nicht, dass ein `type` auflöst (docs/64) – es nützt nur
+niemandem. Wer das ändern will, braucht eine Seite hinter diesen Pfaden, nicht eine andere
+Adresse für die App.
 
 **Tunnel** – Cloudflare Zero Trust → *Networks* → *Tunnels* → *Create a tunnel* → **Cloudflared**:
 
@@ -125,14 +139,15 @@ die Zone „Active" zeigt.
   (der lange Wert hinter `--token`). Der Befehl selbst wird nicht ausgeführt –
   cloudflared läuft als Dienst im Compose.
 - *Public Hostname* anlegen:
-  - Subdomain `thealotta`, Domain `example.de`
+  - Subdomain **leer lassen**, Domain `thealotta.app`. Die Anwendung liegt auf der Apex;
+    Cloudflare zeigt sie per CNAME-Flattening auf den Tunnel.
   - Type `HTTP`, URL **`web:8080`**
   
   `web` ist der Dienstname im Compose-Netz; cloudflared löst ihn über Compose-DNS auf.
 
 **Access** – Zero Trust → *Access* → *Applications* → *Add an application* → *Self-hosted*:
 
-- Domain: `thealotta.example.de`
+- Domain: `thealotta.app`
 - *Session Duration*: **1 Monat**. Kürzer und die Familie wird wöchentlich zur Anmeldung
   geschickt, was in einer als App installierten Oberfläche besonders lästig ist.
 - Policy: *Allow*, Include → *Emails* → die Adressen der Familie.
@@ -152,7 +167,7 @@ ops/scripts/thealotta secrets          # erzeugt alle Zufallswerte, lässt geset
 npx web-push generate-vapid-keys  # VAPID_PUBLIC_KEY / VAPID_PRIVATE_KEY eintragen
 ```
 
-Von Hand nachzutragen: `PUBLIC_BASE_URL` (`https://thealotta.example.de`), `CF_TUNNEL_TOKEN`,
+Von Hand nachzutragen: `PUBLIC_BASE_URL` (`https://thealotta.app`), `CF_TUNNEL_TOKEN`,
 die beiden VAPID-Schlüssel.
 
 **`ENCRYPTION_KEYS` ist der einzige Wert, dessen Verlust nicht zu reparieren ist.**
@@ -184,7 +199,7 @@ stillschweigend, und der Login „tut einfach nichts". Aus demselben Grund taugt
 
 ## 7. Erster Haushalt
 
-1. `https://thealotta.example.de` öffnen, bei Access mit der eigenen Adresse anmelden.
+1. `https://thealotta.app` öffnen, bei Access mit der eigenen Adresse anmelden.
 2. In der Oberfläche registrieren; dieses erste Konto legt den Haushalt an.
 3. Familienmitglieder über die Einladungsfunktion hinzufügen (`joinRoutes`,
    `InvitationService`) – und ihre Adressen vorher in die Access-Policy aufnehmen,

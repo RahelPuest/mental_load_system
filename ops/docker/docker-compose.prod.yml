@@ -144,7 +144,7 @@ services:
       # Der Login läuft ausschließlich über HTTPS. Anders geht es nicht: das Sitzungscookie
       # wird mit Secure gesetzt, und ein Browser nimmt das über http nicht an.
       COOKIE_SECURE: 'true'
-      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:?PUBLIC_BASE_URL fehlt, z. B. https://thealotta.example.de}
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:?PUBLIC_BASE_URL fehlt, z. B. https://thealotta.app}
       CORS_ORIGINS: ${PUBLIC_BASE_URL}
       RATE_LIMIT_GLOBAL_PER_MIN: ${RATE_LIMIT_GLOBAL_PER_MIN:-300}
       RATE_LIMIT_AUTH_PER_MIN: ${RATE_LIMIT_AUTH_PER_MIN:-10}
