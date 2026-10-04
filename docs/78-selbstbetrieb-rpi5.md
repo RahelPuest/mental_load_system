@@ -83,6 +83,74 @@ sudo ufw allow from 192.168.0.0/16 to any port 22 proto tcp   # SSH nur aus dem 
 sudo ufw enable
 ```
 
+## 2b. Wenn der Pi schon läuft
+
+Steht das Gerät bereits in Betrieb, fällt §2 bis auf fünf Prüfungen weg. Vier davon sind
+wichtig, weil ein benutztes Gerät Zustand hat, den ein frisches nicht hat – und zwei der
+Befehle aus §2 würden diesen Zustand beschädigen.
+
+```bash
+uname -m                      # aarch64
+docker compose version        # v2 nötig; v1 (docker-compose) genügt nicht
+docker info 2>&1 | grep -i 'memory limit'   # darf NICHTS ausgeben
+```
+
+**cgroup-Speicherbuchhaltung prüfen, nicht blind setzen.** Gibt die dritte Zeile
+`WARNING: No memory limit support` aus, fehlt der Kernel-Parameter und die Grenzen aus dem
+Compose sind wirkungslos. Dann – und nur dann – `cgroup_enable=memory cgroup_memory=1` an die
+eine Zeile in `/boot/firmware/cmdline.txt` anhängen (bei Ubuntu: `/boot/firmware/cmdline.txt`
+oder `extraargs` in `config.txt`) und neu starten. Steht es schon da, zweimal anhängen hilft
+nicht, sondern verwirrt.
+
+**Die ufw-Zeilen aus §2 nicht übernehmen.** `ufw default deny incoming` auf einem Gerät mit
+laufenden Diensten schneidet diese ab. Läuft ufw schon, ist nichts zu tun: Thealotta
+veröffentlicht genau einen Port, und den nur lokal.
+
+**Port 127.0.0.1:8080 muss frei sein** – der einzige veröffentlichte Port des Stacks
+(`web`, nur für Diagnose auf dem Gerät):
+
+```bash
+ss -lntp | grep ':8080' || echo '8080 frei'
+```
+
+**Liegt `DATA_DIR` wirklich auf der SSD?** Bootet der Pi von SSD, trifft
+`/srv/thealotta` sie von allein. Bootet er von SD-Karte mit SSD daneben, muss `DATA_DIR`
+auf den SSD-Mount zeigen – sonst schreibt Postgres auf die Karte, und das ist der Fall aus §2,
+der nach Monaten wie ein Datenbankfehler aussieht.
+
+```bash
+findmnt -no SOURCE,FSTYPE --target /srv    # und: steht da wirklich die SSD?
+```
+
+### Was der Stack beansprucht
+
+Die Obergrenzen aus dem Compose, nicht der tatsächliche Verbrauch – im Ruhezustand liegt er
+deutlich darunter:
+
+| Dienst | Grenze |
+|---|---|
+| `postgres` (`shared_buffers=1GB`) | 4,0 GB |
+| `api` | 1,0 GB |
+| `worker-default` | 1,0 GB |
+| `redis` (`maxmemory 512mb`) | 768 MB |
+| `worker-sync`, `worker-notify` | je 512 MB |
+| `backup` | 512 MB |
+| `web`, `cloudflared` | je 256 MB |
+| **Summe** | **≈ 8,75 GB** |
+
+Auf 16 GB bleiben damit gut 7 GB für Betriebssystem und das, was schon läuft. Vorher
+`free -h` ansehen: belegen die bestehenden Dienste mehr als 6 GB, wird es eng.
+
+`effective_cache_size=4GB` ist dabei kein Verbrauch, sondern ein Hinweis an den
+Planer, wie viel Seitencache er erwarten darf. Auf einem geteilten Gerät ist der Wert
+leicht optimistisch – das kostet höchstens einen schlechteren Abfrageplan, keinen Speicher.
+
+Platz ist bei 512 GB kein Thema: die Daten eines Haushalts sind klein. `preflight` warnt
+unter 10 GB frei, weil die wöchentliche Restore-Prüfung eine Wegwerf-Datenbank in
+Datenbankgröße anlegt. Was wächst, ist nicht der Bestand, sondern der Docker-Baucache und
+die drei zum Rückweg aufbewahrten Image-Stände – dagegen gibt es
+`ops/scripts/thealotta prune-images`.
+
 ## 3. Synology: Freigabe für die Sicherungen
 
 1. **Systemsteuerung → Gemeinsamer Ordner**: `thealotta-backup` anlegen, Papierkorb aus,
