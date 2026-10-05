@@ -182,7 +182,9 @@ Systemsteuerung → Dateidienste → SMB aktivieren, in den erweiterten Einstell
 zulassen. Der Freigabe ein Konto mit Lese-/Schreibrecht geben – am besten ein eigenes,
 das nur diese Freigabe sieht.
 
-Zugangsdaten auf dem Pi ablegen, damit sie nicht in `/etc/fstab` stehen:
+Gibt es auf dem Pi schon eine Zugangsdatei für dieselbe Synology, wird sie
+wiederverwendet – dann entfällt der folgende Block. Sonst anlegen, damit die Zugangsdaten
+nicht in `/etc/fstab` stehen:
 
 ```bash
 sudo apt install -y cifs-utils
@@ -204,12 +206,23 @@ sudo chmod 600 /etc/samba/credentials/thealotta
 Ernstfall auch zurückspielt. Der `backup`-Container schreibt als root und kommt dadurch
 ohnehin an alles.
 
+`_netdev` statt `x-systemd.automount`: Diese Freigabe soll beim Hochfahren hängen, bevor
+Docker startet. Der `backup`-Container bindet den Pfad beim Start ein und hält ihn wochenlang –
+eine Einbindung, die erst beim ersten Zugriff entsteht, ist dafür die schwächere Zusage.
+
 ### Beide Varianten
 
 ```bash
 sudo mkdir -p /mnt/synology/thealotta && sudo mount -a
 touch /mnt/synology/thealotta/.probe && rm /mnt/synology/thealotta/.probe   # muss klappen
 ```
+
+`preflight` prüft nicht nur, ob `BACKUP_DIR` beschreibbar ist, sondern auch, ob es auf einer
+**eigenen Einbindung** liegt. Der Grund: Hängt die Freigabe nicht, ist das Verzeichnis ein
+leerer Ordner auf der lokalen Platte – beschreibbar, und die Sicherungen landen neben den
+Daten, die sie absichern sollen. Das fällt sonst genau dann auf, wenn die Platte weg ist.
+Ein Unterordner einer Freigabe (`/mnt/synology` eingebunden, `BACKUP_DIR` darunter) gilt
+dabei als eingebunden.
 
 > **Warum die Datenbank nicht dorthin gehört.** Postgres verlässt sich darauf, dass ein
 > erfolgreiches `fsync` bedeutet, dass die Daten liegen, und dass Dateisperren gelten.

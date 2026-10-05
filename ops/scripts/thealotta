@@ -124,6 +124,28 @@ cmd_preflight() {
     touch "$backup_dir/.thealotta-write-test" 2>/dev/null \
       && { rm -f "$backup_dir/.thealotta-write-test"; ok "BACKUP_DIR ist beschreibbar"; } \
       || { fail "BACKUP_DIR ist nicht beschreibbar"; problems=$((problems+1)); }
+
+    # Beschreibbar genügt nicht: ist die Freigabe nicht eingebunden, ist das Verzeichnis
+    # ein leerer Ordner auf der lokalen Platte – beschreibbar, und die Sicherungen landen
+    # neben den Daten, die sie absichern sollen. Das fällt sonst erst auf, wenn die Platte
+    # weg ist. Besonders bei `x-systemd.automount`, wo die Einbindung erst beim Zugriff
+    # entsteht und der Container den Pfad schon vorher übernommen haben kann.
+    if command -v findmnt >/dev/null 2>&1; then
+      local backup_mnt root_mnt backup_fs
+      backup_mnt=$(findmnt -no TARGET --target "$backup_dir" 2>/dev/null | head -1 || true)
+      root_mnt=$(findmnt -no TARGET --target / 2>/dev/null | head -1 || true)
+      backup_fs=$(findmnt -no FSTYPE --target "$backup_dir" 2>/dev/null | head -1 || true)
+      if [ -z "$backup_mnt" ] || [ -z "$root_mnt" ]; then
+        warn "Einbindung von BACKUP_DIR nicht feststellbar – von Hand prüfen, dass die Freigabe hängt"
+      elif [ "$backup_mnt" = "$root_mnt" ]; then
+        fail "BACKUP_DIR liegt auf demselben Dateisystem wie / – die Freigabe ist nicht eingebunden; Sicherungen würden auf die lokale Platte gehen"
+        problems=$((problems+1))
+      else
+        ok "BACKUP_DIR liegt auf einer eigenen Einbindung ($backup_fs unter $backup_mnt)"
+      fi
+    else
+      warn "findmnt fehlt – von Hand prüfen, dass BACKUP_DIR wirklich die Freigabe ist"
+    fi
   fi
 
   local free_gb
