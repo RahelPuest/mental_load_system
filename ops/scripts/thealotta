@@ -100,7 +100,7 @@ cmd_preflight() {
   local data_dir backup_dir
   data_dir=$(env_get DATA_DIR); backup_dir=$(env_get BACKUP_DIR)
   [ -d "$data_dir" ] || { fail "DATA_DIR $data_dir existiert nicht"; problems=$((problems+1)); }
-  [ -d "$backup_dir" ] || { fail "BACKUP_DIR $backup_dir existiert nicht – hängt der NFS-Mount der Synology?"; problems=$((problems+1)); }
+  [ -d "$backup_dir" ] || { fail "BACKUP_DIR $backup_dir existiert nicht – hängt die Freigabe der Synology?"; problems=$((problems+1)); }
 
   # Liegt das Datenverzeichnis auf einem Netzlaufwerk? Dann ist Datenverlust nur eine
   # Frage der Zeit: Postgres verlässt sich auf fsync- und Locking-Semantik, die NFS und

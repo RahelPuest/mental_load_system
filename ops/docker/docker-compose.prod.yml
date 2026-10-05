@@ -267,7 +267,7 @@ services:
       TZ: ${TZ:-Europe/Berlin}
     volumes:
       - ../scripts/backup-loop.sh:/opt/thealotta/backup-loop.sh:ro
-      # Hier liegt der NFS-Mount der Synology.
+      # Hier liegt die Freigabe der Synology (NFS oder SMB, docs/78 §3).
       - ${BACKUP_DIR:?BACKUP_DIR fehlt, z. B. /mnt/synology/thealotta}:/backups
     depends_on:
       postgres: { condition: service_healthy }

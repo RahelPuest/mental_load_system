@@ -52,7 +52,8 @@ aus. Also NVMe über HAT oder eine USB-3-SSD.
 uname -m                       # muss aarch64 ausgeben
 
 sudo apt update && sudo apt full-upgrade -y
-sudo apt install -y unattended-upgrades nfs-common
+sudo apt install -y unattended-upgrades
+sudo apt install -y nfs-common    # oder cifs-utils, je nach §3
 curl -fsSL https://get.docker.com | sudo sh
 sudo usermod -aG docker "$USER"   # danach neu anmelden
 ```
@@ -155,17 +156,55 @@ die drei zum Rückweg aufbewahrten Image-Stände – dagegen gibt es
 
 1. **Systemsteuerung → Gemeinsamer Ordner**: `thealotta-backup` anlegen, Papierkorb aus,
    Verschlüsselung optional (die Dumps sind ohnehin verschlüsselt).
-2. **Systemsteuerung → Dateidienste → NFS**: NFS aktivieren.
-3. Bei der Freigabe **NFS-Berechtigungen**: Regel für die feste IP des Pi, `rw`,
-   Squash „Keine Zuordnung", asynchron *aus*.
-4. **Snapshot Replication** auf diese Freigabe einschalten. Das ist der Schutz, den
+2. **Snapshot Replication** auf diese Freigabe einschalten. Das ist der Schutz, den
    docs/29 §2 mit Object-Lock meint: Wer die Sicherungen löschen kann, hat keine Sicherungen.
 
-Auf dem Pi einbinden (`/etc/fstab`):
+Für das Einbinden auf dem Pi taugen **NFS und SMB gleichermaßen**. Der Sicherungsdienst
+schreibt eine Datei, verschiebt sie mit `mv` innerhalb desselben Verzeichnisses und räumt über
+`find -mtime` auf (`ops/scripts/backup-loop.sh`) – POSIX-Semantik jenseits davon braucht er
+nicht. Entscheidend ist nur, was §2 über `DATA_DIR` sagt: **die Datenbank** gehört auf keine
+Freigabe, egal über welches Protokoll.
+
+### Variante A – NFS
+
+Systemsteuerung → Dateidienste → NFS aktivieren. Bei der Freigabe **NFS-Berechtigungen**:
+Regel für die feste IP des Pi, `rw`, Squash „Keine Zuordnung", asynchron *aus*.
+
+`/etc/fstab`:
 
 ```
 192.168.x.y:/volume1/thealotta-backup  /mnt/synology/thealotta  nfs4  rw,hard,noatime,_netdev  0  0
 ```
+
+### Variante B – SMB
+
+Systemsteuerung → Dateidienste → SMB aktivieren, in den erweiterten Einstellungen SMB3
+zulassen. Der Freigabe ein Konto mit Lese-/Schreibrecht geben – am besten ein eigenes,
+das nur diese Freigabe sieht.
+
+Zugangsdaten auf dem Pi ablegen, damit sie nicht in `/etc/fstab` stehen:
+
+```bash
+sudo apt install -y cifs-utils
+sudo install -d -m 700 /etc/samba/credentials
+sudo tee /etc/samba/credentials/thealotta >/dev/null <<'EOF'
+username=thealotta-backup
+password=DAS_PASSWORT
+EOF
+sudo chmod 600 /etc/samba/credentials/thealotta
+```
+
+`/etc/fstab` (eine Zeile):
+
+```
+//192.168.x.y/thealotta-backup  /mnt/synology/thealotta  cifs  credentials=/etc/samba/credentials/thealotta,vers=3.1.1,uid=1000,gid=1000,file_mode=0660,dir_mode=0770,nofail,_netdev  0  0
+```
+
+`uid`/`gid` sind die des Pi-Benutzers (`id -u`), damit die Dateien dem gehören, der sie im
+Ernstfall auch zurückspielt. Der `backup`-Container schreibt als root und kommt dadurch
+ohnehin an alles.
+
+### Beide Varianten
 
 ```bash
 sudo mkdir -p /mnt/synology/thealotta && sudo mount -a
@@ -175,7 +214,8 @@ touch /mnt/synology/thealotta/.probe && rm /mnt/synology/thealotta/.probe   # mu
 > **Warum die Datenbank nicht dorthin gehört.** Postgres verlässt sich darauf, dass ein
 > erfolgreiches `fsync` bedeutet, dass die Daten liegen, und dass Dateisperren gelten.
 > NFS gibt das nur unter bestimmten Mount-Optionen her, SMB gar nicht – Postgres unterstützt
-> es nicht. Ein `PGDATA` auf einer Freigabe läuft monatelang unauffällig und ist dann
+> es nicht. Für die **Sicherungsdateien** ist beides gleichgültig; es geht hier allein um
+> `DATA_DIR`. Ein `PGDATA` auf einer Freigabe läuft monatelang unauffällig und ist dann
 > nach einem Netzaussetzer beschädigt. Wenn die Datenbankdateien zwingend auf dem NAS liegen
 > sollen, ist der einzige saubere Weg ein iSCSI-LUN als Blockgerät – dann gilt aber:
 > Netz weg = Datenbank steht.
