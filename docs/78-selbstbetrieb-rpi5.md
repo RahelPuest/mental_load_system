@@ -253,21 +253,31 @@ nicht falsch – RFC 7807 verlangt nicht, dass ein `type` auflöst (docs/64) –
 niemandem. Wer das ändern will, braucht eine Seite hinter diesen Pfaden, nicht eine andere
 Adresse für die App.
 
-**Tunnel** – Cloudflare Zero Trust → *Networks* → *Tunnels* → *Create a tunnel* → **Cloudflared**:
+> **Die Menüpfade unten gelten für den Stand Oktober 2026.** Cloudflare hat Zero Trust ins
+> Haupt-Dashboard integriert und die Menüs mehrfach umbenannt: aus *Zero Trust → Networks →
+> Tunnels* wurde **Networking → Tunnels**, aus *Access* wurde **Zero Trust → Access controls**,
+> und *Public Hostname* heißt jetzt **Routes → Add route → Published application**. Weichen die
+> Namen bei dir ab, führen die Direktlinks trotzdem hin.
 
-- Name: `thealotta-pi`
-- Bei „Install and run a connector" **nur den Token** aus dem angezeigten Befehl kopieren
-  (der lange Wert hinter `--token`). Der Befehl selbst wird nicht ausgeführt –
-  cloudflared läuft als Dienst im Compose.
-- *Public Hostname* anlegen:
+**Tunnel** – <https://dash.cloudflare.com/?to=/:account/tunnels>, im Menü **Networking →
+Tunnels**:
+
+- *Create a tunnel* → **Cloudflared**, Name `thealotta-pi` → *Create Tunnel*
+- Auf der folgenden Seite steht ein Installationsbefehl. Daraus **nur den langen Wert hinter
+  `--token`** kopieren. Der Befehl selbst wird nicht gebraucht – cloudflared läuft als Dienst
+  im Compose.
+- Dann im Tunnel auf den Reiter **Routes** → *Add route* → **Published application**:
   - Subdomain **leer lassen**, Domain `thealotta.app`. Die Anwendung liegt auf der Apex;
     Cloudflare zeigt sie per CNAME-Flattening auf den Tunnel.
-  - Type `HTTP`, URL **`web:8080`**
-  
-  `web` ist der Dienstname im Compose-Netz; cloudflared löst ihn über Compose-DNS auf.
+  - *Service URL*: **`http://web:8080`**
 
-**Access** – Zero Trust → *Access* → *Applications* → *Add an application* → *Self-hosted*:
+  `web` ist der Dienstname im Compose-Netz; cloudflared läuft im selben Netz und löst ihn über
+  Compose-DNS auf. Darum steht hier nicht `localhost`, wie es die Cloudflare-Beispiele zeigen.
 
+**Access** – <https://dash.cloudflare.com/>, im Menü **Zero Trust → Access controls →
+Applications**:
+
+- *Create new application* → **Self-hosted and private** → *Add public hostname*
 - Domain: `thealotta.app`
 - *Session Duration*: **1 Monat**. Kürzer und die Familie wird wöchentlich zur Anmeldung
   geschickt, was in einer als App installierten Oberfläche besonders lästig ist.
