@@ -266,6 +266,20 @@ Tunnels**:
 - Auf der folgenden Seite steht ein Installationsbefehl. Daraus **nur den langen Wert hinter
   `--token`** kopieren. Der Befehl selbst wird nicht gebraucht – cloudflared läuft als Dienst
   im Compose.
+- **Der Assistent lässt sich erst abschließen, wenn ein Connector verbunden ist.** Dafür
+  genügt ein Wegwerf-Container auf dem Pi – der Compose-Dienst `cloudflared` hängt an `web`
+  und kommt erst später dran:
+
+  ```bash
+  read -rs TUNNEL_TOKEN          # Token einfügen, Enter – so landet er nicht in der History
+  docker run --rm -e TUNNEL_TOKEN="$TUNNEL_TOKEN" \
+    cloudflare/cloudflared:latest tunnel --no-autoupdate run
+  ```
+
+  Sobald im Dashboard „Connected" steht, ist der Assistent zufrieden. Der Container bleibt im
+  Vordergrund; nach dem Anlegen der Route beendet ihn `Strg-C`. Dasselbe Verfahren prüft
+  gleich mit, dass der Token stimmt, bevor er in `.env.prod` wandert.
+
 - Dann im Tunnel auf den Reiter **Routes** → *Add route* → **Published application**:
   - Subdomain **leer lassen**, Domain `thealotta.app`. Die Anwendung liegt auf der Apex;
     Cloudflare zeigt sie per CNAME-Flattening auf den Tunnel.
@@ -273,6 +287,9 @@ Tunnels**:
 
   `web` ist der Dienstname im Compose-Netz; cloudflared läuft im selben Netz und löst ihn über
   Compose-DNS auf. Darum steht hier nicht `localhost`, wie es die Cloudflare-Beispiele zeigen.
+
+  Bis der Stack in §6 läuft, antwortet die Route mit einem Fehler – `web:8080` gibt es noch
+  nicht. Das ist der erwartete Zwischenstand und erledigt sich mit `thealotta up`.
 
 **Access** – <https://dash.cloudflare.com/>, im Menü **Zero Trust → Access controls →
 Applications**:
