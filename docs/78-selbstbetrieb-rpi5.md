@@ -266,30 +266,11 @@ Tunnels**:
 - Auf der folgenden Seite steht ein Installationsbefehl. Daraus **nur den langen Wert hinter
   `--token`** kopieren. Der Befehl selbst wird nicht gebraucht – cloudflared läuft als Dienst
   im Compose.
-- **Der Assistent lässt sich erst abschließen, wenn ein Connector verbunden ist.** Dafür
-  genügt ein Wegwerf-Container auf dem Pi – der Compose-Dienst `cloudflared` hängt an `web`
-  und kommt erst später dran:
-
-  ```bash
-  read -rs TUNNEL_TOKEN          # Token einfügen, Enter – so landet er nicht in der History
-  docker run --rm -e TUNNEL_TOKEN="$TUNNEL_TOKEN" \
-    cloudflare/cloudflared:latest tunnel --no-autoupdate run
-  ```
-
-  Sobald im Dashboard „Connected" steht, ist der Assistent zufrieden. Der Container bleibt im
-  Vordergrund; nach dem Anlegen der Route beendet ihn `Strg-C`. Dasselbe Verfahren prüft
-  gleich mit, dass der Token stimmt, bevor er in `.env.prod` wandert.
-
-- Dann im Tunnel auf den Reiter **Routes** → *Add route* → **Published application**:
-  - Subdomain **leer lassen**, Domain `thealotta.app`. Die Anwendung liegt auf der Apex;
-    Cloudflare zeigt sie per CNAME-Flattening auf den Tunnel.
-  - *Service URL*: **`http://web:8080`**
-
-  `web` ist der Dienstname im Compose-Netz; cloudflared läuft im selben Netz und löst ihn über
-  Compose-DNS auf. Darum steht hier nicht `localhost`, wie es die Cloudflare-Beispiele zeigen.
-
-  Bis der Stack in §6 läuft, antwortet die Route mit einem Fehler – `web:8080` gibt es noch
-  nicht. Das ist der erwartete Zwischenstand und erledigt sich mit `thealotta up`.
+- **Hier endet §4.** Der Assistent will als nächstes einen verbundenen Connector sehen und
+  lässt sich ohne ihn nicht abschließen – der Tunnel ist aber bereits angelegt und steht in
+  der Liste. Den Connector liefert in §6 der Compose-Dienst `cloudflared`, und die Route wird
+  danach angelegt (§6 am Ende). Den Assistenten also schließen; mit dem Token ist alles
+  geholt, was jetzt gebraucht wird.
 
 **Access** – <https://dash.cloudflare.com/>, im Menü **Zero Trust → Access controls →
 Applications**:
@@ -348,6 +329,21 @@ stillschweigend, und der Login „tut einfach nichts". Aus demselben Grund taugt
 `http://127.0.0.1:8080` auf dem Pi zur Diagnose, aber nicht zum Anmelden.
 
 **Kein `pnpm db:seed` in Produktion** – das legt den Demohaushalt an.
+
+### Route im Tunnel anlegen
+
+Jetzt läuft `cloudflared` als Dienst im Stack und meldet sich bei Cloudflare. Erst dadurch
+ist der Tunnel im Dashboard „Healthy", und erst dann nimmt er eine Route an.
+
+<https://dash.cloudflare.com/?to=/:account/tunnels> → der Tunnel `thealotta-pi` → Reiter
+**Routes** → *Add route* → **Published application**:
+
+- Subdomain **leer lassen**, Domain `thealotta.app`. Die Anwendung liegt auf der Apex;
+  Cloudflare zeigt sie per CNAME-Flattening auf den Tunnel.
+- *Service URL*: **`http://web:8080`**
+
+`web` ist der Dienstname im Compose-Netz; cloudflared läuft im selben Netz und löst ihn über
+Compose-DNS auf. Darum steht hier nicht `localhost`, wie es die Cloudflare-Beispiele zeigen.
 
 ## 7. Erster Haushalt
 
